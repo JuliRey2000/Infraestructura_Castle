@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arquitectura Financiera — Castle Capital</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="engine.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+
+    <header class="brand-header no-print">
+      <div class="brand-logo">CC</div>
+      <div>
+        <h1 class="brand-title">CASTLE CAPITAL</h1>
+        <p class="brand-sub">Arquitectura Financiera — Herramienta de diagnóstico y plan</p>
+      </div>
+    </header>
+
+    <section id="form-section" class="card no-print">
+      <h2>Datos del Cliente</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nombre">Nombre completo</label>
+          <input id="nombre" type="text" placeholder="Ej: María Fernanda Pérez" />
+        </div>
+        <div class="form-group">
+          <label for="capital">Capital disponible (COP)</label>
+          <input id="capital" type="number" min="0" step="100000" placeholder="20000000" />
+        </div>
+        <div class="form-group">
+          <label for="ingresos">Ingresos mensuales (COP)</label>
+          <input id="ingresos" type="number" min="0" step="100000" placeholder="5000000" />
+        </div>
+        <div class="form-group">
+          <label for="gastos">Gastos mensuales (COP)</label>
+          <input id="gastos" type="number" min="0" step="100000" placeholder="3000000" />
+        </div>
+        <div class="form-group">
+          <label for="objetivo">Objetivo de flujo mensual extra (COP)</label>
+          <input id="objetivo" type="number" min="0" step="50000" placeholder="800000" />
+        </div>
+        <div class="form-group">
+          <label for="plazo">Plazo objetivo</label>
+          <select id="plazo">
+            <option value="1">1 año</option>
+            <option value="3">3 años</option>
+            <option value="5" selected>5 años</option>
+            <option value="10">10 años</option>
+            <option value="20">20 años</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>¿Tiene fondo de emergencia separado?</label>
+          <div class="radio-row">
+            <label><input type="radio" name="fondo" value="si" /> Sí</label>
+            <label><input type="radio" name="fondo" value="no" checked /> No</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="experiencia">Experiencia con DeFi/cripto</label>
+          <select id="experiencia">
+            <option value="ninguna" selected>Ninguna</option>
+            <option value="basica">Básica</option>
+            <option value="intermedia">Intermedia</option>
+          </select>
+        </div>
+      </div>
+
+      <h3>Perfil ARCA — 2 preguntas</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>¿Estarías cómodo viendo tu cartera caer un 20% temporalmente?</label>
+          <div class="radio-row">
+            <label><input type="radio" name="q1" value="si" /> Sí, lo soporto</label>
+            <label><input type="radio" name="q1" value="no" checked /> No, me incomoda</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>¿Necesitarás este capital en los próximos 5 años?</label>
+          <div class="radio-row">
+            <label><input type="radio" name="q2" value="si" checked /> Sí</label>
+            <label><input type="radio" name="q2" value="no" /> No, es de largo plazo</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>¿Es cliente activo de Castle Crypto Income (CCI)?</label>
+          <div class="radio-row">
+            <label><input type="radio" name="esCCI" value="si" /> Sí</label>
+            <label><input type="radio" name="esCCI" value="no" checked /> No</label>
+          </div>
+        </div>
+      </div>
+
+      <h3>Deudas (opcional)</h3>
+      <div class="form-group">
+        <label>¿Tiene deudas vigentes?</label>
+        <div class="radio-row">
+          <label><input type="radio" name="hasDebt" value="si" /> Sí</label>
+          <label><input type="radio" name="hasDebt" value="no" checked /> No</label>
+        </div>
+      </div>
+
+      <div id="debts-container" class="hidden">
+        <p class="muted">Agrega cada deuda con monto, tasa anual (%) y cuota mínima mensual.</p>
+        <div id="debts-list"></div>
+        <button type="button" class="btn btn-ghost" id="add-debt-btn">+ Agregar deuda</button>
+      </div>
+
+      <div class="action-row">
+        <button type="button" class="btn" id="generate-btn">Generar Arquitectura</button>
+        <button type="button" class="btn btn-ghost" id="reset-btn">Limpiar</button>
+      </div>
+    </section>
+
+    <section id="result-section">
+
+      <div class="brand-header">
+        <div class="brand-logo">CC</div>
+        <div>
+          <h1 class="brand-title">CASTLE CAPITAL</h1>
+          <p class="brand-sub" id="result-sub">Arquitectura Financiera</p>
+        </div>
+      </div>
+
+      <div class="toc no-print">
+        <strong>Índice del documento</strong>
+        <ol>
+          <li>Portada y datos del cliente</li>
+          <li>Perfil del Cliente</li>
+          <li>Diagnóstico de Deudas</li>
+          <li>Diagnóstico de Inversión (gap analysis)</li>
+          <li>Arquitectura ARCA</li>
+          <li>Renta Fija — PEI Principal</li>
+          <li>ETFs Recomendados</li>
+          <li>Estrategia DeFi</li>
+          <li>Proyecciones</li>
+          <li>¿Dónde Ejecutar? (brokers)</li>
+          <li>Plan de Ejecución Paso a Paso</li>
+          <li>Próximos Pasos</li>
+        </ol>
+      </div>
+
+      <div id="pdf-content">
+        <div class="section card" id="sec-portada"></div>
+        <div class="section card" id="sec-perfil"></div>
+        <div class="section card" id="sec-deudas"></div>
+        <div class="section card" id="sec-gap"></div>
+        <div class="section card" id="sec-arca"></div>
+        <div class="section card" id="sec-rentafija"></div>
+        <div class="section card" id="sec-etfs"></div>
+        <div class="section card" id="sec-defi"></div>
+        <div class="section card" id="sec-proyecciones"></div>
+        <div class="section card" id="sec-brokers"></div>
+        <div class="section card" id="sec-ejecucion"></div>
+        <div class="section card" id="sec-proximos"></div>
+      </div>
+
+      <div class="action-row no-print">
+        <button type="button" class="btn" id="download-pdf-btn">Descargar PDF</button>
+        <button type="button" class="btn btn-ghost" id="back-btn">Volver al formulario</button>
+      </div>
+
+      <p class="muted no-print" style="margin-top: 8px;">
+        Tip: al hacer clic en "Descargar PDF", elige <strong>"Guardar como PDF"</strong> en el destino de impresión.
+        Activa <strong>"Gráficos de fondo"</strong> en opciones avanzadas para mantener el branding.
+      </p>
+
+    </section>
+
+  </div>
+
+  <script>
+    // === Data inlined for file:// compatibility (mirrors etf-bank.json + brokers-bank.json v1.1.0) ===
+    const ETF_BANK = {
+      acciones: {
+        conservador: [
+          { ticker: 'SCHD', nombre: 'Schwab US Dividend Equity ETF', retorno_ref: '11.2% anualizado 5y', horizonte: 'largo', nota: 'Dividendos de calidad' },
+          { ticker: 'DGRO', nombre: 'iShares Core Dividend Growth ETF', retorno_ref: '10.8% anualizado 5y', horizonte: 'largo', nota: 'Crecimiento de dividendos' },
+          { ticker: 'VIG', nombre: 'Vanguard Dividend Appreciation ETF', retorno_ref: '10.4% anualizado 5y', horizonte: 'largo', nota: 'Aristócratas del dividendo' }
+        ],
+        moderado: [
+          { ticker: 'VOO', nombre: 'Vanguard S&P 500 ETF', retorno_ref: '13.9% anualizado 10y', horizonte: 'largo', nota: 'Núcleo de cartera — TER 0.03%' },
+          { ticker: 'VEA', nombre: 'Vanguard FTSE Developed Markets ETF', retorno_ref: '6.8% anualizado 10y', horizonte: 'largo', nota: 'Diversificación internacional' },
+          { ticker: 'VWO', nombre: 'Vanguard FTSE Emerging Markets ETF', retorno_ref: '4.1% anualizado 10y', horizonte: 'largo', nota: 'Mercados emergentes' },
+          { ticker: 'DGRO', nombre: 'iShares Core Dividend Growth ETF', retorno_ref: '10.8% anualizado 5y', horizonte: 'largo', nota: 'Capa de dividendos' },
+          { ticker: 'SCHD', nombre: 'Schwab US Dividend Equity ETF', retorno_ref: '11.2% anualizado 5y', horizonte: 'largo', nota: 'Complemento defensivo' }
+        ],
+        agresivo: [
+          { ticker: 'QQQ', nombre: 'Invesco QQQ Trust (Nasdaq-100)', retorno_ref: '18.7% anualizado 10y', horizonte: 'largo', nota: 'Tecnología líder' },
+          { ticker: 'SMH', nombre: 'VanEck Semiconductor ETF', retorno_ref: '26.4% anualizado 5y', horizonte: 'largo', nota: 'Semiconductores' },
+          { ticker: 'COPX', nombre: 'Global X Copper Miners ETF', retorno_ref: '12.8% anualizado 5y', horizonte: 'mediano', nota: 'Tesis cobre' },
+          { ticker: 'URNM', nombre: 'Sprott Uranium Miners ETF', retorno_ref: '21.5% anualizado 3y', horizonte: 'mediano', nota: 'Tesis uranio' },
+          { ticker: 'VOO', nombre: 'Vanguard S&P 500 ETF', retorno_ref: '13.9% anualizado 10y', horizonte: 'largo', nota: 'Ancla — base obligatoria' }
+        ]
+      },
+      rentaFija: [
+        {
+          ticker: 'PEI',
+          nombre: 'Patrimonio Estrategias Inmobiliarias',
+          retorno_ref: '8–10% E.A. distribución + revalorización',
+          horizonte: 'mediano',
+          nota: 'Recomendación principal Castle — bienes raíces comerciales premium en Colombia. Distribuciones trimestrales y apreciación del activo.',
+          vehiculo: 'Titularización Inmobiliaria (BVC)',
+          broker_sugerido: 'Trii o Tyba',
+          moneda: 'COP',
+          es_principal: true,
+          categoria: 'Inmobiliario titularizado'
+        },
+        { ticker: 'TES-LP', nombre: 'TES Largo Plazo (deuda pública Colombia)', retorno_ref: '9.5–11% E.A.', horizonte: 'mediano', nota: 'Complemento defensivo a PEI. Vía Trii o Tyba.', moneda: 'COP' },
+        { ticker: 'BIL', nombre: 'SPDR Bloomberg 1-3 Month T-Bill ETF', retorno_ref: '4.8% anualizado', horizonte: 'corto', nota: 'T-Bills USD — caja productiva en dólares', moneda: 'USD' },
+        { ticker: 'AGG', nombre: 'iShares Core US Aggregate Bond ETF', retorno_ref: '2.1% anualizado 5y', horizonte: 'mediano', nota: 'Bonos USA diversificados', moneda: 'USD' }
+      ],
+      caja: [
+        { nombre: 'Rappipay Ahorro', retorno_ref: '9.25% E.A.', horizonte: 'inmediato', nota: 'Liquidez total' },
+        { nombre: 'Pibank', retorno_ref: '8.50% E.A.', horizonte: 'inmediato', nota: 'Alternativa a Rappipay' },
+        { nombre: 'Nu Cuenta', retorno_ref: '13.0% E.A.', horizonte: 'inmediato', nota: 'Tasa diferencial primer monto' }
+      ],
+      alternativos: {
+        no_defi: [
+          { ticker: 'GLD', nombre: 'SPDR Gold Shares', retorno_ref: '60.2% YTD', horizonte: 'largo', nota: 'Refugio anti-inflación' },
+          { ticker: 'IAU', nombre: 'iShares Gold Trust', retorno_ref: 'Similar GLD, TER inferior', horizonte: 'largo', nota: 'Alternativa más barata' },
+          { ticker: 'VNQ', nombre: 'Vanguard Real Estate ETF', retorno_ref: '7.4% anualizado 10y', horizonte: 'largo', nota: 'REITs USA' }
+        ],
+        tier1_educacion: [
+          {
+            nombre: 'Aave V3 — Préstamos Descentralizados',
+            tipo: 'defi_educacion',
+            tier: 1,
+            contenido: 'Aave es un protocolo de préstamos. Depositas USDC como colateral y ganas APY de supply (3-5%). Puedes pedir prestado hasta 70% LTV. El Health Factor mide tu margen: si baja de 1.0, te liquidan.'
+          },
+          {
+            nombre: 'Uniswap V3 — DEX con Liquidez Concentrada',
+            tipo: 'defi_educacion',
+            tier: 1,
+            contenido: 'Uniswap V3 es un exchange descentralizado donde provees liquidez en pools (ej: ETH/USDC) y ganas fees por cada swap. A menor rango de precio, mayor APY pero mayor riesgo de Impermanent Loss si el precio sale del rango.'
+          }
+        ],
+        tier2_cci_basico: [
+          {
+            nombre: 'CCI Básico — Aave + Uniswap V3',
+            tipo: 'defi_producto_cci',
+            tier: 2,
+            apy_ref: '25-50% APY neto',
+            red: 'Base',
+            pasos: [
+              'Depósito de USDC como colateral en Aave V3',
+              'Borrow conservador (LTV ≤ 50%, sin leverage agresivo)',
+              'LP en Uniswap V3 ETH/USDC con rango ±15%',
+              'Rebalanceo cada 2 semanas o si sale del rango'
+            ],
+            health_factor_min: 2.0,
+            capital_minimo_cop: 2000000
+          }
+        ],
+        tier3_cci: [
+          {
+            nombre: 'CCI Full — Aave Leverage + LP Stack',
+            tipo: 'defi_leverage_lp',
+            tier: 3,
+            apy_ref: '30-80% APY neto',
+            red: 'Base',
+            pasos: [
+              'Depósito USDC en Aave V3 (supply APY 3-5%)',
+              'Borrow USDC al 70% LTV (HF mínimo 1.5, objetivo 1.8)',
+              'Deploy en Uniswap V3 ETH/USDC, rango ±20%',
+              'Rebalanceo semanal de rango LP',
+              'Monitoreo continuo de Health Factor'
+            ],
+            health_factor_min: 1.5,
+            health_factor_objetivo: 1.8
+          }
+        ]
+      }
+    };
+
+    const BROKERS_BANK = {
+      internacional: [
+        { nombre: 'XTB', comision_acciones: '$0 hasta €100k EUR/año', deposito: 'PSE, transferencia, tarjeta', moneda: 'USD/EUR', regulado: 'FCA, KNF, CySEC', recomendado_para: ['conservador', 'moderado', 'agresivo'], capital_min_cop: 1000000, nota: 'Mejor opción general — sin comisión de compra/venta' },
+        { nombre: 'Interactive Brokers', comision_acciones: '0.005 USD/acción (mín 1 USD)', deposito: 'Wire, ACH', moneda: 'Multi-divisa', regulado: 'SEC, FINRA', recomendado_para: ['moderado', 'agresivo'], capital_min_cop: 20000000, nota: 'Para capital alto — onboarding más estricto' },
+        { nombre: 'eToro', comision_acciones: '$0 acciones USA (spread)', deposito: 'Tarjeta, PSE, PayPal', moneda: 'USD', regulado: 'CySEC, FCA', recomendado_para: ['conservador', 'moderado'], capital_min_cop: 200000, nota: 'Onboarding rápido para empezar pequeño' }
+      ],
+      local_colombia: [
+        { nombre: 'Trii', comision_acciones: '0.20-0.30% por operación', deposito: 'PSE inmediato', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador', 'moderado'], capital_min_cop: 500000, nota: 'PEI, TES, CDTs y BVC — broker recomendado para PEI' },
+        { nombre: 'Tyba', comision_acciones: 'Sin comisión TES', deposito: 'PSE', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador'], capital_min_cop: 100000, nota: 'Fondos, TES y PEI — orientado renta fija COP' }
+      ],
+      cripto: [
+        { nombre: 'Bitso', comision_compra: '0.65% maker/taker', deposito: 'PSE Colombia', moneda: 'COP/USDC/BTC', recomendado_para: ['intermedia DeFi'], capital_min_cop: 100000, nota: 'Mejor on-ramp COP→cripto en Colombia' },
+        { nombre: 'Binance', comision_compra: '0.10% spot (con BNB)', deposito: 'P2P, transferencia internacional', moneda: 'Multi-cripto', recomendado_para: ['intermedia DeFi'], capital_min_cop: 50000, nota: 'Para usuarios con experiencia' }
+      ]
+    };
+
+    // === DOM helpers ===
+    const $ = (id) => document.getElementById(id);
+    const E = window.CastleEngine;
+
+    function getRadio(name) {
+      const sel = document.querySelector('input[name="' + name + '"]:checked');
+      return sel ? sel.value : null;
+    }
+
+    function setupDebtToggle() {
+      document.querySelectorAll('input[name="hasDebt"]').forEach((r) => {
+        r.addEventListener('change', () => {
+          const show = getRadio('hasDebt') === 'si';
+          $('debts-container').classList.toggle('hidden', !show);
+          if (show && $('debts-list').children.length === 0) addDebtRow();
+        });
+      });
+    }
+
+    function addDebtRow() {
+      const row = document.createElement('div');
+      row.className = 'debt-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Nombre (ej: Tarjeta)" class="d-nombre" />
+        <input type="number" placeholder="Monto COP" class="d-monto" min="0" step="50000" />
+        <input type="number" placeholder="Tasa %" class="d-tasa" min="0" step="0.1" />
+        <input type="number" placeholder="Cuota mín." class="d-cuota" min="0" step="10000" />
+        <button type="button" class="btn-remove">×</button>
+      `;
+      row.querySelector('.btn-remove').addEventListener('click', () => row.remove());
+      $('debts-list').appendChild(row);
+    }
+
+    function readDebts() {
+      if (getRadio('hasDebt') !== 'si') return [];
+      return Array.from($('debts-list').children).map((row) => ({
+        nombre: row.querySelector('.d-nombre').value || 'Deuda',
+        monto: parseFloat(row.querySelector('.d-monto').value) || 0,
+        tasa: parseFloat(row.querySelector('.d-tasa').value) || 0,
+        cuotaMinima: parseFloat(row.querySelector('.d-cuota').value) || 0
+      })).filter((d) => d.monto > 0);
+    }
+
+    function escape(value) {
+      if (value == null) return '';
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function tagForProfile(p) {
+      return p === 'conservador' ? 'tag-blue' : p === 'agresivo' ? 'tag-gold' : 'tag-success';
+    }
+
+    // === Render functions ===
+    function renderPortada(client) {
+      $('sec-portada').innerHTML = `
+        <div class="portada-hero">
+          <h1>Arquitectura Financiera</h1>
+          <div class="subtitle">Plan personalizado · Castle Capital</div>
+          <div class="portada-meta">
+            <div class="portada-meta-item">
+              <div class="label">Cliente</div>
+              <div class="value">${escape(client.nombre || '—')}</div>
+            </div>
+            <div class="portada-meta-item">
+              <div class="label">Fecha</div>
+              <div class="value">${E.formatDate()}</div>
+            </div>
+            <div class="portada-meta-item">
+              <div class="label">Capital</div>
+              <div class="value">${E.formatCOP(client.capital)}</div>
+            </div>
+            <div class="portada-meta-item">
+              <div class="label">Plazo</div>
+              <div class="value">${client.plazo} ${client.plazo === 1 ? 'año' : 'años'}</div>
+            </div>
+          </div>
+        </div>
+        <p class="muted">
+          Este documento contiene un diagnóstico de tu situación financiera, una arquitectura de cartera ajustada a tu perfil de riesgo, y un plan de ejecución paso a paso. Es una guía táctica, no una promesa de retorno.
+        </p>
+        <div class="section-footer-brand">— Diseño · Estructura · Imperturbable —</div>
+      `;
+    }
+
+    function renderPerfil(client, profile, allocation) {
+      const tag = tagForProfile(profile);
+      $('sec-perfil').innerHTML = `
+        <h2>1. Perfil del Cliente</h2>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">Perfil ARCA</div><div class="value"><span class="tag ${tag}">${profile.toUpperCase()}</span></div></div>
+          <div class="kpi"><div class="label">Capital invertible</div><div class="value">${E.formatCOP(allocation.capitalInvertible)}</div></div>
+          <div class="kpi"><div class="label">Fondo emergencia</div><div class="value">${E.formatCOP(allocation.fondoEmergencia)}</div></div>
+          <div class="kpi"><div class="label">Objetivo mensual</div><div class="value">${E.formatCOP(client.objetivo)}</div></div>
+        </div>
+        <h3>Lectura del perfil</h3>
+        <p>${perfilLectura(profile)}</p>
+        ${allocation.fondoEmergencia > 0 ? `
+          <div class="disclaimer disclaimer-warn">
+            <strong>Antes de invertir:</strong> destina ${E.formatCOP(allocation.fondoEmergencia)} a un fondo de emergencia (6 meses de gastos). Ubicalo en cuenta de alta liquidez (Rappipay, Nu, Pibank) — no se toca para inversión.
+          </div>` : ''}
+      `;
+    }
+
+    function perfilLectura(profile) {
+      const map = {
+        conservador: 'Priorizas preservación de capital. Tu cartera está cargada hacia renta fija (con PEI como ancla principal) y caja productiva. El crecimiento será más lento pero más estable.',
+        moderado:    'Buscas equilibrio entre crecimiento y estabilidad. Tu cartera reparte entre acciones de calidad, PEI como núcleo de renta fija y una capa pequeña de alternativos.',
+        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera está cargada hacia acciones de crecimiento y alternativos, con PEI manteniendo la base estable. Horizonte largo es obligatorio.'
+      };
+      return map[profile] || map.moderado;
+    }
+
+    function renderDeudas(debtPlan) {
+      if (!debtPlan.hayDeudas) {
+        $('sec-deudas').innerHTML = `
+          <h2>2. Diagnóstico de Deudas</h2>
+          <p>${debtPlan.mensajeEstrategia}</p>
+          <span class="tag tag-success">Libre de deuda</span>
+        `;
+        return;
+      }
+      const filas = debtPlan.ordenadas.map((d, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td><strong>${escape(d.nombre)}</strong></td>
+          <td>${E.formatCOP(d.monto)}</td>
+          <td>${d.tasa.toFixed(1)}%</td>
+          <td>${E.formatCOP(d.cuotaMinima)}</td>
+          <td>${d.mesesPago} meses</td>
+          <td>Mes ${d.mesPagoFinal}</td>
+        </tr>`).join('');
+      $('sec-deudas').innerHTML = `
+        <h2>2. Diagnóstico de Deudas — Bola de Nieve</h2>
+        <p>${debtPlan.mensajeEstrategia}</p>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">Deuda total</div><div class="value">${E.formatCOP(debtPlan.saldoTotal)}</div></div>
+          <div class="kpi"><div class="label">Cuotas mínimas</div><div class="value">${E.formatCOP(debtPlan.cuotaMinimaTotal)}</div></div>
+          <div class="kpi"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(debtPlan.flujoLibreParaAtaque)}</div></div>
+          <div class="kpi"><div class="label">Libertad de deuda</div><div class="value">${debtPlan.mesesParaLibertad} meses</div></div>
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Tasa</th><th>Cuota mín.</th><th>Pago en</th><th>Liquidada</th></tr></thead>
+          <tbody>${filas}</tbody>
+        </table>
+        <div class="disclaimer disclaimer-warn">
+          <strong>Regla matemática:</strong> mientras saldas deuda con tasa &gt;15% E.A., invertir paralelo es subóptimo. La excepción es CCI o productos con APY &gt;25% sostenido.
+        </div>
+      `;
+    }
+
+    function renderGap(gap) {
+      const status = gap.objetivoAlcanzado
+        ? `<span class="tag tag-success">Objetivo alcanzado con capital actual</span>`
+        : `<span class="tag tag-warn">Brecha mensual: ${E.formatCOP(Math.abs(gap.brecha))}</span>`;
+      $('sec-gap').innerHTML = `
+        <h2>3. Diagnóstico de Inversión</h2>
+        ${status}
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">Flujo esperado/mes</div><div class="value">${E.formatCOP(gap.flujoMensualEsperado)}</div></div>
+          <div class="kpi"><div class="label">Objetivo/mes</div><div class="value">${E.formatCOP(gap.objetivoMensual)}</div></div>
+          <div class="kpi"><div class="label">Capital requerido</div><div class="value">${E.formatCOP(gap.capitalRequerido)}</div></div>
+          <div class="kpi"><div class="label">Déficit capital</div><div class="value">${E.formatCOP(gap.deficitCapital)}</div></div>
+        </div>
+        <p class="muted">
+          Cálculo basado en retorno esperado anual del perfil. Para cerrar la brecha hay 3 palancas: aumentar capital invertido, alargar horizonte, o subir el perfil de riesgo (con consciencia de la mayor volatilidad).
+        </p>
+      `;
+    }
+
+    function renderArca(allocation) {
+      const filas = ['acciones', 'rentaFija', 'caja', 'alternativos'].map((cat) => `
+        <tr>
+          <td><strong>${labelCat(cat)}</strong></td>
+          <td>${E.formatPct(allocation.porcentajes[cat])}</td>
+          <td class="highlight">${E.formatCOP(allocation.montos[cat])}</td>
+          <td>${descCat(cat)}</td>
+        </tr>`).join('');
+      $('sec-arca').innerHTML = `
+        <h2>4. Arquitectura ARCA</h2>
+        <p class="muted">Distribución del capital invertible (${E.formatCOP(allocation.capitalInvertible)}) en las 4 categorías Castle.</p>
+        <table>
+          <thead><tr><th>Categoría</th><th>%</th><th>Monto COP</th><th>Función</th></tr></thead>
+          <tbody>${filas}</tbody>
+        </table>
+      `;
+    }
+
+    function labelCat(cat) {
+      return ({ acciones: 'Acciones', rentaFija: 'Renta Fija', caja: 'Caja productiva', alternativos: 'Alternativos' })[cat] || cat;
+    }
+    function descCat(cat) {
+      return ({
+        acciones: 'Crecimiento — ETFs USA + dividendos',
+        rentaFija: 'Estabilidad — PEI + TES + bonos USD',
+        caja: 'Liquidez productiva — Rappipay/Nu/Pibank',
+        alternativos: 'Diversificación — oro, REITs, DeFi'
+      })[cat] || '';
+    }
+
+    function renderRentaFija(etfs, allocation) {
+      const pei = etfs.rentaFija.find((r) => r.es_principal) || etfs.rentaFija[0];
+      const otros = etfs.rentaFija.filter((r) => r !== pei);
+      const montoRF = allocation.montos.rentaFija;
+      const montoPEI = montoRF * 0.7;
+      const montoComplemento = montoRF * 0.3;
+
+      const tablaOtros = otros.length ? `
+        <h3>Complementos defensivos (30% de la renta fija)</h3>
+        <table>
+          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th><th>Moneda</th><th>Nota</th></tr></thead>
+          <tbody>${otros.map((r) => `
+            <tr>
+              <td><strong>${escape(r.ticker)}</strong></td>
+              <td>${escape(r.nombre)}</td>
+              <td>${escape(r.retorno_ref)}</td>
+              <td>${escape(r.moneda || '—')}</td>
+              <td>${escape(r.nota || '')}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table>` : '';
+
+      $('sec-rentafija').innerHTML = `
+        <h2>5. Renta Fija — PEI como Ancla</h2>
+        <p class="muted">La filosofía Castle prioriza PEI como núcleo de la renta fija para todos los perfiles. Es un vehículo de doble revalorización: distribución trimestral más apreciación del activo subyacente.</p>
+
+        <div class="highlight-pei">
+          <h3>${escape(pei.nombre)} <span class="tag tag-pei">PRINCIPAL</span></h3>
+          <div class="kpi-grid" style="margin-top: 8px;">
+            <div class="kpi"><div class="label">Ticker</div><div class="value">${escape(pei.ticker)}</div></div>
+            <div class="kpi"><div class="label">Retorno referencia</div><div class="value">${escape(pei.retorno_ref)}</div></div>
+            <div class="kpi"><div class="label">Asignación sugerida</div><div class="value">${E.formatCOP(montoPEI)}</div></div>
+            <div class="kpi"><div class="label">Vehículo</div><div class="value" style="font-size: 0.95rem;">${escape(pei.vehiculo || '—')}</div></div>
+          </div>
+          <p style="margin-top: 12px;">${escape(pei.nota)}</p>
+          <p class="muted"><strong>Cómo comprar:</strong> ${escape(pei.broker_sugerido || 'Trii o Tyba')} — operación PSE inmediata desde tu cuenta bancaria.</p>
+        </div>
+
+        ${tablaOtros}
+
+        <div class="disclaimer">
+          <strong>Lógica Castle:</strong> 70% del bucket de renta fija va a PEI (ancla con apreciación), 30% se reparte entre TES y bonos USD para diversificación de moneda y duración.
+          Asignación sugerida: <strong>${E.formatCOP(montoPEI)} en PEI</strong> + <strong>${E.formatCOP(montoComplemento)} en complementos</strong>.
+        </div>
+      `;
+    }
+
+    function renderETFs(etfs, profile) {
+      const tabla = (titulo, items) => items && items.length ? `
+        <h3>${titulo}</h3>
+        <table>
+          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th><th>Nota</th></tr></thead>
+          <tbody>${items.map((e) => `
+            <tr>
+              <td><strong>${escape(e.ticker || '—')}</strong></td>
+              <td>${escape(e.nombre)}</td>
+              <td>${escape(e.retorno_ref)}</td>
+              <td>${escape(e.nota || '')}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table>` : '';
+      $('sec-etfs').innerHTML = `
+        <h2>6. ETFs Recomendados</h2>
+        <p class="muted">Selección para perfil <strong>${profile}</strong>. Retornos históricos no son garantía de rendimiento futuro.</p>
+        ${tabla('Acciones — núcleo de cartera', etfs.acciones)}
+        ${tabla('Caja productiva', etfs.caja)}
+      `;
+    }
+
+    function renderDefi(defi, montoAlt) {
+      if (!defi) { $('sec-defi').innerHTML = ''; return; }
+      const tag = defi.tier === 0 ? 'tag-warn' : defi.tier === 1 ? 'tag-blue' : defi.tier === 2 ? 'tag-gold' : 'tag-success';
+
+      const noDefiBlock = defi.noDefi ? `
+        <h3>Mientras tanto — alternativos sin DeFi</h3>
+        <table>
+          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th></tr></thead>
+          <tbody>${defi.noDefi.map((i) => `<tr><td><strong>${escape(i.ticker)}</strong></td><td>${escape(i.nombre)}</td><td>${escape(i.retorno_ref)}</td></tr>`).join('')}</tbody>
+        </table>` : '';
+
+      const instrumentos = (defi.instrumentos || []).map((inst) => {
+        if (inst.tipo === 'defi_educacion') {
+          return `<div class="card-nested"><h3>${escape(inst.nombre)}</h3><p>${escape(inst.contenido)}</p></div>`;
+        }
+        const pasos = inst.pasos ? `<ol>${inst.pasos.map((p) => `<li>${escape(p)}</li>`).join('')}</ol>` : '';
+        const hf = inst.health_factor_min ? `<p><strong>Health Factor mínimo:</strong> ${inst.health_factor_min}${inst.health_factor_objetivo ? ` (objetivo ${inst.health_factor_objetivo})` : ''}</p>` : '';
+        const cap = inst.capital_minimo_cop ? `<p><strong>Capital mínimo:</strong> ${E.formatCOP(inst.capital_minimo_cop)}</p>` : '';
+        return `<div class="card-nested">
+          <h3>${escape(inst.nombre)}</h3>
+          <p><strong>Red:</strong> ${escape(inst.red || '—')} · <strong>APY referencia:</strong> ${escape(inst.apy_ref || '—')}</p>
+          ${pasos}${hf}${cap}
+        </div>`;
+      }).join('');
+
+      const proy = E.projectDefiReturns(montoAlt, defi.tier, 1);
+      const proyBlock = proy ? `
+        <h3>Proyección DeFi (1 año, sobre ${E.formatCOP(montoAlt)})</h3>
+        <table>
+          <thead><tr><th>Escenario</th><th>APY</th><th>Valor final</th><th>Ganancia</th></tr></thead>
+          <tbody>${proy.map((p) => `<tr><td>${escape(p.escenario)}</td><td>${E.formatPct(p.apy)}</td><td class="highlight">${E.formatCOP(p.valorFinal)}</td><td>${E.formatCOP(p.gananciaAnual)}</td></tr>`).join('')}</tbody>
+        </table>` : '';
+
+      $('sec-defi').innerHTML = `
+        <h2>7. Estrategia DeFi</h2>
+        <p><span class="tag ${tag}">${escape(defi.titulo)}</span></p>
+        <p>${escape(defi.contenido)}</p>
+        ${instrumentos}
+        ${proyBlock}
+        ${noDefiBlock}
+        <div class="disclaimer"><strong>CTA:</strong> ${escape(defi.cta)}</div>
+        ${defi.tier >= 2 ? `<div class="disclaimer disclaimer-warn">Esta estrategia requiere gestión activa y monitoreo. Solo disponible bajo Contrato de Mandato de Inversión con Castle Capital. Castle Capital no garantiza retornos.</div>` : ''}
+      `;
+    }
+
+    function renderProyecciones(proyecciones, allocation) {
+      const horizontes = [1, 3, 5];
+      const filas = proyecciones.map((esc) => `
+        <tr>
+          <td><strong>${escape(esc.escenario)}</strong></td>
+          <td>${E.formatPct(esc.tasaAnual)}</td>
+          ${esc.proyecciones.map((p) => `<td class="highlight">${E.formatCOP(p.valorFinal)}</td>`).join('')}
+        </tr>`).join('');
+      $('sec-proyecciones').innerHTML = `
+        <h2>8. Proyecciones</h2>
+        <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)}</p>
+        <table>
+          <thead><tr><th>Escenario</th><th>Tasa anual</th>${horizontes.map((h) => `<th>${h} ${h > 1 ? 'años' : 'año'}</th>`).join('')}</tr></thead>
+          <tbody>${filas}</tbody>
+        </table>
+        <p class="muted">Los escenarios son ilustrativos. La tasa Base usa el retorno esperado del perfil; Conservador y Optimista aplican un ±40% sobre esa tasa.</p>
+      `;
+    }
+
+    function renderBrokers(brokerRec, capital) {
+      const card = (b, titulo) => b ? `
+        <div class="card-nested">
+          <h3>${titulo}</h3>
+          <p><strong>${escape(b.nombre)}</strong>${b.regulado ? ` — ${escape(b.regulado)}` : ''}</p>
+          <p><strong>Comisión:</strong> ${escape(b.comision_acciones || b.comision_compra || '—')}</p>
+          <p><strong>Depósito:</strong> ${escape(b.deposito)}</p>
+          <p class="muted">${escape(b.nota || '')}</p>
+        </div>` : '';
+      $('sec-brokers').innerHTML = `
+        <h2>9. ¿Dónde Ejecutar?</h2>
+        <p class="muted">Recomendación de brokers para tu capital (${E.formatCOP(capital)}) y perfil.</p>
+        ${card(brokerRec.principal, 'Broker principal — ETFs internacionales')}
+        ${card(brokerRec.complementoLocal, 'Complemento local — PEI, TES, renta fija COP')}
+        ${card(brokerRec.cripto, 'On-ramp cripto (si aplica DeFi)')}
+      `;
+    }
+
+    function renderEjecucion(allocation, etfs, brokerRec, defi) {
+      const pasos = [];
+      const pei = etfs.rentaFija.find((r) => r.es_principal) || etfs.rentaFija[0];
+      const principalETF = etfs.acciones[0];
+      const localBroker = (brokerRec.complementoLocal && brokerRec.complementoLocal.nombre) || 'Trii';
+      const intlBroker = (brokerRec.principal && brokerRec.principal.nombre) || 'XTB';
+
+      if (allocation.fondoEmergencia > 0) {
+        pasos.push(`Aparta <strong>${E.formatCOP(allocation.fondoEmergencia)}</strong> en cuenta de alta liquidez (Rappipay/Nu/Pibank). Esta es tu reserva de 6 meses — no se toca.`);
+      }
+      if (allocation.montos.caja > 0) {
+        pasos.push(`Mueve <strong>${E.formatCOP(allocation.montos.caja)}</strong> a caja productiva (${(etfs.caja[0] && etfs.caja[0].nombre) || 'Rappipay'}). Rendimiento sin amarres.`);
+      }
+      if (allocation.montos.rentaFija > 0) {
+        const montoPEI = allocation.montos.rentaFija * 0.7;
+        const montoOtros = allocation.montos.rentaFija * 0.3;
+        pasos.push(`<strong>Renta fija — núcleo PEI:</strong> compra <strong>${E.formatCOP(montoPEI)}</strong> de <strong>${escape(pei.ticker)}</strong> (${escape(pei.nombre)}) vía ${localBroker}. Es la posición ancla de toda la cartera.`);
+        if (montoOtros > 0) {
+          pasos.push(`<strong>Complemento defensivo:</strong> distribuye <strong>${E.formatCOP(montoOtros)}</strong> entre TES-LP (Trii) y BIL/AGG (vía ${intlBroker}) para diversificación de duración y moneda.`);
+        }
+      }
+      if (allocation.montos.acciones > 0) {
+        pasos.push(`<strong>Acciones:</strong> compra <strong>${E.formatCOP(allocation.montos.acciones)}</strong> vía ${intlBroker}. Núcleo: ${principalETF ? principalETF.ticker : 'VOO'}. Considera DCA en 3-6 meses si entras hoy.`);
+      }
+      if (allocation.montos.alternativos > 0) {
+        if (defi && defi.tier >= 2) {
+          pasos.push(`<strong>Alternativos:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong>. Activa CCI (Tier ${defi.tier}) con Julián para ejecución bajo Contrato de Mandato.`);
+        } else {
+          pasos.push(`<strong>Alternativos sin DeFi:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong> a GLD/IAU (oro) + VNQ (REITs) vía ${intlBroker}.`);
+        }
+      }
+
+      $('sec-ejecucion').innerHTML = `
+        <h2>10. Plan de Ejecución Paso a Paso</h2>
+        <ol>${pasos.map((p) => `<li style="margin-bottom: 10px;">${p}</li>`).join('')}</ol>
+        <h3>Cadencia recomendada</h3>
+        <ul>
+          <li>Revisión mensual: rebalanceo si una categoría se desvía &gt;5% del target.</li>
+          <li>Aporte mensual del flujo libre directo al núcleo de acciones (${(etfs.acciones[0] && etfs.acciones[0].ticker) || 'VOO'}) y a PEI alternadamente.</li>
+          <li>Revisión anual completa: reasignación si cambia perfil de vida (matrimonio, hijos, retiro).</li>
+        </ul>
+      `;
+    }
+
+    function renderProximos(defi) {
+      $('sec-proximos').innerHTML = `
+        <h2>11. Próximos Pasos</h2>
+        <div class="card-nested">
+          <h3>1. Implementa este plan en 30 días</h3>
+          <p>Ejecuta los pasos del punto 10 en orden. Documenta cada movimiento. Si tienes dudas en cualquier paso — agenda una sesión.</p>
+        </div>
+        <div class="card-nested">
+          <h3>2. ¿Quieres maximizar tus alternativos?</h3>
+          <p>${defi && defi.tier >= 2
+            ? 'Tu perfil califica para CCI. Agenda sesión de implementación con Julián para activar la estrategia bajo Contrato de Mandato.'
+            : 'Cuando tengas experiencia DeFi básica (wallet propia + primer movimiento en Bitso), avanza a CCI Básico para activar el yield stack.'}</p>
+        </div>
+        <div class="card-nested">
+          <h3>3. Mantente cerca</h3>
+          <p>Esta arquitectura es viva. El mercado cambia, tu vida cambia, tu perfil cambia. Revisión cada 12 meses con Castle Capital.</p>
+        </div>
+        <div class="disclaimer disclaimer-warn">
+          <strong>Aviso legal:</strong> Castle Capital SAS es una empresa de consultoría financiera. Este documento es orientativo y no constituye asesoría en valores ni promesa de rentabilidad. Castle Capital NO capta recursos del público. Toda inversión implica riesgo, incluido pérdida de capital. Las decisiones finales son del cliente.
+        </div>
+        <div class="section-footer-brand">— Castle Capital · Diseño · Estructura · Imperturbable —</div>
+      `;
+    }
+
+    // === Main flow ===
+    function generate() {
+      const client = {
+        nombre: $('nombre').value.trim(),
+        capital: parseFloat($('capital').value) || 0,
+        ingresos: parseFloat($('ingresos').value) || 0,
+        gastos: parseFloat($('gastos').value) || 0,
+        objetivo: parseFloat($('objetivo').value) || 0,
+        plazo: parseInt($('plazo').value, 10) || 5,
+        fondoEmergencia: getRadio('fondo') === 'si',
+        experiencia: $('experiencia').value,
+        esCCI: getRadio('esCCI') === 'si',
+        q1: getRadio('q1') === 'si',
+        q2: getRadio('q2') === 'si'
+      };
+
+      if (!client.nombre || client.capital <= 0) {
+        alert('Ingresa al menos nombre y capital disponible.');
+        return;
+      }
+
+      const profile = E.determineProfile(client.q1, client.q2);
+      const allocation = E.calculatePortfolioAllocation(client.capital, profile, client.fondoEmergencia, client.gastos);
+      const debts = readDebts();
+      const debtPlan = E.debtStrategy(debts, client.ingresos, client.gastos, client.objetivo);
+      const gap = E.gapAnalysis(allocation, profile, client.objetivo);
+      const etfs = E.selectETFs(profile, ETF_BANK);
+      const defi = E.calcDefiStrategy(client.experiencia, client.esCCI, allocation.montos.alternativos, ETF_BANK);
+      const proyecciones = E.projectPortfolio(allocation, profile, [1, 3, 5]);
+      const brokerRec = E.recommendBroker(client.capital, profile, BROKERS_BANK);
+
+      renderPortada(client);
+      renderPerfil(client, profile, allocation);
+      renderDeudas(debtPlan);
+      renderGap(gap);
+      renderArca(allocation);
+      renderRentaFija(etfs, allocation);
+      renderETFs(etfs, profile);
+      renderDefi(defi, allocation.montos.alternativos);
+      renderProyecciones(proyecciones, allocation);
+      renderBrokers(brokerRec, client.capital);
+      renderEjecucion(allocation, etfs, brokerRec, defi);
+      renderProximos(defi);
+
+      $('result-sub').textContent = `Plan personalizado · ${client.nombre} · ${E.formatDate()}`;
+      $('form-section').style.display = 'none';
+      $('result-section').classList.add('visible');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function downloadPDF() {
+      const nombre = ($('nombre').value || 'cliente').trim();
+      const slug = nombre.replace(/[^a-zA-Z0-9]+/g, '_');
+      const fecha = new Date().toISOString().slice(0, 10);
+      const originalTitle = document.title;
+      document.title = `Arquitectura_Financiera_${slug}_${fecha}`;
+      window.print();
+      setTimeout(() => { document.title = originalTitle; }, 1000);
+    }
+
+    function backToForm() {
+      $('result-section').classList.remove('visible');
+      $('form-section').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetForm() {
+      document.querySelectorAll('input[type="text"], input[type="number"]').forEach((i) => { i.value = ''; });
+      $('debts-list').innerHTML = '';
+      $('debts-container').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupDebtToggle();
+      $('add-debt-btn').addEventListener('click', addDebtRow);
+      $('generate-btn').addEventListener('click', generate);
+      $('reset-btn').addEventListener('click', resetForm);
+      $('download-pdf-btn').addEventListener('click', downloadPDF);
+      $('back-btn').addEventListener('click', backToForm);
+    });
+  </script>
+</body>
+</html>

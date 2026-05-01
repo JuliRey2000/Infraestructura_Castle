@@ -1,0 +1,265 @@
+{
+  "_meta": {
+    "version": "1.1.0",
+    "actualizado": "2026-04-30",
+    "fuente": "Castle Capital — Banco de instrumentos para Arquitectura Financiera",
+    "nota": "Retornos de referencia son históricos, NO garantizados. Validar al momento de uso.",
+    "principio": "PEI es la recomendación principal de renta fija para todos los perfiles. Doble revalorización (distribución trimestral + apreciación) en bienes raíces comerciales premium en Colombia."
+  },
+  "acciones": {
+    "conservador": [
+      {
+        "ticker": "SCHD",
+        "nombre": "Schwab US Dividend Equity ETF",
+        "retorno_ref": "11.2% anualizado 5y",
+        "horizonte": "largo",
+        "nota": "Dividendos de calidad — empresas con historial sólido"
+      },
+      {
+        "ticker": "DGRO",
+        "nombre": "iShares Core Dividend Growth ETF",
+        "retorno_ref": "10.8% anualizado 5y",
+        "horizonte": "largo",
+        "nota": "Crecimiento de dividendos consistente"
+      },
+      {
+        "ticker": "VIG",
+        "nombre": "Vanguard Dividend Appreciation ETF",
+        "retorno_ref": "10.4% anualizado 5y",
+        "horizonte": "largo",
+        "nota": "Aristócratas del dividendo — baja volatilidad"
+      }
+    ],
+    "moderado": [
+      {
+        "ticker": "VOO",
+        "nombre": "Vanguard S&P 500 ETF",
+        "retorno_ref": "13.9% anualizado 10y",
+        "horizonte": "largo",
+        "nota": "Núcleo de cartera — exposición S&P 500 con TER 0.03%"
+      },
+      {
+        "ticker": "VEA",
+        "nombre": "Vanguard FTSE Developed Markets ETF",
+        "retorno_ref": "6.8% anualizado 10y",
+        "horizonte": "largo",
+        "nota": "Diversificación internacional — Europa, Japón, Australia"
+      },
+      {
+        "ticker": "VWO",
+        "nombre": "Vanguard FTSE Emerging Markets ETF",
+        "retorno_ref": "4.1% anualizado 10y",
+        "horizonte": "largo",
+        "nota": "Mercados emergentes — exposición China/India/Brasil"
+      },
+      {
+        "ticker": "DGRO",
+        "nombre": "iShares Core Dividend Growth ETF",
+        "retorno_ref": "10.8% anualizado 5y",
+        "horizonte": "largo",
+        "nota": "Capa de dividendos para flujo de caja"
+      },
+      {
+        "ticker": "SCHD",
+        "nombre": "Schwab US Dividend Equity ETF",
+        "retorno_ref": "11.2% anualizado 5y",
+        "horizonte": "largo",
+        "nota": "Complemento defensivo con dividendo creciente"
+      }
+    ],
+    "agresivo": [
+      {
+        "ticker": "QQQ",
+        "nombre": "Invesco QQQ Trust (Nasdaq-100)",
+        "retorno_ref": "18.7% anualizado 10y",
+        "horizonte": "largo",
+        "nota": "Tecnología líder — alta beta, alta convicción"
+      },
+      {
+        "ticker": "SMH",
+        "nombre": "VanEck Semiconductor ETF",
+        "retorno_ref": "26.4% anualizado 5y",
+        "horizonte": "largo",
+        "nota": "Semiconductores — apuesta sectorial agresiva"
+      },
+      {
+        "ticker": "COPX",
+        "nombre": "Global X Copper Miners ETF",
+        "retorno_ref": "12.8% anualizado 5y",
+        "horizonte": "mediano",
+        "nota": "Tesis cobre — electrificación y cuello de botella minero"
+      },
+      {
+        "ticker": "URNM",
+        "nombre": "Sprott Uranium Miners ETF",
+        "retorno_ref": "21.5% anualizado 3y",
+        "horizonte": "mediano",
+        "nota": "Tesis uranio — renacimiento nuclear"
+      },
+      {
+        "ticker": "VOO",
+        "nombre": "Vanguard S&P 500 ETF",
+        "retorno_ref": "13.9% anualizado 10y",
+        "horizonte": "largo",
+        "nota": "Ancla — siempre presente como base"
+      }
+    ]
+  },
+  "rentaFija": [
+    {
+      "ticker": "PEI",
+      "nombre": "Patrimonio Estrategias Inmobiliarias",
+      "retorno_ref": "8–10% E.A. distribución + revalorización del activo",
+      "horizonte": "mediano",
+      "nota": "RECOMENDACIÓN PRINCIPAL CASTLE — bienes raíces comerciales premium en Colombia (Titularización Inmobiliaria PEI). Distribuciones trimestrales + apreciación del subyacente. Vehículo de doble revalorización para cualquier perfil.",
+      "vehiculo": "Titularización Inmobiliaria",
+      "mercado": "BVC (Bolsa de Valores de Colombia)",
+      "broker_sugerido": "Trii o Tyba",
+      "moneda": "COP",
+      "es_principal": true,
+      "categoria": "Inmobiliario titularizado"
+    },
+    {
+      "ticker": "TES-LP",
+      "nombre": "TES Largo Plazo (deuda pública Colombia)",
+      "retorno_ref": "9.5–11% E.A.",
+      "horizonte": "mediano",
+      "nota": "Deuda soberana COP — complemento defensivo a PEI. Vía Trii o Tyba.",
+      "moneda": "COP"
+    },
+    {
+      "ticker": "BIL",
+      "nombre": "SPDR Bloomberg 1-3 Month T-Bill ETF",
+      "retorno_ref": "4.8% anualizado",
+      "horizonte": "corto",
+      "nota": "T-Bills USD — caja productiva en dólares para diversificación cambiaria",
+      "moneda": "USD"
+    },
+    {
+      "ticker": "AGG",
+      "nombre": "iShares Core US Aggregate Bond ETF",
+      "retorno_ref": "2.1% anualizado 5y",
+      "horizonte": "mediano",
+      "nota": "Bonos USA diversificados — duración media",
+      "moneda": "USD"
+    }
+  ],
+  "caja": [
+    {
+      "nombre": "Rappipay Ahorro",
+      "retorno_ref": "9.25% E.A.",
+      "horizonte": "inmediato",
+      "nota": "Liquidez total — sin amarres, retiro inmediato"
+    },
+    {
+      "nombre": "Pibank",
+      "retorno_ref": "8.50% E.A.",
+      "horizonte": "inmediato",
+      "nota": "Liquidez total — alternativa a Rappipay"
+    },
+    {
+      "nombre": "Nu Cuenta",
+      "retorno_ref": "13.0% E.A. (primer tramo)",
+      "horizonte": "inmediato",
+      "nota": "Tasa diferencial primer monto — verificar tope vigente"
+    }
+  ],
+  "alternativos": {
+    "no_defi": [
+      {
+        "ticker": "GLD",
+        "nombre": "SPDR Gold Shares",
+        "retorno_ref": "60.2% YTD",
+        "horizonte": "largo",
+        "nota": "Cobertura inflacionaria y refugio en crisis",
+        "requiere_defi": false
+      },
+      {
+        "ticker": "IAU",
+        "nombre": "iShares Gold Trust",
+        "retorno_ref": "similar GLD, TER inferior",
+        "horizonte": "largo",
+        "nota": "Alternativa más barata a GLD",
+        "requiere_defi": false
+      },
+      {
+        "ticker": "VNQ",
+        "nombre": "Vanguard Real Estate ETF",
+        "retorno_ref": "7.4% anualizado 10y",
+        "horizonte": "largo",
+        "nota": "REITs USA — flujo de renta inmobiliaria internacional",
+        "requiere_defi": false
+      }
+    ],
+    "tier1_educacion": [
+      {
+        "nombre": "Educación: Aave V3",
+        "tipo": "defi_educacion",
+        "tier": 1,
+        "contenido": "Aave es un protocolo de préstamos descentralizado. Depositas USDC como colateral y ganas APY de supply (3-5%). Puedes pedir prestado contra ese colateral hasta el 70% LTV. El Health Factor mide tu margen de seguridad: si baja de 1.0, te liquidan.",
+        "cta": "¿Quieres invertir en DeFi? Elige CCI Básico o CCI Full y agenda con Julián."
+      },
+      {
+        "nombre": "Educación: Uniswap V3",
+        "tipo": "defi_educacion",
+        "tier": 1,
+        "contenido": "Uniswap V3 es un exchange descentralizado donde provees liquidez en pools (ej: ETH/USDC) y ganas fees por cada swap. Liquidez concentrada significa elegir un rango de precio donde tu capital trabaja: a menor rango, mayor APY pero mayor riesgo de Impermanent Loss si el precio sale del rango.",
+        "cta": "¿Quieres invertir en DeFi? Elige CCI Básico o CCI Full y agenda con Julián."
+      }
+    ],
+    "tier2_cci_basico": [
+      {
+        "nombre": "CCI Básico — Aave + Uniswap V3",
+        "tipo": "defi_producto_cci",
+        "tier": 2,
+        "apy_ref": "25-50% APY neto",
+        "red": "Base",
+        "pasos": [
+          "Depósito de USDC como colateral en Aave V3",
+          "Borrow conservador (LTV ≤ 50%, sin leverage agresivo)",
+          "LP en Uniswap V3 ETH/USDC con rango ±15%",
+          "Rebalanceo cada 2 semanas o si sale del rango"
+        ],
+        "health_factor_min": 2.0,
+        "capital_minimo_cop": 2000000,
+        "requiere_mandato": true,
+        "requiere_setup": true,
+        "nota_setup": "Requiere sesión de implementación con Julián (2-3 horas). Incluida en CCI Básico.",
+        "cta": "Agenda tu sesión de setup con Julián para activar CCI Básico."
+      }
+    ],
+    "tier3_cci": [
+      {
+        "nombre": "Estrategia CCI Full — Aave Leverage + LP Stack",
+        "tipo": "defi_leverage_lp",
+        "tier": 3,
+        "apy_ref": "30-80% APY neto",
+        "red": "Base",
+        "pasos": [
+          "Depósito USDC en Aave V3 (supply APY 3-5%)",
+          "Borrow USDC al 70% LTV (HF mínimo 1.5, objetivo 1.8)",
+          "Deploy en Uniswap V3 ETH/USDC, rango ±20%",
+          "Rebalanceo semanal de rango LP",
+          "Monitoreo continuo de Health Factor"
+        ],
+        "health_factor_min": 1.5,
+        "health_factor_objetivo": 1.8,
+        "fee_tier": "0.05% (alta liquidez) o 0.3% (volatilidad)",
+        "exclusivo_cci": true,
+        "requiere_mandato": true,
+        "disclaimer": "Requiere gestión activa semanal y monitoreo de liquidaciones. Solo para clientes Castle Crypto Income bajo Contrato de Mandato de Inversión."
+      },
+      {
+        "nombre": "Uniswap V3 ETH/WBTC (Base)",
+        "tipo": "defi_lp",
+        "tier": 3,
+        "apy_ref": "25-60% APY",
+        "red": "Base",
+        "fee_tier": "0.3%",
+        "nota": "Volatilidad mayor — solo capital > $5M COP equivalente",
+        "exclusivo_cci": true,
+        "requiere_mandato": true
+      }
+    ]
+  }
+}

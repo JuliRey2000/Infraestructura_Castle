@@ -1,0 +1,96 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "actualizado": "2026-04-30",
+    "fuente": "Castle Capital — Banco de brokers para Arquitectura Financiera",
+    "nota": "Comisiones y métodos de depósito vigentes a la fecha de actualización. Verificar cambios antes de operar."
+  },
+  "internacional": [
+    {
+      "nombre": "XTB",
+      "comision_acciones": "$0 hasta €100k EUR/año (≥0.2% sobre exceso)",
+      "comision_etfs": "$0 hasta €100k EUR/año",
+      "deposito": "PSE, transferencia internacional, tarjeta",
+      "moneda": "USD/EUR",
+      "minimo": "Sin mínimo declarado",
+      "regulado": "FCA, KNF, CySEC",
+      "recomendado_para": ["conservador", "moderado", "agresivo"],
+      "capital_min_cop": 1000000,
+      "nota": "Mejor opción general — sin comisión de compra/venta para retail"
+    },
+    {
+      "nombre": "Interactive Brokers",
+      "comision_acciones": "0.005 USD/acción (mín 1 USD)",
+      "comision_etfs": "Igual a acciones",
+      "deposito": "Wire transfer, ACH",
+      "moneda": "Multi-divisa",
+      "minimo": "Sin mínimo desde 2021",
+      "regulado": "SEC, FINRA",
+      "recomendado_para": ["moderado", "agresivo"],
+      "capital_min_cop": 20000000,
+      "nota": "Para capital alto y trading sofisticado — onboarding más estricto"
+    },
+    {
+      "nombre": "eToro",
+      "comision_acciones": "$0 acciones USA (spread aplicado)",
+      "comision_etfs": "$0 (spread aplicado)",
+      "deposito": "Tarjeta, PSE, PayPal",
+      "moneda": "USD",
+      "minimo": "$50 USD",
+      "regulado": "CySEC, FCA, ASIC",
+      "recomendado_para": ["conservador", "moderado"],
+      "capital_min_cop": 200000,
+      "nota": "Onboarding rápido — apto para empezar pequeño. Spread como costo oculto"
+    }
+  ],
+  "local_colombia": [
+    {
+      "nombre": "Trii",
+      "comision_acciones": "0.20-0.30% por operación",
+      "comision_etfs": "Variable",
+      "deposito": "PSE inmediato",
+      "moneda": "COP",
+      "minimo": "Desde $50.000 COP",
+      "regulado": "SFC Colombia",
+      "recomendado_para": ["conservador", "moderado"],
+      "capital_min_cop": 500000,
+      "nota": "Acceso a TES, CDTs y acciones BVC. Útil para renta fija COP"
+    },
+    {
+      "nombre": "Tyba",
+      "comision_acciones": "Sin comisión TES y fondos propios",
+      "comision_etfs": "Variable según fondo",
+      "deposito": "PSE",
+      "moneda": "COP",
+      "minimo": "Desde $10.000 COP",
+      "regulado": "SFC Colombia",
+      "recomendado_para": ["conservador"],
+      "capital_min_cop": 100000,
+      "nota": "Fondos de inversión y TES — orientado a renta fija COP"
+    }
+  ],
+  "cripto": [
+    {
+      "nombre": "Bitso",
+      "comision_compra": "0.65% maker / 0.65% taker (escalonado)",
+      "deposito": "PSE Colombia, transferencia bancaria",
+      "moneda": "COP/USDC/BTC/ETH",
+      "minimo": "$30.000 COP",
+      "regulado": "Inscrito como PSAV en México (Colombia: en trámite)",
+      "recomendado_para": ["intermedia DeFi"],
+      "capital_min_cop": 100000,
+      "nota": "Mejor on-ramp COP→cripto en Colombia. Necesario para entrar a DeFi"
+    },
+    {
+      "nombre": "Binance",
+      "comision_compra": "0.10% spot (descuento con BNB)",
+      "deposito": "P2P, transferencia internacional",
+      "moneda": "Multi-cripto",
+      "minimo": "$10 USD",
+      "regulado": "Variable por jurisdicción",
+      "recomendado_para": ["intermedia DeFi"],
+      "capital_min_cop": 50000,
+      "nota": "Para usuarios con experiencia — comisiones bajas, P2P para Colombia"
+    }
+  ]
+}
