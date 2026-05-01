@@ -1400,6 +1400,368 @@ body {
   margin: 8px 0 0;
 }
 
+/* ═════════════════════════════════════════
+   FRAMER-MOTION INSPIRED — Premium Polish
+   Spring easings, scroll reveals, gold rituals.
+   Aditivo. No reemplaza estilos existentes.
+═════════════════════════════════════════ */
+
+:root {
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-luxe:    cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Aurora layer dentro del hero — caro y discreto */
+.hero-intro::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(201, 168, 76, 0.10), transparent 40%),
+    radial-gradient(circle at 80% 100%, rgba(74, 143, 212, 0.10), transparent 40%);
+  pointer-events: none;
+  opacity: 0.9;
+  animation: aurora-drift 18s ease-in-out infinite;
+}
+
+@keyframes aurora-drift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50%      { transform: translate(2%, -1%) rotate(0.5deg); }
+}
+
+/* Hero entrance — staggered como Framer */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-intro > * {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: hero-rise 0.9s var(--ease-out-expo) forwards;
+  }
+  .hero-intro > .hero-eyebrow { animation-delay: 0.05s; }
+  .hero-intro > .hero-title   { animation-delay: 0.18s; }
+  .hero-intro > .hero-lede    { animation-delay: 0.30s; }
+  .hero-intro > .hero-stats   { animation-delay: 0.42s; }
+}
+
+@keyframes hero-rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero title — sutil shimmer dorado en el énfasis */
+.hero-title em {
+  background: linear-gradient(
+    100deg,
+    var(--cc-gold-light) 0%,
+    var(--cc-gold) 35%,
+    #FFE9A8 50%,
+    var(--cc-gold) 65%,
+    var(--cc-gold-light) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gold-shimmer 7s linear infinite;
+}
+
+@keyframes gold-shimmer {
+  0%   { background-position: 0% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Hero stats — números con tick suave al aparecer */
+.hero-stat {
+  position: relative;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) 0;
+}
+.hero-stat + .hero-stat { border-left: 1px solid var(--border-color); padding-left: var(--space-md); }
+@media (max-width: 720px) { .hero-stat + .hero-stat { border-left: none; padding-left: 0; } }
+
+/* Stepper — línea de progreso entre pasos con flujo dorado */
+.stepper { position: relative; }
+.stepper::before {
+  content: '';
+  position: absolute;
+  left: 6%; right: 6%;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 168, 76, 0.35) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.step { position: relative; z-index: 1; }
+.step-num { transition: transform 0.4s var(--ease-spring), background 0.25s var(--ease-luxe), border-color 0.25s var(--ease-luxe); }
+.step.is-active .step-num { transform: scale(1.12); }
+@media (max-width: 720px) { .stepper::before { display: none; } }
+
+/* Form sections — reveal en switch al cambiar de paso */
+.form-section { animation: section-fade-in 0.5s var(--ease-out-expo) both; }
+@keyframes section-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Inputs — focus ring con anillo dorado fino y suave */
+.form-group input,
+.form-group select,
+.input-icon-wrap input,
+.input-icon-wrap select {
+  transition:
+    border-color 0.25s var(--ease-luxe),
+    box-shadow 0.25s var(--ease-luxe),
+    background 0.25s var(--ease-luxe);
+}
+.form-group input:focus,
+.form-group select:focus,
+.input-icon-wrap input:focus,
+.input-icon-wrap select:focus {
+  box-shadow:
+    0 0 0 3px rgba(201, 168, 76, 0.15),
+    0 8px 22px -16px rgba(201, 168, 76, 0.45);
+}
+
+/* Cards — lift premium con borde dorado magnético */
+.card {
+  transform: translateZ(0);
+  transition:
+    transform 0.4s var(--ease-spring),
+    border-color 0.3s var(--ease-luxe),
+    box-shadow 0.3s var(--ease-luxe);
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 22px 48px -28px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(201, 168, 76, 0.08) inset;
+}
+
+/* Card del resultado — efecto editorial */
+#result-section .section.card {
+  position: relative;
+}
+#result-section .section.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 168, 76, 0.4) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-luxe);
+  pointer-events: none;
+}
+#result-section .section.card:hover::before { opacity: 1; }
+
+/* H2 con underline editorial — anima al entrar en viewport */
+h2 {
+  position: relative;
+  overflow: visible;
+}
+
+/* KPI bento — con número que se desliza arriba */
+.kpi .value {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--cc-white), #E8EDF5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.kpi:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: rgba(201, 168, 76, 0.45);
+  box-shadow:
+    0 18px 42px -26px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(201, 168, 76, 0.15) inset;
+}
+.kpi { transition: transform 0.45s var(--ease-spring), border-color 0.3s var(--ease-luxe), box-shadow 0.3s var(--ease-luxe); }
+
+/* Tags con pulso elegante al aparecer */
+.tag {
+  transition: transform 0.3s var(--ease-spring), opacity 0.2s var(--ease-luxe);
+}
+.tag:hover { transform: translateY(-1px); }
+
+/* Botón principal — pulso dorado más sofisticado */
+.btn {
+  transition:
+    transform 0.35s var(--ease-spring),
+    box-shadow 0.3s var(--ease-luxe),
+    opacity 0.15s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:active { transform: translateY(0); }
+
+/* Tablas — reveal por filas */
+@media (prefers-reduced-motion: no-preference) {
+  #result-section.visible table tbody tr {
+    animation: row-rise 0.5s var(--ease-out-expo) both;
+  }
+  #result-section.visible table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+  #result-section.visible table tbody tr:nth-child(2) { animation-delay: 0.10s; }
+  #result-section.visible table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+  #result-section.visible table tbody tr:nth-child(4) { animation-delay: 0.20s; }
+  #result-section.visible table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+  #result-section.visible table tbody tr:nth-child(n+6) { animation-delay: 0.30s; }
+}
+@keyframes row-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+table tbody tr { transition: background 0.25s var(--ease-luxe); }
+table tbody tr:hover { background: rgba(201, 168, 76, 0.04); }
+
+/* Highlight PEI — borde dorado ritualizado */
+.highlight-pei {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease-luxe);
+}
+.highlight-pei::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(201, 168, 76, 0.12), transparent 55%);
+  pointer-events: none;
+}
+.highlight-pei:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 24px 50px -28px rgba(201, 168, 76, 0.45),
+    0 0 0 1px rgba(201, 168, 76, 0.3) inset;
+}
+
+/* Disclaimer — borde latente dorado */
+.disclaimer {
+  position: relative;
+  transition: border-left-color 0.3s var(--ease-luxe), background 0.3s var(--ease-luxe);
+}
+.disclaimer::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--cc-gold), transparent);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-luxe);
+}
+.disclaimer:hover::before { opacity: 1; }
+
+/* Portada hero — reveal premium */
+@media (prefers-reduced-motion: no-preference) {
+  #result-section.visible .portada-hero h1,
+  #result-section.visible .portada-hero .subtitle,
+  #result-section.visible .portada-hero .portada-meta-item {
+    animation: portada-rise 0.7s var(--ease-out-expo) both;
+  }
+  #result-section.visible .portada-hero h1 { animation-delay: 0.10s; }
+  #result-section.visible .portada-hero .subtitle { animation-delay: 0.20s; }
+  #result-section.visible .portada-hero .portada-meta-item:nth-child(1) { animation-delay: 0.30s; }
+  #result-section.visible .portada-hero .portada-meta-item:nth-child(2) { animation-delay: 0.36s; }
+  #result-section.visible .portada-hero .portada-meta-item:nth-child(3) { animation-delay: 0.42s; }
+  #result-section.visible .portada-hero .portada-meta-item:nth-child(4) { animation-delay: 0.48s; }
+}
+@keyframes portada-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Section card reveal — easing más editorial (override del existente) */
+@media (prefers-reduced-motion: no-preference) {
+  #result-section.visible .section.card {
+    animation: card-reveal-luxe 0.7s var(--ease-out-expo) both;
+  }
+}
+@keyframes card-reveal-luxe {
+  from { opacity: 0; transform: translateY(20px) scale(0.992); filter: blur(2px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* Scroll-reveal genérico (gestionado por IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+  will-change: transform, opacity;
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+}
+.reveal-stagger.is-visible > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0.04s; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.10s; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.22s; }
+.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.28s; }
+.reveal-stagger.is-visible > *:nth-child(n+6) { transition-delay: 0.32s; }
+
+/* Brand header — borde dorado animado */
+.brand-header::after {
+  background: linear-gradient(90deg, var(--cc-gold), var(--cc-gold-light), transparent);
+  background-size: 200% 100%;
+  animation: brand-line 6s ease-in-out infinite;
+}
+@keyframes brand-line {
+  0%, 100% { background-position: 0% 0; width: 80px; }
+  50%      { background-position: 100% 0; width: 130px; }
+}
+
+/* Chat FAB — anillo dorado magnético */
+.chat-fab {
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.3s var(--ease-luxe);
+}
+.chat-fab:hover { transform: translateY(-3px) scale(1.04); }
+.chat-fab::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-luxe), inset 0.3s var(--ease-luxe);
+  pointer-events: none;
+}
+.chat-fab:hover::before { opacity: 1; inset: -8px; }
+
+/* Section footer — separador con punto dorado */
+.section-footer-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: var(--space-lg) 0 var(--space-sm);
+  margin-top: var(--space-lg);
+  border-top: 1px solid var(--border-color);
+}
+.section-footer-brand::before,
+.section-footer-brand::after {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--cc-gold);
+  opacity: 0.6;
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .ambient-orb,
@@ -1407,10 +1769,21 @@ body {
   .chat-fab .ping::after,
   .btn::after,
   #result-section.visible .section.card,
+  #result-section.visible table tbody tr,
+  #result-section.visible .portada-hero h1,
+  #result-section.visible .portada-hero .subtitle,
+  #result-section.visible .portada-hero .portada-meta-item,
+  .hero-intro > *,
+  .hero-intro::after,
+  .hero-title em,
+  .form-section,
+  .brand-header::after,
   .chat-msg,
   .chat-typing span {
     animation: none !important;
   }
+  .reveal,
+  .reveal-stagger > * { opacity: 1 !important; transform: none !important; }
   * { transition-duration: 0.01ms !important; }
 }
 

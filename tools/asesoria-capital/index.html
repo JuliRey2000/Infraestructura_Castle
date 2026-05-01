@@ -32,10 +32,10 @@
         Diagnóstico privado · 5 minutos
       </span>
       <h1 class="hero-title" id="hero-title">
-        Arquitectura financiera <em>imperturbable</em>.
+        Arquitectura financiera <em>de autor</em>.
       </h1>
       <p class="hero-lede">
-        Diseñamos la estructura que pone tu capital a trabajar bajo lógica matemática y filosofía Castle.
+        Diseñamos la estructura que pone tu capital a trabajar bajo lógica matemática y la filosofía Castle.
         Diagnóstico, perfil ARCA, asignación por buckets y un plan ejecutable paso a paso.
       </p>
       <div class="hero-stats" role="list">
@@ -319,7 +319,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </div>
-      <p class="chat-foot">— Diseño · Estructura · Imperturbable —</p>
+      <p class="chat-foot">— Castle Capital · Diseño · Estructura · Legado —</p>
     </div>
 
   </aside>
@@ -528,7 +528,7 @@
         <p class="muted">
           Este documento contiene un diagnóstico de tu situación financiera, una arquitectura de cartera ajustada a tu perfil de riesgo, y un plan de ejecución paso a paso. Es una guía táctica, no una promesa de retorno.
         </p>
-        <div class="section-footer-brand">— Diseño · Estructura · Imperturbable —</div>
+        <div class="section-footer-brand">— Castle Capital · Diseño · Estructura · Legado —</div>
       `;
     }
 
@@ -555,7 +555,7 @@
       const map = {
         conservador: 'Priorizas preservación de capital. Tu cartera está cargada hacia renta fija (con PEI como ancla principal) y caja productiva. El crecimiento será más lento pero más estable.',
         moderado:    'Buscas equilibrio entre crecimiento y estabilidad. Tu cartera reparte entre acciones de calidad, PEI como núcleo de renta fija y una capa pequeña de alternativos.',
-        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera está cargada hacia acciones de crecimiento y alternativos, con PEI manteniendo la base estable. Horizonte largo es obligatorio.'
+        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera reparte 35% en acciones, 15% en renta fija (PEI ancla), 15% en caja productiva y 35% en alternativos — la apuesta más diferenciada de Castle, vía oro, REITs y DeFi (CCI cuando aplique). Horizonte largo es obligatorio.'
       };
       return map[profile] || map.moderado;
     }
@@ -588,12 +588,16 @@
           <div class="kpi"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(debtPlan.flujoLibreParaAtaque)}</div></div>
           <div class="kpi"><div class="label">Libertad de deuda</div><div class="value">${debtPlan.mesesParaLibertad} meses</div></div>
         </div>
+        <p class="muted">El cronograma queda ordenado por <strong>cuota mensual</strong> de menor a mayor. La idea: liquidar primero la cuota más pequeña para liberar flujo y construir momentum.</p>
         <table>
           <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Tasa</th><th>Cuota mín.</th><th>Pago en</th><th>Liquidada</th></tr></thead>
           <tbody>${filas}</tbody>
         </table>
+        <div class="disclaimer">
+          <strong>Empieza a invertir desde ya.</strong> ${escape(debtPlan.mensajeHabito || 'Aunque sea un monto simbólico, mientras pagas la bola de nieve, abre tu primera posición de inversión. La prioridad ahora no es el retorno, es el hábito de mover capital al sistema cada mes.')}
+        </div>
         <div class="disclaimer disclaimer-warn">
-          <strong>Regla matemática:</strong> mientras saldas deuda con tasa &gt;15% E.A., invertir paralelo es subóptimo. La excepción es CCI o productos con APY &gt;25% sostenido.
+          <strong>Nota matemática:</strong> con tasas de deuda &gt;15% E.A., la bola de nieve es subóptima en pura aritmética. La elegimos igual porque el cliente que liquida una deuda completa gana más que con un cálculo financiero — gana convicción.
         </div>
       `;
     }
@@ -862,7 +866,7 @@
         <div class="disclaimer disclaimer-warn">
           <strong>Aviso legal:</strong> Castle Capital SAS es una empresa de consultoría financiera. Este documento es orientativo y no constituye asesoría en valores ni promesa de rentabilidad. Castle Capital NO capta recursos del público. Toda inversión implica riesgo, incluido pérdida de capital. Las decisiones finales son del cliente.
         </div>
-        <div class="section-footer-brand">— Castle Capital · Diseño · Estructura · Imperturbable —</div>
+        <div class="section-footer-brand">— Castle Capital · Diseño · Estructura · Legado —</div>
       `;
     }
 
@@ -913,6 +917,7 @@
       $('result-sub').textContent = `Plan personalizado · ${client.nombre} · ${E.formatDate()}`;
       $('form-section').style.display = 'none';
       $('result-section').classList.add('visible');
+      attachScrollReveal();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1182,6 +1187,41 @@
       });
     }
 
+    // ═══════════════════════════════════════
+    // SCROLL REVEAL — IntersectionObserver
+    // Inspirado en framer-motion `whileInView`.
+    // ═══════════════════════════════════════
+    let scrollObserver = null;
+    function ensureObserver() {
+      if (scrollObserver || typeof IntersectionObserver === 'undefined') return scrollObserver;
+      scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            scrollObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+      return scrollObserver;
+    }
+
+    function attachScrollReveal() {
+      const obs = ensureObserver();
+      if (!obs) return;
+      // Cada card del resultado se considera reveal-stagger contenedor.
+      document.querySelectorAll('#result-section .section.card').forEach((el) => {
+        el.classList.add('reveal');
+        obs.observe(el);
+      });
+      // Hero del formulario y stepper también se "viven" al cargar.
+      document.querySelectorAll('.hero-intro, .stepper, #form-section').forEach((el) => {
+        if (!el.classList.contains('is-visible')) {
+          el.classList.add('reveal');
+          obs.observe(el);
+        }
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       setupDebtToggle();
       $('add-debt-btn').addEventListener('click', addDebtRow);
@@ -1191,6 +1231,7 @@
       $('back-btn').addEventListener('click', backToForm);
       setupStepper();
       setupChat();
+      attachScrollReveal();
     });
   </script>
 </body>

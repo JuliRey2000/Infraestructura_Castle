@@ -3,7 +3,7 @@
 const ARCA_ALLOCATION = {
   conservador: { acciones: 0.30, rentaFija: 0.45, caja: 0.20, alternativos: 0.05 },
   moderado:    { acciones: 0.55, rentaFija: 0.25, caja: 0.10, alternativos: 0.10 },
-  agresivo:    { acciones: 0.75, rentaFija: 0.05, caja: 0.05, alternativos: 0.15 }
+  agresivo:    { acciones: 0.35, rentaFija: 0.15, caja: 0.15, alternativos: 0.35 }
 };
 
 const RETORNO_ESPERADO = {
@@ -63,9 +63,13 @@ function debtStrategy(debts, monthlyIncome, monthlyExpenses, monthlyObjective) {
     };
   }
 
+  // Bola de nieve: ordenar por la cuota mensual más pequeña primero.
+  // El objetivo no es la matemática óptima sino el momentum psicológico:
+  // liquidar la deuda con la cuota mínima más baja libera ese flujo rápido
+  // y da una primera victoria que sostiene el hábito.
   const ordenadas = [...debts]
     .filter((d) => d && d.monto > 0)
-    .sort((a, b) => a.monto - b.monto);
+    .sort((a, b) => (a.cuotaMinima || 0) - (b.cuotaMinima || 0));
 
   const totalCuotaMinima = ordenadas.reduce((acc, d) => acc + (d.cuotaMinima || 0), 0);
   const flujoLibre = Math.max(0, monthlyIncome - monthlyExpenses - totalCuotaMinima);
@@ -89,6 +93,7 @@ function debtStrategy(debts, monthlyIncome, monthlyExpenses, monthlyObjective) {
     };
   });
 
+  const primera = ordenadas[0];
   return {
     hayDeudas: true,
     ordenadas: cronograma,
@@ -96,7 +101,9 @@ function debtStrategy(debts, monthlyIncome, monthlyExpenses, monthlyObjective) {
     flujoLibreParaAtaque: ataqueMensual,
     mesesParaLibertad: mesAcumulado,
     saldoTotal: saldoAcumulado,
-    mensajeEstrategia: `Bola de nieve: pagar primero la deuda más pequeña ($${formatCOP(ordenadas[0].monto)}). Una vez liquidada, esa cuota se redirige a la siguiente. Estimado: ${mesAcumulado} meses para libertad de deuda.`
+    primeraDeuda: primera ? primera.nombre : null,
+    mensajeEstrategia: `Bola de nieve: empieza por la deuda con la cuota mensual más baja — ${primera ? primera.nombre : 'la primera'} (cuota ${formatCOP(primera ? primera.cuotaMinima : 0)}). Apenas la liquides, esa misma cuota mensual se redirige a la siguiente deuda. Es subóptimo en pura matemática, pero gana el momentum y construye el hábito. Estimado: ${mesAcumulado} meses para libertad de deuda.`,
+    mensajeHabito: 'En paralelo a la bola de nieve, sugerimos empezar a invertir un monto pequeño aunque sea simbólico. La meta no es el retorno todavía, es construir el hábito de mover capital al sistema cada mes.'
   };
 }
 
