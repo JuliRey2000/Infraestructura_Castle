@@ -98,6 +98,7 @@
     "commander": "^12.1.0",
     "execa": "^5.1.1",
     "fast-glob": "^3.3.3",
+    "framer-motion": "^12.38.0",
     "fs-extra": "^11.3.2",
     "glob": "^10.4.4",
     "handlebars": "^4.7.8",
