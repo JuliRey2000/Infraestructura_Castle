@@ -1,0 +1,87 @@
+name: Record Quality Metrics
+# Story 3.11c — moved from pr-automation.yml as part of C-3 security fix.
+# Runs ONLY on push to main (post-merge). Never executes PR code.
+# This is the safe replacement for the removed `record-metrics` job that
+# previously checked out PR head_ref with contents: write.
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: record-metrics-main
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  record-metrics:
+    name: Record Quality Metrics (main)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies (no scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Record post-merge metrics
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+          AUTHOR: ${{ github.actor }}
+        run: |
+          node -e "
+            const { recordPRReviewMetrics } = require('./.aiox-core/quality/metrics-hook');
+            (async () => {
+              await recordPRReviewMetrics({
+                passed: true,
+                durationMs: 0,
+                findingsCount: 0,
+                metadata: {
+                  commitSha: process.env.COMMIT_SHA,
+                  author: process.env.AUTHOR,
+                  source: 'post-merge'
+                }
+              });
+              console.log('PR metrics recorded for', process.env.COMMIT_SHA);
+            })().catch(err => {
+              console.warn('Failed to record metrics:', err.message);
+              process.exit(0);
+            });
+          "
+
+      - name: Commit metrics update
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          if [ -f .aiox/data/quality-metrics.json ]; then
+            if git check-ignore -q .aiox/data/quality-metrics.json 2>/dev/null; then
+              echo "Metrics file is gitignored - skipping commit"
+            else
+              git add .aiox/data/quality-metrics.json
+            fi
+          fi
+
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(metrics): update quality metrics [skip ci]"
+            git push || echo "Push skipped (may conflict with parallel runs)"
+          else
+            echo "No metrics changes to commit"
+          fi
