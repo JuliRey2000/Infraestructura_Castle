@@ -16,13 +16,17 @@
   --cc-gold:        #C9A84C;
   --cc-gold-light:  #E8C96A;
 
+  --cc-orange:      #E8954F;
+  --cc-orange-soft: #F2B17A;
+  --cc-orange-dark: #C97A3A;
+
   --cc-white-smoke: #F5F5F5;
   --cc-white:       #FFFFFF;
   --cc-oxford:      #6B6B6B;
   --cc-oxford-dark: #3D3D3D;
   --cc-border:      #D8D8D8;
   --cc-arctic:      #E8EDF5;
-  --cc-slate:       #8AA0BB;
+  --cc-slate:       #B0C2D9;
 
   --cc-positive: #4CAF50;
   --cc-negative: #EF5350;
@@ -35,9 +39,9 @@
   --accent-light:  var(--cc-gold-light);
 
   --text-primary:   var(--cc-white);
-  --text-secondary: var(--cc-slate);
-  --text-muted:     #9FB3CC;
-  --border-color:   rgba(74, 143, 212, 0.25);
+  --text-secondary: #D4DDEA;
+  --text-muted:     #B5C4D9;
+  --border-color:   rgba(74, 143, 212, 0.32);
 
   --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-ui:      'DM Sans', system-ui, -apple-system, sans-serif;
@@ -128,15 +132,27 @@ body {
 .brand-title-accent {
   color: var(--cc-gold);
   font-style: normal;
+  display: inline-block;
+  padding-right: 0.18em;
+  background: linear-gradient(135deg, var(--cc-gold-light), var(--cc-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .brand-title {
   font-family: var(--font-display);
   font-size: 26px;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.2px;
   margin: 0;
   color: var(--cc-white);
+  white-space: nowrap;
+  overflow: visible;
+}
+
+@media (max-width: 720px) {
+  .brand-title { white-space: normal; font-size: 22px; letter-spacing: 0.6px; }
 }
 
 .brand-sub {
@@ -175,30 +191,45 @@ h3 {
   font-family: var(--font-data);
 }
 
-p { color: var(--text-secondary); margin: 0 0 var(--space-sm); }
+p { color: var(--text-secondary); margin: 0 0 var(--space-sm); line-height: 1.65; }
 strong { color: var(--text-primary); font-weight: 600; }
+li { color: var(--text-secondary); }
 
 .muted {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-style: italic;
 }
 
 /* ── CARDS ── */
 .card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: linear-gradient(160deg, rgba(33, 56, 88, 0.92), rgba(20, 36, 60, 0.95));
+  border: 1px solid rgba(74, 143, 212, 0.28);
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   margin-bottom: var(--space-md);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 14px 32px -22px rgba(0, 0, 0, 0.55);
 }
 
 .card-nested {
-  background: rgba(43, 84, 151, 0.15);
-  border: 1px solid var(--border-color);
+  background: linear-gradient(155deg, rgba(232, 149, 79, 0.06), rgba(43, 84, 151, 0.18));
+  border: 1px solid rgba(232, 149, 79, 0.18);
   border-radius: var(--radius-md);
   padding: var(--space-md);
   margin: var(--space-md) 0;
+  position: relative;
+}
+
+.card-nested::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--cc-orange-soft), transparent);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  opacity: 0.55;
 }
 
 /* ── FORM ── */
@@ -345,12 +376,13 @@ td strong, td.highlight { color: var(--cc-gold-light); font-weight: 600; }
   border: 1px solid;
 }
 
-.tag-gold     { background: rgba(201, 168, 76, 0.15);  color: var(--cc-gold);     border-color: rgba(201, 168, 76, 0.4); }
-.tag-blue     { background: rgba(74, 143, 212, 0.15);  color: var(--cc-signal);   border-color: rgba(74, 143, 212, 0.4); }
-.tag-success  { background: rgba(76, 175, 80, 0.15);   color: var(--cc-positive); border-color: rgba(76, 175, 80, 0.4); }
-.tag-warn     { background: rgba(255, 167, 38, 0.15);  color: var(--cc-warning);  border-color: rgba(255, 167, 38, 0.4); }
-.tag-danger   { background: rgba(239, 83, 80, 0.15);   color: var(--cc-negative); border-color: rgba(239, 83, 80, 0.4); }
-.tag-pei      { background: rgba(74, 143, 212, 0.18);  color: var(--cc-signal);   border-color: var(--cc-signal); }
+.tag-gold     { background: rgba(201, 168, 76, 0.18);  color: var(--cc-gold-light);  border-color: rgba(201, 168, 76, 0.5); }
+.tag-blue     { background: rgba(74, 143, 212, 0.18);  color: var(--cc-signal);      border-color: rgba(74, 143, 212, 0.5); }
+.tag-success  { background: rgba(76, 175, 80, 0.18);   color: #7CD183;               border-color: rgba(76, 175, 80, 0.5); }
+.tag-warn     { background: rgba(232, 149, 79, 0.18);  color: var(--cc-orange-soft); border-color: rgba(232, 149, 79, 0.55); }
+.tag-danger   { background: rgba(239, 83, 80, 0.18);   color: var(--cc-negative);    border-color: rgba(239, 83, 80, 0.5); }
+.tag-pei      { background: rgba(74, 143, 212, 0.22);  color: var(--cc-signal);      border-color: var(--cc-signal); }
+.tag-orange   { background: rgba(232, 149, 79, 0.18);  color: var(--cc-orange-soft); border-color: rgba(232, 149, 79, 0.55); }
 
 /* ── KPI GRID ── */
 .kpi-grid {
@@ -702,6 +734,8 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-right: 0.12em;
 }
 
 .hero-lede {
@@ -1803,6 +1837,153 @@ table tbody tr:hover { background: rgba(201, 168, 76, 0.04); }
   * { transition-duration: 0.01ms !important; }
 }
 
+/* ── CTA Premium Banner (DeFi & similares) ── */
+.cta-banner {
+  position: relative;
+  margin: var(--space-lg) 0;
+  padding: var(--space-xl) var(--space-lg);
+  background:
+    linear-gradient(135deg,
+      rgba(232, 149, 79, 0.14) 0%,
+      rgba(201, 168, 76, 0.10) 50%,
+      rgba(43, 84, 151, 0.18) 100%);
+  border: 1px solid rgba(232, 149, 79, 0.35);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-align: center;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 24px 60px -32px rgba(232, 149, 79, 0.4);
+}
+
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  top: -40%; left: -10%;
+  width: 60%; height: 200%;
+  background: radial-gradient(ellipse at center, rgba(232, 149, 79, 0.18), transparent 60%);
+  pointer-events: none;
+  animation: cta-glow 9s ease-in-out infinite;
+}
+
+@keyframes cta-glow {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  50%      { transform: translate(20%, 5%) scale(1.05); opacity: 1; }
+}
+
+.cta-banner > * { position: relative; z-index: 1; }
+
+.cta-banner h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  color: var(--cc-white);
+  margin: 0 0 var(--space-sm);
+  text-transform: none;
+  letter-spacing: 0.3px;
+  font-weight: 700;
+}
+
+.cta-banner h3 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--cc-orange-soft), var(--cc-gold-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-right: 0.12em;
+}
+
+.cta-banner .cta-lede {
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  max-width: 56ch;
+  margin: 0 auto var(--space-lg);
+  line-height: 1.6;
+}
+
+.cta-banner-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-orange {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--cc-orange), var(--cc-orange-dark));
+  color: #FFF;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 14px 26px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.4px;
+  font-family: var(--font-ui);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 12px 28px -8px rgba(232, 149, 79, 0.55);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.3s var(--ease-luxe);
+}
+
+.btn-orange:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 16px 36px -10px rgba(232, 149, 79, 0.7);
+}
+
+.btn-link-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--cc-orange-soft);
+  border: 1px solid rgba(232, 149, 79, 0.45);
+  padding: 14px 22px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.92rem;
+  font-family: var(--font-ui);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-luxe);
+}
+
+.btn-link-soft:hover {
+  background: rgba(232, 149, 79, 0.10);
+  color: var(--cc-orange-soft);
+  border-color: var(--cc-orange);
+}
+
+/* ── Highlight orange row para presupuesto ── */
+.kpi--orange::before {
+  background: linear-gradient(180deg, var(--cc-orange-soft), var(--cc-orange-dark)) !important;
+}
+
+.presupuesto-formula {
+  background: linear-gradient(135deg, rgba(232, 149, 79, 0.08), rgba(43, 84, 151, 0.18));
+  border: 1px solid rgba(232, 149, 79, 0.2);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+}
+
+.presupuesto-formula .formula-equals {
+  color: var(--cc-orange-soft) !important;
+  font-weight: 600;
+}
+
+/* ── Step "datos" current state — naranja sutil para indicar 'ingresando datos' ── */
+.step.is-active .step-num {
+  background: linear-gradient(135deg, var(--cc-gold), var(--cc-orange-soft));
+  color: var(--cc-midnight);
+  border-color: var(--cc-orange-soft);
+  box-shadow: 0 0 0 4px rgba(232, 149, 79, 0.18);
+}
+
 /* ─────────────────────────────────────────
    PRINT STYLESHEET — PDF generation via window.print()
    Switches to light brand mode for paper readability.
@@ -2012,4 +2193,31 @@ table tbody tr:hover { background: rgba(201, 168, 76, 0.04); }
     page-break-inside: auto;
     break-inside: auto;
   }
+
+  /* CTA banner en print */
+  .cta-banner {
+    background: var(--cc-arctic) !important;
+    border: 2px solid var(--cc-gold) !important;
+    box-shadow: none !important;
+    padding: var(--space-md) !important;
+  }
+  .cta-banner h3 { color: var(--cc-imperial) !important; }
+  .cta-banner h3 em { color: var(--cc-gold) !important; -webkit-text-fill-color: var(--cc-gold) !important; }
+  .cta-banner .cta-lede { color: var(--cc-oxford-dark) !important; }
+  .btn-orange,
+  .btn-link-soft {
+    background: var(--cc-white) !important;
+    color: var(--cc-imperial) !important;
+    border: 1px solid var(--cc-castle-blue) !important;
+    box-shadow: none !important;
+  }
+  .presupuesto-formula {
+    background: var(--cc-arctic) !important;
+    border-color: var(--cc-border) !important;
+  }
+  .presupuesto-formula .formula-equals {
+    color: var(--cc-gold) !important;
+  }
+
+  .card-nested::before { display: none !important; }
 }

@@ -27,10 +27,6 @@
 
     <!-- Hero intro premium -->
     <section class="hero-intro no-print" aria-labelledby="hero-title">
-      <span class="hero-eyebrow">
-        <span class="dot" aria-hidden="true"></span>
-        Diagnóstico privado · 5 minutos
-      </span>
       <h1 class="hero-title" id="hero-title">
         Arquitectura Financiera <em>Castle Capital</em>.
       </h1>
@@ -98,28 +94,28 @@
             <label for="capital">Capital disponible (COP)</label>
             <div class="input-icon-wrap">
               <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-              <input id="capital" type="number" min="0" step="100000" placeholder="20000000" />
+              <input id="capital" type="text" inputmode="numeric" data-thousands="true" placeholder="20.000.000" />
             </div>
           </div>
           <div class="form-group">
             <label for="ingresos">Ingresos mensuales (COP)</label>
             <div class="input-icon-wrap">
               <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-              <input id="ingresos" type="number" min="0" step="100000" placeholder="5000000" />
+              <input id="ingresos" type="text" inputmode="numeric" data-thousands="true" placeholder="5.000.000" />
             </div>
           </div>
           <div class="form-group">
             <label for="gastos">Gastos mensuales (COP)</label>
             <div class="input-icon-wrap">
               <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
-              <input id="gastos" type="number" min="0" step="100000" placeholder="3000000" />
+              <input id="gastos" type="text" inputmode="numeric" data-thousands="true" placeholder="3.000.000" />
             </div>
           </div>
           <div class="form-group">
             <label for="objetivo">Capital adicional a invertir mes a mes (COP)</label>
             <div class="input-icon-wrap">
               <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-              <input id="objetivo" type="number" min="0" step="50000" placeholder="800000" />
+              <input id="objetivo" type="text" inputmode="numeric" data-thousands="true" placeholder="800.000" />
             </div>
             <p class="form-hint" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Lo que vas a aportar (no esperar) al portafolio cada mes.</p>
           </div>
@@ -307,7 +303,11 @@
       <button type="button" class="chat-chip" data-q="qué-es-pei">¿Qué es PEI?</button>
       <button type="button" class="chat-chip" data-q="qué-es-cci">Castle Crypto Income</button>
       <button type="button" class="chat-chip" data-q="cómo-funciona">¿Cómo funciona la herramienta?</button>
-      <button type="button" class="chat-chip" data-q="legal">Marco legal</button>
+      <button type="button" class="chat-chip" data-q="finanzas-personales">Finanzas personales</button>
+      <button type="button" class="chat-chip" data-q="invertir-bolsa">¿Cómo invertir en bolsa?</button>
+      <button type="button" class="chat-chip" data-q="invertir-cripto">¿Cómo invertir en cripto?</button>
+      <button type="button" class="chat-chip" data-q="seguridad">Seguridad de tu capital</button>
+      <button type="button" class="chat-chip" data-q="diversificacion">¿Por qué diversificar?</button>
       <button type="button" class="chat-chip" data-q="agendar">Agendar sesión</button>
     </div>
 
@@ -455,6 +455,45 @@
       return sel ? sel.value : null;
     }
 
+    // === Thousands separator formatting (es-CO uses dots) ===
+    function parseFormattedNumber(value) {
+      if (value == null) return 0;
+      const cleaned = String(value).replace(/[^\d]/g, '');
+      if (!cleaned) return 0;
+      const n = parseInt(cleaned, 10);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function formatWithDots(value) {
+      const digits = String(value || '').replace(/[^\d]/g, '');
+      if (!digits) return '';
+      return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
+    function attachThousandsFormatter(input) {
+      if (!input || input.dataset.thousandsBound === 'true') return;
+      input.dataset.thousandsBound = 'true';
+      input.addEventListener('input', (e) => {
+        const el = e.target;
+        const before = el.value;
+        const caretFromEnd = (el.value.length - (el.selectionStart || el.value.length));
+        const formatted = formatWithDots(before);
+        if (formatted !== before) {
+          el.value = formatted;
+          // Mantener el caret al final relativamente
+          const newPos = Math.max(0, formatted.length - caretFromEnd);
+          try { el.setSelectionRange(newPos, newPos); } catch (err) { /* noop */ }
+        }
+      });
+      input.addEventListener('blur', (e) => {
+        e.target.value = formatWithDots(e.target.value);
+      });
+    }
+
+    function setupThousandsInputs() {
+      document.querySelectorAll('input[data-thousands="true"]').forEach(attachThousandsFormatter);
+    }
+
     function setupDebtToggle() {
       document.querySelectorAll('input[name="hasDebt"]').forEach((r) => {
         r.addEventListener('change', () => {
@@ -470,12 +509,13 @@
       row.className = 'debt-row';
       row.innerHTML = `
         <input type="text" placeholder="Nombre (ej: Tarjeta)" class="d-nombre" />
-        <input type="number" placeholder="Monto COP" class="d-monto" min="0" step="50000" />
-        <input type="number" placeholder="Tasa %" class="d-tasa" min="0" step="0.1" />
-        <input type="number" placeholder="Cuota mín." class="d-cuota" min="0" step="10000" />
+        <input type="text" inputmode="numeric" data-thousands="true" placeholder="Monto COP" class="d-monto" />
+        <input type="text" inputmode="decimal" placeholder="Tasa %" class="d-tasa" />
+        <input type="text" inputmode="numeric" data-thousands="true" placeholder="Cuota mín." class="d-cuota" />
         <button type="button" class="btn-remove">×</button>
       `;
       row.querySelector('.btn-remove').addEventListener('click', () => row.remove());
+      row.querySelectorAll('input[data-thousands="true"]').forEach(attachThousandsFormatter);
       $('debts-list').appendChild(row);
     }
 
@@ -483,9 +523,9 @@
       if (getRadio('hasDebt') !== 'si') return [];
       return Array.from($('debts-list').children).map((row) => ({
         nombre: row.querySelector('.d-nombre').value || 'Deuda',
-        monto: parseFloat(row.querySelector('.d-monto').value) || 0,
-        tasa: parseFloat(row.querySelector('.d-tasa').value) || 0,
-        cuotaMinima: parseFloat(row.querySelector('.d-cuota').value) || 0
+        monto: parseFormattedNumber(row.querySelector('.d-monto').value),
+        tasa: parseFloat((row.querySelector('.d-tasa').value || '').replace(',', '.')) || 0,
+        cuotaMinima: parseFormattedNumber(row.querySelector('.d-cuota').value)
       })).filter((d) => d.monto > 0);
     }
 
@@ -538,7 +578,8 @@
       const ingresos = client.ingresos || 0;
       const gastos = client.gastos || 0;
       const flujoLibreMensual = Math.max(0, ingresos - gastos);
-      const capDisp = client.capital || 0;
+      const capitalCliente = client.capital || 0;
+      const capDispTotal = capitalCliente + flujoLibreMensual;
 
       const pctEmergencia = 0.25;
       const pctAtaqueDeudas = 0.50;
@@ -547,40 +588,42 @@
       $('sec-presupuesto').innerHTML = `
         <h2>1. Presupuesto: el punto de partida</h2>
         <p>Antes de mover un solo peso, ordenamos la base. Un presupuesto sencillo te muestra con qué materia prima estás trabajando. La fórmula es directa:</p>
-        <div class="presupuesto-formula" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 16px 0; font-family: var(--font-display); color: var(--cc-white); font-size: 1.1rem;">
+        <div class="presupuesto-formula" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-family: var(--font-display); color: var(--cc-white); font-size: 1.15rem;">
           <span><strong>Ingresos</strong></span>
-          <span style="color: var(--cc-gold);">menos</span>
+          <span class="formula-equals">menos</span>
           <span><strong>Gastos</strong></span>
-          <span style="color: var(--cc-gold);">igual a</span>
-          <span><strong>Capital disponible</strong></span>
+          <span class="formula-equals">igual a</span>
+          <span><strong>Flujo libre mensual</strong></span>
         </div>
         <div class="kpi-grid">
           <div class="kpi"><div class="label">Ingresos mensuales</div><div class="value">${E.formatCOP(ingresos)}</div></div>
           <div class="kpi"><div class="label">Gastos mensuales</div><div class="value">${E.formatCOP(gastos)}</div></div>
-          <div class="kpi"><div class="label">Flujo libre mensual</div><div class="value highlight">${E.formatCOP(flujoLibreMensual)}</div></div>
-          <div class="kpi"><div class="label">Capital disponible total</div><div class="value highlight">${E.formatCOP(capDisp)}</div></div>
+          <div class="kpi kpi--orange"><div class="label">Flujo libre mensual</div><div class="value highlight">${E.formatCOP(flujoLibreMensual)}</div></div>
+          <div class="kpi"><div class="label">Capital ingresado</div><div class="value">${E.formatCOP(capitalCliente)}</div></div>
+          <div class="kpi"><div class="label">Capital disponible total</div><div class="value highlight">${E.formatCOP(capDispTotal)}</div></div>
         </div>
+        <p class="muted">Tu capital disponible total es la suma de lo que ya tienes en mano (${E.formatCOP(capitalCliente)}) más el flujo libre que generas cada mes (${E.formatCOP(flujoLibreMensual)}). Ese es el motor con el que vamos a trabajar.</p>
         <h3>Cómo vamos a usar tu capital disponible</h3>
-        <p>Tu capital disponible (${E.formatCOP(capDisp)}) tiene tres misiones, en este orden:</p>
+        <p>Tu capital disponible total (${E.formatCOP(capDispTotal)}) tiene tres misiones, en este orden:</p>
         <table>
           <thead><tr><th>%</th><th>Destino</th><th>Monto</th><th>Función</th></tr></thead>
           <tbody>
             <tr>
               <td><strong>25%</strong></td>
               <td>Fondo de emergencia</td>
-              <td>${E.formatCOP(capDisp * pctEmergencia)}</td>
+              <td>${E.formatCOP(capDispTotal * pctEmergencia)}</td>
               <td>Cuenta de alta rentabilidad líquida (Rappipay, Nu, Pibank)</td>
             </tr>
             <tr>
               <td><strong>50%</strong></td>
               <td>Ataque a deudas</td>
-              <td>${E.formatCOP(capDisp * pctAtaqueDeudas)}</td>
-              <td>Liquidación inmediata de las primeras deudas con la Bola de Nieve</td>
+              <td>${E.formatCOP(capDispTotal * pctAtaqueDeudas)}</td>
+              <td>Abonos a las primeras deudas siguiendo la Bola de Nieve</td>
             </tr>
             <tr>
               <td><strong>25%</strong></td>
               <td>Inversión inicial</td>
-              <td>${E.formatCOP(capDisp * pctInversionInicial)}</td>
+              <td>${E.formatCOP(capDispTotal * pctInversionInicial)}</td>
               <td>Despliegue en la Arquitectura ARCA (renta fija, acciones, alternativos)</td>
             </tr>
           </tbody>
@@ -612,9 +655,7 @@
           <li><strong>Nu Cuenta</strong>: 13.0% E.A. en el primer monto, sin amarre.</li>
           <li><strong>Pibank</strong>: 8.50% E.A., alternativa estable.</li>
         </ul>
-        <div class="disclaimer">
-          <strong>Regla de oro:</strong> el fondo de emergencia no se toca para inversión, no se toca para gustos, no se toca para "una oportunidad". Solo se usa cuando la vida te golpea con algo no previsto. Si lo tocas por otra razón, deja de cumplir su función.
-        </div>
+        <p>El fondo de emergencia no se toca para inversión, no se toca para gustos, no se toca para "una oportunidad". Solo se usa cuando la vida te golpea con algo no previsto. Si lo tocas por otra razón, deja de cumplir su función.</p>
       `;
     }
 
@@ -642,9 +683,9 @@
       return map[profile] || map.moderado;
     }
 
-    function renderDeudas(debtPlan, client) {
-      const capDisp = client.capital || 0;
-      const ataqueInicial = capDisp * 0.50;
+    function renderDeudas(debtPlan, client, allocation) {
+      const capDispTotal = (allocation && allocation.capitalDisponibleTotal) || (client.capital || 0);
+      const ataqueInicial = capDispTotal * 0.50;
 
       if (!debtPlan.hayDeudas) {
         $('sec-deudas').innerHTML = `
@@ -669,34 +710,32 @@
         <h2>4. Diagnóstico de Deudas y Bola de Nieve</h2>
 
         <h3>Por qué usamos la Bola de Nieve</h3>
-        <p>Esta estrategia, popularizada por Dave Ramsey y respaldada por estudios de comportamiento financiero de la Universidad de Northwestern y Harvard Business Review, no es la más eficiente en pura aritmética cuando hay tasas altas. Su ventaja está en otra dimensión: la psicológica. Liquidar la deuda más pequeña primero genera una victoria temprana, real y tangible. Esa victoria construye convicción, y la convicción es la materia prima que sostiene la disciplina financiera durante meses.</p>
-        <p>Ramsey lo dice así: "Las finanzas personales son 20% conocimiento y 80% comportamiento". Por eso recomendamos este método: porque el cliente que liquida una deuda completa, aunque sea pequeña, descubre que es capaz. Y desde esa convicción, ataca la siguiente. La bola se hace más grande, el músculo financiero también.</p>
+        <p>Esta estrategia, popularizada por Dave Ramsey y respaldada por estudios de comportamiento financiero de la Universidad de Northwestern y Harvard Business Review, no es la más eficiente en pura aritmética cuando hay tasas altas. Su ventaja está en otra dimensión: la psicológica. Abonarle primero a la deuda más pequeña genera una victoria temprana, real y tangible. Esa victoria construye convicción, y la convicción es la materia prima que sostiene la disciplina financiera durante meses.</p>
+        <p>Ramsey lo dice así: "Las finanzas personales son 20% conocimiento y 80% comportamiento". Por eso recomendamos este método: porque el cliente que ve cómo una deuda se reduce, aunque sea pequeña, descubre que es capaz. Y desde esa convicción, ataca la siguiente. La bola se hace más grande, el músculo financiero también.</p>
 
         <p>${debtPlan.mensajeEstrategia}</p>
 
         <div class="kpi-grid">
           <div class="kpi"><div class="label">Deuda total</div><div class="value">${E.formatCOP(debtPlan.saldoTotal)}</div></div>
           <div class="kpi"><div class="label">Cuotas mínimas</div><div class="value">${E.formatCOP(debtPlan.cuotaMinimaTotal)}</div></div>
-          <div class="kpi"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(debtPlan.flujoLibreParaAtaque)}</div></div>
+          <div class="kpi kpi--orange"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(debtPlan.flujoLibreParaAtaque)}</div></div>
           <div class="kpi"><div class="label">Libertad de deuda</div><div class="value">${debtPlan.mesesParaLibertad} meses</div></div>
         </div>
 
-        <p class="muted">Cronograma ordenado por <strong>cuota mensual</strong> de menor a mayor. La idea: liquidar primero la cuota más pequeña para liberar flujo y construir momentum.</p>
+        <p class="muted">Cronograma ordenado por <strong>cuota mensual</strong> de menor a mayor. La idea: abonarle primero a la deuda con la cuota más pequeña para liberar flujo y construir momentum.</p>
         <table>
-          <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Tasa</th><th>Cuota mín.</th><th>Pago en</th><th>Liquidada</th></tr></thead>
+          <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Tasa</th><th>Cuota mín.</th><th>Pago en</th><th>Saldada</th></tr></thead>
           <tbody>${filas}</tbody>
         </table>
 
         <h3>El Ataque con la Bola de Nieve</h3>
 
         <h4>Paso 1: El Choque de Capital (uso de la liquidez)</h4>
-        <p>Aquí entra en juego tu capital disponible, el que sale después de hacer el presupuesto. Toma el <strong>50% de ese capital</strong> (después de separar el 25% para el fondo de emergencia en una cuenta de alta rentabilidad) y liquida instantáneamente las primeras deudas de la lista.</p>
-        <div class="disclaimer">
-          <strong>Tu choque inicial:</strong> ${E.formatCOP(ataqueInicial)} para liquidar de un solo golpe las primeras deudas ordenadas por cuota mínima.
-        </div>
+        <p>Aquí entra en juego tu capital disponible total, el que sale después de hacer el presupuesto. Toma el <strong>50% de ese capital</strong> (después de separar el 25% para el fondo de emergencia en una cuenta de alta rentabilidad) y abónalo a las primeras deudas de la lista. Si tu capital alcanza para una deuda completa, la saldas; si no, le abonas lo que tengas y la dejas en una posición más manejable.</p>
+        <p><strong>Tu choque inicial:</strong> ${E.formatCOP(ataqueInicial)} para abonar de un solo golpe a las primeras deudas ordenadas por cuota mínima.</p>
 
         <h4>Paso 2: Rodar la Bola</h4>
-        <p>Si el capital disponible se acaba y aún quedan deudas más grandes, aquí empieza la magia matemática. Toma el pago mínimo que estabas destinando a las deudas que ya liquidaste en el paso anterior, y súmalo al pago de la siguiente deuda en la lista.</p>
+        <p>Si el capital disponible se acaba y aún quedan deudas más grandes, aquí empieza la magia matemática. Toma el pago mínimo que estabas destinando a las deudas que ya liberaste en el paso anterior, y súmalo al pago de la siguiente deuda en la lista.</p>
         <p><strong>Fórmula del asesor:</strong></p>
         <p style="font-family: var(--font-display); color: var(--cc-gold); font-size: 1.05rem; margin: 8px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.08); border-left: 3px solid var(--cc-gold); border-radius: 6px;">Pago Nuevo = Pago Mínimo + Flujo Liberado + Ingreso Extra</p>
         <p>Continúa pagando el mínimo en las deudas grandes, pero ataca la siguiente deuda más pequeña con toda la fuerza de este nuevo pago consolidado. Esa es la bola rodando.</p>
@@ -712,9 +751,7 @@
           <p>La Ley de Parkinson dice que "los gastos se expanden hasta llenar los ingresos disponibles". Para evitar esto, automatiza los pagos de tu Bola de Nieve al día siguiente de recibir tus ingresos. No dejes que el dinero "nade" en tu cuenta. Lo que no ves, no se gasta.</p>
         </div>
 
-        <div class="disclaimer">
-          <strong>Empieza a invertir desde ya.</strong> ${escape(debtPlan.mensajeHabito || 'Aunque sea un monto simbólico, mientras pagas la bola de nieve, abre tu primera posición de inversión. La prioridad ahora no es el retorno, es el hábito de mover capital al sistema cada mes.')}
-        </div>
+        <p><strong>Empieza a invertir desde ya.</strong> ${escape(debtPlan.mensajeHabito || 'Aunque sea un monto simbólico, mientras pagas la bola de nieve, abre tu primera posición de inversión. La prioridad ahora no es el retorno, es el hábito de mover capital al sistema cada mes.')}</p>
       `;
     }
 
@@ -807,9 +844,7 @@
           <p class="muted"><strong>Cómo comprar:</strong> ${escape(pei.broker_sugerido || 'Trii o Tyba')}, operación PSE inmediata desde tu cuenta bancaria.</p>
         </div>
 
-        <div class="disclaimer">
-          <strong>Lógica Castle:</strong> el 100% del bucket de renta fija (${E.formatCOP(montoRF)}) va a PEI. Doble revalorización en un solo vehículo: distribución trimestral más apreciación del activo inmobiliario subyacente.
-        </div>
+        <p><strong>Lógica Castle:</strong> el 100% del bucket de renta fija (${E.formatCOP(montoRF)}) va a PEI. Doble revalorización en un solo vehículo: distribución trimestral más apreciación del activo inmobiliario subyacente.</p>
       `;
     }
 
@@ -888,8 +923,12 @@
           <tbody>${proy.map((p) => `<tr><td>${escape(p.escenario)}</td><td>${E.formatPct(p.apy)}</td><td class="highlight">${E.formatCOP(p.valorFinal)}</td><td>${E.formatCOP(p.gananciaAnual)}</td></tr>`).join('')}</tbody>
         </table>` : '';
 
-      const monto20 = montoAlt * 0.20;
-      const monto80 = montoAlt * 0.80;
+      // Paso 2: préstamo Aave = 25% del colateral (capital alternativo)
+      const prestamoAave = montoAlt * 0.25;
+      // Paso 3: DCA XRP = 20% del préstamo Aave
+      const dcaXRP = prestamoAave * 0.20;
+      // Paso 4: LPs = 80% restante del préstamo Aave
+      const lpsAave = prestamoAave * 0.80;
 
       const playbookCastle = `
         <h3>El playbook Castle paso a paso</h3>
@@ -901,18 +940,18 @@
         </div>
 
         <div class="card-nested">
-          <h4>Paso 2. Solicita un préstamo conservador del 25%</h4>
-          <p>Sobre el colateral depositado, solicita un préstamo del 25% del valor. Mantenemos un Loan To Value bajo a propósito: el Health Factor se mantiene alto y la posición queda lejos de cualquier zona de liquidación. Esa es la primera capa de capital adicional para trabajar.</p>
+          <h4>Paso 2. Solicita un préstamo conservador del 25% sobre Aave</h4>
+          <p>Sobre el colateral depositado en Aave, solicita un préstamo del <strong>25% del valor</strong> (≈ ${E.formatCOP(prestamoAave)}). Mantenemos un Loan To Value bajo a propósito: el Health Factor se mantiene alto y la posición queda lejos de cualquier zona de liquidación. Esa es la primera capa de capital adicional para trabajar.</p>
         </div>
 
         <div class="card-nested">
-          <h4>Paso 3. DCA en XRP con el 20% del capital disponible</h4>
-          <p>Toma el 20% del capital disponible (en tu caso, ${E.formatCOP(monto20)}) y ejecuta un Dollar Cost Average en Binance comprando XRP. La idea es construir esa posición en el tiempo, no de golpe, para promediar el costo de entrada.</p>
+          <h4>Paso 3. DCA en XRP con el 20% del préstamo</h4>
+          <p>Toma el <strong>20% del préstamo que acabas de pedir en Aave</strong> (≈ ${E.formatCOP(dcaXRP)}) y ejecuta un Dollar Cost Average en Binance comprando XRP. La idea es construir esa posición en el tiempo, no de golpe, para promediar el costo de entrada.</p>
         </div>
 
         <div class="card-nested">
-          <h4>Paso 4. LPs concentrados con el 80% restante</h4>
-          <p>Con el otro 80% (${E.formatCOP(monto80)}), establece posiciones en protocolos de liquidez con tres pares:</p>
+          <h4>Paso 4. LPs concentrados con el 80% restante del préstamo</h4>
+          <p>Con el otro <strong>80% del préstamo</strong> (≈ ${E.formatCOP(lpsAave)}), establece posiciones en pools de liquidez en Uniswap V3 con tres pares:</p>
           <ul>
             <li><strong>ETH / USD</strong>: par direccional con cobertura en stablecoin.</li>
             <li><strong>BTC / USD</strong>: par direccional sobre el activo ancla cripto.</li>
@@ -922,17 +961,28 @@
         </div>
 
         <div class="card-nested">
-          <h4>Paso 5. Apalanca y diversifica en Solana</h4>
-          <p>Con la posición de Aave consolidada, solicita préstamos adicionales hasta llevar el Health Factor del préstamo a 2.5. El capital que sale de allí va a dos destinos:</p>
+          <h4>Paso 5. Segundo préstamo sobre los pools de Uniswap y diversificación en Solana</h4>
+          <p>Con las posiciones LP consolidadas en Uniswap, ejecutamos un <strong>segundo préstamo</strong>, esta vez tomando como colateral los propios pools de liquidez de Uniswap. Lo dimensionamos hasta llevar el Health Factor de ese préstamo a <strong>2.5</strong>. El capital que sale de allí va a dos destinos:</p>
           <ul>
             <li>Protocolos de liquidez en la red de Solana, especialmente el par <strong>SOL / USD</strong>.</li>
             <li>Diversificación parcial en acciones tecnológicas líderes como <strong>Google</strong> a través del bucket de acciones.</li>
           </ul>
-          <p class="muted">Health Factor objetivo del 2.5: margen amplio de seguridad incluso ante caídas pronunciadas del colateral.</p>
+          <p class="muted">Health Factor objetivo de 2.5: margen amplio de seguridad incluso ante caídas pronunciadas del colateral.</p>
         </div>
       `;
 
       const ejecutaPlaybookCastle = (defi.tier >= 2) || client.esCCI;
+
+      const ctaBanner = `
+        <div class="cta-banner">
+          <h3>¿Quieres mejorar <em>tu rentabilidad</em>?</h3>
+          <p class="cta-lede">Esta arquitectura es solo el comienzo. La operación viva — pools concentrados, ajustes de Health Factor y rebalanceos — la ejecutamos contigo bajo Contrato de Mandato. Una sesión 1:1 con Julián define si tu perfil califica y cómo activarla.</p>
+          <div class="cta-banner-actions">
+            <a class="btn-orange" href="#sec-proximos">Agendar con Julián</a>
+            <a class="btn-link-soft" href="#sec-proximos">Ver contacto y agenda</a>
+          </div>
+        </div>
+      `;
 
       $('sec-defi').innerHTML = `
         <h2>9. Estrategia DeFi</h2>
@@ -940,16 +990,13 @@
         <p>${escape(defi.contenido)}</p>
 
         ${ejecutaPlaybookCastle ? playbookCastle : `
-          <div class="disclaimer">
-            <strong>Pre requisito:</strong> antes de ejecutar el playbook completo de DeFi (BTC y ETH como colateral, préstamos en Aave, LPs concentrados y diversificación en Solana), recomendamos que primero te familiarices con el ecosistema. Cuando estés listo, esta es la secuencia que aplicaremos.
-          </div>
+          <p><strong>Pre requisito.</strong> Antes de ejecutar el playbook completo de DeFi (BTC y ETH como colateral, préstamos en Aave, LPs concentrados y diversificación en Solana), recomendamos que primero te familiarices con el ecosistema. Cuando estés listo, esta es la secuencia que aplicaremos.</p>
           ${playbookCastle}
         `}
 
         ${proyBlock}
         ${noDefiBlock}
-        <div class="disclaimer"><strong>CTA:</strong> ${escape(defi.cta)}</div>
-        <div class="disclaimer disclaimer-warn">Esta estrategia requiere gestión activa y monitoreo. Solo se ejecuta bajo Contrato de Mandato de Inversión con Castle Capital. Castle Capital no garantiza retornos.</div>
+        ${ctaBanner}
       `;
     }
 
@@ -1046,11 +1093,20 @@
             : 'Cuando tengas experiencia DeFi básica (wallet propia y primer movimiento en Bitso), avanza a CCI Básico para activar el stack de rendimiento.'}</p>
         </div>
         <div class="card-nested">
-          <h3>3. Mantente cerca</h3>
+          <h3>3. Agenda con Julián</h3>
+          <p>La forma más directa de activar tu plan es una sesión 1:1. Ahí resolvemos dudas, ajustamos parámetros y, si aplica, firmamos el Contrato de Mandato.</p>
+          <ul>
+            <li><strong>Email:</strong> <a href="mailto:castlecapitalemily@gmail.com" style="color: var(--cc-orange-soft);">castlecapitalemily@gmail.com</a></li>
+            <li><strong>WhatsApp:</strong> <a href="https://wa.me/573209454181" style="color: var(--cc-orange-soft);">+57 320 945 4181</a></li>
+          </ul>
+        </div>
+        <div class="card-nested">
+          <h3>4. Mantente cerca</h3>
           <p>Esta arquitectura es viva. El mercado cambia, tu vida cambia, tu perfil cambia. Revisión cada 12 meses con Castle Capital.</p>
         </div>
+
         <div class="disclaimer disclaimer-warn">
-          <strong>Aviso legal:</strong> Castle Capital SAS es una empresa de consultoría financiera. Este documento es orientativo y no constituye asesoría en valores ni promesa de rentabilidad. Castle Capital NO capta recursos del público. Toda inversión implica riesgo, incluida la pérdida de capital. Las decisiones finales son del cliente.
+          <strong>Aviso legal.</strong> Este documento es una recomendación construida sobre la información que nos compartiste y sobre la estrategia general de Castle Capital. No constituye asesoría en valores ni promesa de rentabilidad. La decisión final es siempre del cliente. Los retornos pasados no garantizan retornos futuros: invertir en bolsa implica riesgo de mercado, invertir en cripto implica riesgo de volatilidad y riesgo tecnológico, e invertir en DeFi implica además riesgos operativos, de liquidación y de smart contracts. Toda inversión puede generar pérdidas, incluida la pérdida total del capital. Antes de ejecutar cualquier paso, evalúa tu situación con calma y, si lo consideras, valida con un profesional de tu confianza.
         </div>
         <div class="section-footer-brand">Castle Capital · Diseño · Estructura · Legado</div>
       `;
@@ -1060,10 +1116,10 @@
     function generate() {
       const client = {
         nombre: $('nombre').value.trim(),
-        capital: parseFloat($('capital').value) || 0,
-        ingresos: parseFloat($('ingresos').value) || 0,
-        gastos: parseFloat($('gastos').value) || 0,
-        objetivo: parseFloat($('objetivo').value) || 0,
+        capital: parseFormattedNumber($('capital').value),
+        ingresos: parseFormattedNumber($('ingresos').value),
+        gastos: parseFormattedNumber($('gastos').value),
+        objetivo: parseFormattedNumber($('objetivo').value),
         plazo: parseInt($('plazo').value, 10) || 5,
         fondoEmergencia: getRadio('fondo') === 'si',
         experiencia: $('experiencia').value,
@@ -1072,13 +1128,20 @@
         q2: getRadio('q2') === 'si'
       };
 
-      if (!client.nombre || client.capital <= 0) {
-        alert('Ingresa al menos nombre y capital disponible.');
+      if (!client.nombre) {
+        alert('Ingresa al menos tu nombre.');
         return;
       }
 
       const profile = E.determineProfile(client.q1, client.q2);
-      const allocation = E.calculatePortfolioAllocation(client.capital, profile, client.fondoEmergencia, client.gastos);
+      const allocation = E.calculatePortfolioAllocation(
+        client.capital,
+        profile,
+        client.fondoEmergencia,
+        client.gastos,
+        client.ingresos,
+        client.objetivo
+      );
       const debts = readDebts();
       const debtPlan = E.debtStrategy(debts, client.ingresos, client.gastos, client.objetivo);
       const gap = E.gapAnalysis(allocation, profile, client.objetivo);
@@ -1091,7 +1154,7 @@
       renderPresupuesto(client, allocation);
       renderFondoEmergencia(client, allocation);
       renderPerfil(client, profile, allocation);
-      renderDeudas(debtPlan, client);
+      renderDeudas(debtPlan, client, allocation);
       renderCapitalAdicional(client, allocation, profile);
       renderArca(allocation);
       renderRentaFija(etfs, allocation);
@@ -1137,7 +1200,7 @@
     // ═══════════════════════════════════════
     function updateStepper() {
       const steps = document.querySelectorAll('#stepper .step');
-      const datosOK   = !!$('nombre').value.trim() && parseFloat($('capital').value) > 0;
+      const datosOK   = !!$('nombre').value.trim() && $('capital').value.trim() !== '';
       const perfilOK  = !!getRadio('q1') && !!getRadio('q2') && !!getRadio('esCCI');
       const deudasOK  = !!getRadio('hasDebt');
       const allReady  = datosOK && perfilOK && deudasOK;
@@ -1215,19 +1278,70 @@
           </ul>
           <p>Al final puedes <strong>descargar el PDF</strong> con todo el plan listo para compartir.</p>`
       },
-      'legal': {
-        title: 'Marco legal',
-        body: `<p><strong>Castle Capital SAS</strong> es una empresa de consultoría financiera. Esta herramienta es orientativa y no constituye asesoría en valores ni promesa de rentabilidad.</p>
-          <p>Castle Capital <strong>NO capta recursos del público</strong>. Toda inversión implica riesgo, incluido la pérdida de capital. Las decisiones finales son del cliente.</p>
-          <p>CCI opera bajo Contrato de Mandato. El cliente mantiene la custodia de su capital en todo momento.</p>`
+      'finanzas-personales': {
+        title: 'Finanzas personales: por dónde empezar',
+        body: `<p>El orden importa más que el monto. Antes de invertir, ordena la base:</p>
+          <ul>
+            <li><strong>1. Presupuesto.</strong> Conoce tus ingresos y gastos. Lo que no se mide, no se controla.</li>
+            <li><strong>2. Fondo de emergencia.</strong> Seis meses de gastos en cuenta líquida. Es tu cimiento.</li>
+            <li><strong>3. Bola de nieve.</strong> Si hay deudas, atácalas en orden de cuota más baja a más alta.</li>
+            <li><strong>4. Inversión sistemática.</strong> Capital invertible distribuido en la arquitectura ARCA con aportes mensuales.</li>
+          </ul>
+          <p>La regla Castle: invertir solo cuando los pasos previos están en pie. La urgencia es enemiga del rendimiento.</p>`
+      },
+      'invertir-bolsa': {
+        title: '¿Cómo se invierte en bolsa?',
+        body: `<p>El método Castle para bolsa es simple y aburrido — y por eso funciona:</p>
+          <ul>
+            <li><strong>ETFs sobre acciones individuales.</strong> Compras un índice (S&amp;P 500, Nasdaq, dividendos) y heredas la diversificación.</li>
+            <li><strong>DCA (Dollar Cost Average).</strong> Compras la misma cantidad cada mes, sin importar el precio. El promedio se acomoda solo.</li>
+            <li><strong>Horizonte largo.</strong> Mínimo 5 años. La bolsa premia paciencia, no timing.</li>
+            <li><strong>Brokers regulados.</strong> XTB, Interactive Brokers o eToro internacional. Trii o Tyba para Colombia.</li>
+          </ul>
+          <p>No persigas la acción de moda. El núcleo es VOO o equivalente; lo demás es decoración.</p>`
+      },
+      'invertir-cripto': {
+        title: '¿Cómo se invierte en cripto?',
+        body: `<p>Cripto es una clase de activo de alto riesgo y alta volatilidad. Reglas Castle:</p>
+          <ul>
+            <li><strong>Asignación limitada.</strong> Va dentro del bucket de alternativos, no es el portafolio principal.</li>
+            <li><strong>Solo lo que estés dispuesto a no tocar 3 a 5 años.</strong> No es ahorro, es exposición.</li>
+            <li><strong>BTC y ETH como núcleo.</strong> Las altcoins son satélite, nunca el centro.</li>
+            <li><strong>On-ramp confiable.</strong> Bitso o Binance para entrar y salir desde COP.</li>
+            <li><strong>Custodia propia (cuando aplique).</strong> Wallet personal con frase de recuperación segura.</li>
+          </ul>
+          <p>DeFi es el nivel siguiente: pools, leverage, rebalanceo. Eso ya es CCI bajo Contrato de Mandato.</p>`
+      },
+      'seguridad': {
+        title: 'Seguridad de tu capital',
+        body: `<p>Tu capital nunca pasa por nuestras manos. Reglas Castle:</p>
+          <ul>
+            <li><strong>Custodia siempre del cliente.</strong> Brokers regulados (XTB, Trii) y wallets propias en cripto.</li>
+            <li><strong>Contrato de Mandato.</strong> En CCI nosotros operamos sobre tus posiciones, pero el capital está en tu nombre.</li>
+            <li><strong>2FA en todo.</strong> Brokers, exchanges, wallets. Sin 2FA no hay operación.</li>
+            <li><strong>Frase semilla offline.</strong> Nunca en la nube, nunca por mensaje. Papel o metal.</li>
+            <li><strong>Diversificación de riesgo.</strong> Múltiples brokers y redes, no un único punto de falla.</li>
+          </ul>
+          <p>Si alguien te pide enviar capital a una cuenta personal o promete retornos garantizados, no es Castle Capital.</p>`
+      },
+      'diversificacion': {
+        title: '¿Por qué diversificar?',
+        body: `<p>La diversificación es el almuerzo gratis del mercado: reduces riesgo sin sacrificar retorno esperado.</p>
+          <ul>
+            <li><strong>Por clase de activo.</strong> Acciones, renta fija, caja, alternativos. Cada una se mueve diferente.</li>
+            <li><strong>Por geografía.</strong> USA, mercados desarrollados, emergentes. No depender de un único país.</li>
+            <li><strong>Por temporalidad.</strong> DCA mensual en lugar de un solo aporte enorme.</li>
+            <li><strong>Por broker.</strong> No tener todo el capital en una sola plataforma.</li>
+          </ul>
+          <p>Concentrar es apostar. Diversificar es construir.</p>`
       },
       'agendar': {
-        title: 'Agendar sesión',
+        title: 'Agendar sesión con Julián',
         body: `<p>Para activar tu plan o resolver dudas concretas, agenda una sesión 1:1 con Julián.</p>
           <p>Contacto directo:</p>
           <ul>
-            <li><strong>Email:</strong> castlecapital.contacto@gmail.com</li>
-            <li><strong>WhatsApp:</strong> pídelo en la sesión inicial</li>
+            <li><strong>Email:</strong> <a href="mailto:castlecapitalemily@gmail.com">castlecapitalemily@gmail.com</a></li>
+            <li><strong>WhatsApp:</strong> <a href="https://wa.me/573209454181">+57 320 945 4181</a></li>
           </ul>
           <p>Antes de la sesión, descarga tu PDF y tráelo a la conversación.</p>`
       }
@@ -1238,8 +1352,12 @@
       if (q.includes('arca'))   return CHAT_KB['qué-es-arca'];
       if (q.includes('pei'))    return CHAT_KB['qué-es-pei'];
       if (q.includes('cci') || q.includes('crypto') || q.includes('defi')) return CHAT_KB['qué-es-cci'];
-      if (q.includes('legal') || q.includes('riesgo') || q.includes('aviso')) return CHAT_KB['legal'];
-      if (q.includes('agend') || q.includes('cita') || q.includes('contact') || q.includes('whats') || q.includes('email')) return CHAT_KB['agendar'];
+      if (q.includes('cripto') || q.includes('btc') || q.includes('bitcoin') || q.includes('ethereum')) return CHAT_KB['invertir-cripto'];
+      if (q.includes('bolsa') || q.includes('etf') || q.includes('acciones') || q.includes('dca') || q.includes('s&p') || q.includes('voo')) return CHAT_KB['invertir-bolsa'];
+      if (q.includes('seguridad') || q.includes('custodia') || q.includes('wallet') || q.includes('2fa') || q.includes('seed')) return CHAT_KB['seguridad'];
+      if (q.includes('diversif')) return CHAT_KB['diversificacion'];
+      if (q.includes('finanzas') || q.includes('ahorro') || q.includes('presupuesto') || q.includes('emergencia') || q.includes('deuda')) return CHAT_KB['finanzas-personales'];
+      if (q.includes('agend') || q.includes('cita') || q.includes('contact') || q.includes('whats') || q.includes('email') || q.includes('teléfono') || q.includes('telefono')) return CHAT_KB['agendar'];
       if (q.includes('cómo') || q.includes('como') || q.includes('herramient') || q.includes('paso') || q.includes('funciona')) return CHAT_KB['cómo-funciona'];
       if (q.includes('hola') || q.includes('buenos') || q.includes('buenas')) {
         return {
@@ -1251,7 +1369,7 @@
       return {
         title: 'No tengo respuesta directa',
         body: `<p>No tengo una respuesta directa a esa pregunta, pero estoy entrenada en los conceptos de Castle Capital.</p>
-          <p>Prueba con: <strong>ARCA, PEI, CCI, marco legal</strong>, o cómo funciona la herramienta. Para temas concretos, agenda una sesión con Julián.</p>`
+          <p>Prueba con: <strong>ARCA, PEI, CCI, finanzas personales, bolsa, cripto, seguridad o diversificación</strong>. Para temas concretos, agenda una sesión con Julián.</p>`
       };
     }
 
@@ -1411,6 +1529,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      setupThousandsInputs();
       setupDebtToggle();
       $('add-debt-btn').addEventListener('click', addDebtRow);
       $('generate-btn').addEventListener('click', generate);

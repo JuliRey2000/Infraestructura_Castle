@@ -26,14 +26,24 @@ function getArcaAllocation(profile) {
   return ARCA_ALLOCATION[profile] || ARCA_ALLOCATION.moderado;
 }
 
-function calculatePortfolioAllocation(capital, profile, hasEmergencyFund, monthlyExpenses) {
+function calculatePortfolioAllocation(capital, profile, hasEmergencyFund, monthlyExpenses, monthlyIncome, monthlyContribution) {
   const allocation = getArcaAllocation(profile);
   const emergencyFund = hasEmergencyFund ? 0 : Math.max(0, monthlyExpenses * FONDO_EMERGENCIA_MESES);
-  const investableCapital = Math.max(0, capital - emergencyFund);
+
+  const flujoLibreMensual = Math.max(0, (monthlyIncome || 0) - (monthlyExpenses || 0));
+  const aporteMensual = Math.max(0, monthlyContribution || 0);
+
+  // Capital invertible = capital disponible (cliente) + flujo libre mensual + aporte mensual adicional
+  // menos fondo de emergencia que se aparta del capital base.
+  const capitalBase = Math.max(0, capital - emergencyFund);
+  const investableCapital = capitalBase + flujoLibreMensual + aporteMensual;
 
   return {
     capitalTotal: capital,
     fondoEmergencia: emergencyFund,
+    flujoLibreMensual,
+    aporteMensual,
+    capitalDisponibleTotal: capital + flujoLibreMensual,
     capitalInvertible: investableCapital,
     perfil: profile,
     porcentajes: allocation,
@@ -65,7 +75,7 @@ function debtStrategy(debts, monthlyIncome, monthlyExpenses, monthlyObjective) {
 
   // Bola de nieve: ordenar por la cuota mensual más pequeña primero.
   // El objetivo no es la matemática óptima sino el momentum psicológico:
-  // liquidar la deuda con la cuota mínima más baja libera ese flujo rápido
+  // abonarle a la deuda con la cuota mínima más baja libera ese flujo rápido
   // y da una primera victoria que sostiene el hábito.
   const ordenadas = [...debts]
     .filter((d) => d && d.monto > 0)
@@ -102,7 +112,7 @@ function debtStrategy(debts, monthlyIncome, monthlyExpenses, monthlyObjective) {
     mesesParaLibertad: mesAcumulado,
     saldoTotal: saldoAcumulado,
     primeraDeuda: primera ? primera.nombre : null,
-    mensajeEstrategia: `Bola de nieve: empieza por la deuda con la cuota mensual más baja, ${primera ? primera.nombre : 'la primera'} (cuota ${formatCOP(primera ? primera.cuotaMinima : 0)}). Apenas la liquides, esa misma cuota mensual se redirige a la siguiente deuda. Es subóptimo en pura matemática, pero gana el momentum y construye el hábito. Estimado: ${mesAcumulado} meses para libertad de deuda.`,
+    mensajeEstrategia: `Bola de nieve: empieza por abonarle a la deuda con la cuota mensual más baja, ${primera ? primera.nombre : 'la primera'} (cuota ${formatCOP(primera ? primera.cuotaMinima : 0)}). Si tu capital alcanza, la liquidas; si no, la dejas en una posición de manejo más cómodo. Apenas esa deuda quede saldada, su cuota mensual se redirige íntegra a la siguiente deuda y la bola crece. Es subóptimo en pura matemática, pero gana el momentum y construye el hábito. Estimado: ${mesAcumulado} meses para libertad de deuda.`,
     mensajeHabito: 'En paralelo a la bola de nieve, sugerimos empezar a invertir un monto pequeño aunque sea simbólico. La meta no es el retorno todavía, es construir el hábito de mover capital al sistema cada mes.'
   };
 }
