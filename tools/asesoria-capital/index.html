@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Arquitectura Financiera — Castle Capital</title>
+  <title>Arquitectura Financiera Castle Capital</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="engine.js"></script>
 </head>
@@ -18,10 +18,10 @@
   <div class="app-shell">
 
     <header class="brand-header no-print">
-      <div class="brand-logo">CC</div>
+      <img src="logo-castle.png" alt="Castle Capital" class="brand-logo brand-logo--img" />
       <div>
-        <h1 class="brand-title">CASTLE CAPITAL</h1>
-        <p class="brand-sub">Arquitectura Financiera — Herramienta de diagnóstico y plan</p>
+        <h1 class="brand-title">Arquitectura Financiera <em class="brand-title-accent">Castle Capital</em></h1>
+        <p class="brand-sub">Herramienta de diagnóstico y plan</p>
       </div>
     </header>
 
@@ -32,15 +32,15 @@
         Diagnóstico privado · 5 minutos
       </span>
       <h1 class="hero-title" id="hero-title">
-        Arquitectura financiera <em>de autor</em>.
+        Arquitectura Financiera <em>Castle Capital</em>.
       </h1>
       <p class="hero-lede">
         Diseñamos la estructura que pone tu capital a trabajar bajo lógica matemática y la filosofía Castle.
-        Diagnóstico, perfil ARCA, asignación por buckets y un plan ejecutable paso a paso.
+        Incluye diagnóstico, perfil ARCA, asignación por buckets y un plan ejecutable paso a paso.
       </p>
       <div class="hero-stats" role="list">
         <div class="hero-stat" role="listitem">
-          <div class="num">11</div>
+          <div class="num">13</div>
           <span class="lbl">Secciones del plan</span>
         </div>
         <div class="hero-stat" role="listitem">
@@ -116,11 +116,12 @@
             </div>
           </div>
           <div class="form-group">
-            <label for="objetivo">Objetivo de flujo mensual extra (COP)</label>
+            <label for="objetivo">Capital adicional a invertir mes a mes (COP)</label>
             <div class="input-icon-wrap">
               <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
               <input id="objetivo" type="number" min="0" step="50000" placeholder="800000" />
             </div>
+            <p class="form-hint" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Lo que vas a aportar (no esperar) al portafolio cada mes.</p>
           </div>
           <div class="form-group">
             <label for="plazo">Plazo objetivo</label>
@@ -212,10 +213,10 @@
     <section id="result-section">
 
       <div class="brand-header">
-        <div class="brand-logo">CC</div>
+        <img src="logo-castle.png" alt="Castle Capital" class="brand-logo brand-logo--img" />
         <div>
-          <h1 class="brand-title">CASTLE CAPITAL</h1>
-          <p class="brand-sub" id="result-sub">Arquitectura Financiera</p>
+          <h1 class="brand-title">Arquitectura Financiera <em class="brand-title-accent">Castle Capital</em></h1>
+          <p class="brand-sub" id="result-sub">Plan personalizado</p>
         </div>
       </div>
 
@@ -223,12 +224,14 @@
         <strong>Índice del documento</strong>
         <ol>
           <li>Portada y datos del cliente</li>
+          <li>Presupuesto: tu capital disponible</li>
+          <li>Fondo de emergencia</li>
           <li>Perfil del Cliente</li>
-          <li>Diagnóstico de Deudas</li>
-          <li>Diagnóstico de Inversión (gap analysis)</li>
+          <li>Diagnóstico de Deudas y Bola de Nieve</li>
+          <li>Capital adicional a invertir mes a mes</li>
           <li>Arquitectura ARCA</li>
-          <li>Renta Fija — PEI Principal</li>
-          <li>ETFs Recomendados</li>
+          <li>Renta Fija con PEI</li>
+          <li>ETFs Recomendados (con DCA)</li>
           <li>Estrategia DeFi</li>
           <li>Proyecciones</li>
           <li>¿Dónde Ejecutar? (brokers)</li>
@@ -239,6 +242,8 @@
 
       <div id="pdf-content">
         <div class="section card" id="sec-portada"></div>
+        <div class="section card" id="sec-presupuesto"></div>
+        <div class="section card" id="sec-fondo"></div>
         <div class="section card" id="sec-perfil"></div>
         <div class="section card" id="sec-deudas"></div>
         <div class="section card" id="sec-gap"></div>
@@ -267,7 +272,7 @@
   </div>
 
   <!-- ═══════════════════════════════════════
-       CHAT ASSISTANT — Castle Capital · Aria
+       CHAT ASSISTANT. Castle Capital. Aria.
        Adaptación vanilla del componente v0.
   ═══════════════════════════════════════ -->
   <button type="button" class="chat-fab no-print" id="chat-fab" aria-label="Abrir asistente Castle" aria-haspopup="dialog" aria-expanded="false">
@@ -319,7 +324,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
         </button>
       </div>
-      <p class="chat-foot">— Castle Capital · Diseño · Estructura · Legado —</p>
+      <p class="chat-foot">Castle Capital · Diseño · Estructura · Legado</p>
     </div>
 
   </aside>
@@ -334,7 +339,7 @@
           { ticker: 'VIG', nombre: 'Vanguard Dividend Appreciation ETF', retorno_ref: '10.4% anualizado 5y', horizonte: 'largo', nota: 'Aristócratas del dividendo' }
         ],
         moderado: [
-          { ticker: 'VOO', nombre: 'Vanguard S&P 500 ETF', retorno_ref: '13.9% anualizado 10y', horizonte: 'largo', nota: 'Núcleo de cartera — TER 0.03%' },
+          { ticker: 'VOO', nombre: 'Vanguard S&P 500 ETF', retorno_ref: '13.9% anualizado 10y', horizonte: 'largo', nota: 'Núcleo de cartera con TER 0.03%' },
           { ticker: 'VEA', nombre: 'Vanguard FTSE Developed Markets ETF', retorno_ref: '6.8% anualizado 10y', horizonte: 'largo', nota: 'Diversificación internacional' },
           { ticker: 'VWO', nombre: 'Vanguard FTSE Emerging Markets ETF', retorno_ref: '4.1% anualizado 10y', horizonte: 'largo', nota: 'Mercados emergentes' },
           { ticker: 'DGRO', nombre: 'iShares Core Dividend Growth ETF', retorno_ref: '10.8% anualizado 5y', horizonte: 'largo', nota: 'Capa de dividendos' },
@@ -345,25 +350,22 @@
           { ticker: 'SMH', nombre: 'VanEck Semiconductor ETF', retorno_ref: '26.4% anualizado 5y', horizonte: 'largo', nota: 'Semiconductores' },
           { ticker: 'COPX', nombre: 'Global X Copper Miners ETF', retorno_ref: '12.8% anualizado 5y', horizonte: 'mediano', nota: 'Tesis cobre' },
           { ticker: 'URNM', nombre: 'Sprott Uranium Miners ETF', retorno_ref: '21.5% anualizado 3y', horizonte: 'mediano', nota: 'Tesis uranio' },
-          { ticker: 'VOO', nombre: 'Vanguard S&P 500 ETF', retorno_ref: '13.9% anualizado 10y', horizonte: 'largo', nota: 'Ancla — base obligatoria' }
+          { ticker: 'VOO', nombre: 'Vanguard S&P 500 ETF', retorno_ref: '13.9% anualizado 10y', horizonte: 'largo', nota: 'Ancla y base obligatoria' }
         ]
       },
       rentaFija: [
         {
           ticker: 'PEI',
           nombre: 'Patrimonio Estrategias Inmobiliarias',
-          retorno_ref: '8–10% E.A. distribución + revalorización',
+          retorno_ref: '8 a 10% E.A. distribución más revalorización',
           horizonte: 'mediano',
-          nota: 'Recomendación principal Castle — bienes raíces comerciales premium en Colombia. Distribuciones trimestrales y apreciación del activo.',
+          nota: 'Vehículo unificado de renta fija Castle Capital. Bienes raíces comerciales premium en Colombia, con distribuciones trimestrales y apreciación del activo subyacente.',
           vehiculo: 'Titularización Inmobiliaria (BVC)',
           broker_sugerido: 'Trii o Tyba',
           moneda: 'COP',
           es_principal: true,
           categoria: 'Inmobiliario titularizado'
-        },
-        { ticker: 'TES-LP', nombre: 'TES Largo Plazo (deuda pública Colombia)', retorno_ref: '9.5–11% E.A.', horizonte: 'mediano', nota: 'Complemento defensivo a PEI. Vía Trii o Tyba.', moneda: 'COP' },
-        { ticker: 'BIL', nombre: 'SPDR Bloomberg 1-3 Month T-Bill ETF', retorno_ref: '4.8% anualizado', horizonte: 'corto', nota: 'T-Bills USD — caja productiva en dólares', moneda: 'USD' },
-        { ticker: 'AGG', nombre: 'iShares Core US Aggregate Bond ETF', retorno_ref: '2.1% anualizado 5y', horizonte: 'mediano', nota: 'Bonos USA diversificados', moneda: 'USD' }
+        }
       ],
       caja: [
         { nombre: 'Rappipay Ahorro', retorno_ref: '9.25% E.A.', horizonte: 'inmediato', nota: 'Liquidez total' },
@@ -378,13 +380,13 @@
         ],
         tier1_educacion: [
           {
-            nombre: 'Aave V3 — Préstamos Descentralizados',
+            nombre: 'Aave V3 (Préstamos Descentralizados)',
             tipo: 'defi_educacion',
             tier: 1,
             contenido: 'Aave es un protocolo de préstamos. Depositas USDC como colateral y ganas APY de supply (3-5%). Puedes pedir prestado hasta 70% LTV. El Health Factor mide tu margen: si baja de 1.0, te liquidan.'
           },
           {
-            nombre: 'Uniswap V3 — DEX con Liquidez Concentrada',
+            nombre: 'Uniswap V3 (DEX con Liquidez Concentrada)',
             tipo: 'defi_educacion',
             tier: 1,
             contenido: 'Uniswap V3 es un exchange descentralizado donde provees liquidez en pools (ej: ETH/USDC) y ganas fees por cada swap. A menor rango de precio, mayor APY pero mayor riesgo de Impermanent Loss si el precio sale del rango.'
@@ -392,7 +394,7 @@
         ],
         tier2_cci_basico: [
           {
-            nombre: 'CCI Básico — Aave + Uniswap V3',
+            nombre: 'CCI Básico con Aave y Uniswap V3',
             tipo: 'defi_producto_cci',
             tier: 2,
             apy_ref: '25-50% APY neto',
@@ -409,7 +411,7 @@
         ],
         tier3_cci: [
           {
-            nombre: 'CCI Full — Aave Leverage + LP Stack',
+            nombre: 'CCI Full con Aave Leverage y LP Stack',
             tipo: 'defi_leverage_lp',
             tier: 3,
             apy_ref: '30-80% APY neto',
@@ -430,17 +432,17 @@
 
     const BROKERS_BANK = {
       internacional: [
-        { nombre: 'XTB', comision_acciones: '$0 hasta €100k EUR/año', deposito: 'PSE, transferencia, tarjeta', moneda: 'USD/EUR', regulado: 'FCA, KNF, CySEC', recomendado_para: ['conservador', 'moderado', 'agresivo'], capital_min_cop: 1000000, nota: 'Mejor opción general — sin comisión de compra/venta' },
-        { nombre: 'Interactive Brokers', comision_acciones: '0.005 USD/acción (mín 1 USD)', deposito: 'Wire, ACH', moneda: 'Multi-divisa', regulado: 'SEC, FINRA', recomendado_para: ['moderado', 'agresivo'], capital_min_cop: 20000000, nota: 'Para capital alto — onboarding más estricto' },
+        { nombre: 'XTB', comision_acciones: '$0 hasta €100k EUR/año', deposito: 'PSE, transferencia, tarjeta', moneda: 'USD/EUR', regulado: 'FCA, KNF, CySEC', recomendado_para: ['conservador', 'moderado', 'agresivo'], capital_min_cop: 1000000, nota: 'Mejor opción general, sin comisión de compra ni venta' },
+        { nombre: 'Interactive Brokers', comision_acciones: '0.005 USD/acción (mín 1 USD)', deposito: 'Wire, ACH', moneda: 'Multi divisa', regulado: 'SEC, FINRA', recomendado_para: ['moderado', 'agresivo'], capital_min_cop: 20000000, nota: 'Para capital alto, onboarding más estricto' },
         { nombre: 'eToro', comision_acciones: '$0 acciones USA (spread)', deposito: 'Tarjeta, PSE, PayPal', moneda: 'USD', regulado: 'CySEC, FCA', recomendado_para: ['conservador', 'moderado'], capital_min_cop: 200000, nota: 'Onboarding rápido para empezar pequeño' }
       ],
       local_colombia: [
-        { nombre: 'Trii', comision_acciones: '0.20-0.30% por operación', deposito: 'PSE inmediato', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador', 'moderado'], capital_min_cop: 500000, nota: 'PEI, TES, CDTs y BVC — broker recomendado para PEI' },
-        { nombre: 'Tyba', comision_acciones: 'Sin comisión TES', deposito: 'PSE', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador'], capital_min_cop: 100000, nota: 'Fondos, TES y PEI — orientado renta fija COP' }
+        { nombre: 'Trii', comision_acciones: '0.20 a 0.30% por operación', deposito: 'PSE inmediato', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador', 'moderado'], capital_min_cop: 500000, nota: 'PEI, TES, CDTs y BVC. Broker recomendado para PEI' },
+        { nombre: 'Tyba', comision_acciones: 'Sin comisión TES', deposito: 'PSE', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador'], capital_min_cop: 100000, nota: 'Fondos, TES y PEI, orientado a renta fija COP' }
       ],
       cripto: [
-        { nombre: 'Bitso', comision_compra: '0.65% maker/taker', deposito: 'PSE Colombia', moneda: 'COP/USDC/BTC', recomendado_para: ['intermedia DeFi'], capital_min_cop: 100000, nota: 'Mejor on-ramp COP→cripto en Colombia' },
-        { nombre: 'Binance', comision_compra: '0.10% spot (con BNB)', deposito: 'P2P, transferencia internacional', moneda: 'Multi-cripto', recomendado_para: ['intermedia DeFi'], capital_min_cop: 50000, nota: 'Para usuarios con experiencia' }
+        { nombre: 'Bitso', comision_compra: '0.65% maker/taker', deposito: 'PSE Colombia', moneda: 'COP/USDC/BTC', recomendado_para: ['intermedia DeFi'], capital_min_cop: 100000, nota: 'Mejor on ramp de COP a cripto en Colombia' },
+        { nombre: 'Binance', comision_compra: '0.10% spot (con BNB)', deposito: 'P2P, transferencia internacional', moneda: 'Multi cripto', recomendado_para: ['intermedia DeFi'], capital_min_cop: 50000, nota: 'Para usuarios con experiencia' }
       ]
     };
 
@@ -504,12 +506,12 @@
     function renderPortada(client) {
       $('sec-portada').innerHTML = `
         <div class="portada-hero">
-          <h1>Arquitectura Financiera</h1>
-          <div class="subtitle">Plan personalizado · Castle Capital</div>
+          <h1>Arquitectura Financiera Castle Capital</h1>
+          <div class="subtitle">Plan personalizado</div>
           <div class="portada-meta">
             <div class="portada-meta-item">
               <div class="label">Cliente</div>
-              <div class="value">${escape(client.nombre || '—')}</div>
+              <div class="value">${escape(client.nombre || 'Sin nombre')}</div>
             </div>
             <div class="portada-meta-item">
               <div class="label">Fecha</div>
@@ -528,43 +530,127 @@
         <p class="muted">
           Este documento contiene un diagnóstico de tu situación financiera, una arquitectura de cartera ajustada a tu perfil de riesgo, y un plan de ejecución paso a paso. Es una guía táctica, no una promesa de retorno.
         </p>
-        <div class="section-footer-brand">— Castle Capital · Diseño · Estructura · Legado —</div>
+        <div class="section-footer-brand">Castle Capital · Diseño · Estructura · Legado</div>
+      `;
+    }
+
+    function renderPresupuesto(client, allocation) {
+      const ingresos = client.ingresos || 0;
+      const gastos = client.gastos || 0;
+      const flujoLibreMensual = Math.max(0, ingresos - gastos);
+      const capDisp = client.capital || 0;
+
+      const pctEmergencia = 0.25;
+      const pctAtaqueDeudas = 0.50;
+      const pctInversionInicial = 0.25;
+
+      $('sec-presupuesto').innerHTML = `
+        <h2>1. Presupuesto: el punto de partida</h2>
+        <p>Antes de mover un solo peso, ordenamos la base. Un presupuesto sencillo te muestra con qué materia prima estás trabajando. La fórmula es directa:</p>
+        <div class="presupuesto-formula" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 16px 0; font-family: var(--font-display); color: var(--cc-white); font-size: 1.1rem;">
+          <span><strong>Ingresos</strong></span>
+          <span style="color: var(--cc-gold);">menos</span>
+          <span><strong>Gastos</strong></span>
+          <span style="color: var(--cc-gold);">igual a</span>
+          <span><strong>Capital disponible</strong></span>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">Ingresos mensuales</div><div class="value">${E.formatCOP(ingresos)}</div></div>
+          <div class="kpi"><div class="label">Gastos mensuales</div><div class="value">${E.formatCOP(gastos)}</div></div>
+          <div class="kpi"><div class="label">Flujo libre mensual</div><div class="value highlight">${E.formatCOP(flujoLibreMensual)}</div></div>
+          <div class="kpi"><div class="label">Capital disponible total</div><div class="value highlight">${E.formatCOP(capDisp)}</div></div>
+        </div>
+        <h3>Cómo vamos a usar tu capital disponible</h3>
+        <p>Tu capital disponible (${E.formatCOP(capDisp)}) tiene tres misiones, en este orden:</p>
+        <table>
+          <thead><tr><th>%</th><th>Destino</th><th>Monto</th><th>Función</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>25%</strong></td>
+              <td>Fondo de emergencia</td>
+              <td>${E.formatCOP(capDisp * pctEmergencia)}</td>
+              <td>Cuenta de alta rentabilidad líquida (Rappipay, Nu, Pibank)</td>
+            </tr>
+            <tr>
+              <td><strong>50%</strong></td>
+              <td>Ataque a deudas</td>
+              <td>${E.formatCOP(capDisp * pctAtaqueDeudas)}</td>
+              <td>Liquidación inmediata de las primeras deudas con la Bola de Nieve</td>
+            </tr>
+            <tr>
+              <td><strong>25%</strong></td>
+              <td>Inversión inicial</td>
+              <td>${E.formatCOP(capDisp * pctInversionInicial)}</td>
+              <td>Despliegue en la Arquitectura ARCA (renta fija, acciones, alternativos)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="muted">Si no tienes deudas, el 50% destinado al ataque pasa directo a inversión. Si ya cubres tu fondo de emergencia, ese 25% también se libera para invertir.</p>
+      `;
+    }
+
+    function renderFondoEmergencia(client, allocation) {
+      const gastos = client.gastos || 0;
+      const objetivoFE = gastos * 6;
+      const tieneFE = client.fondoEmergencia;
+
+      $('sec-fondo').innerHTML = `
+        <h2>2. Fondo de Emergencia: el cimiento que nadie ve</h2>
+        <p>Antes de cualquier estrategia de inversión, esta es la primera prioridad. Un fondo de emergencia es el escudo que te permite operar con cabeza fría cuando el mercado se asusta. Sin este cimiento, cualquier turbulencia te obliga a vender en el peor momento.</p>
+        <h3>¿Por qué seis meses de gastos?</h3>
+        <p>La cifra no es arbitraria. Seis meses es el horizonte que cubre los escenarios reales que enfrentamos: una pérdida de empleo, una emergencia médica, una reparación mayor o un giro económico inesperado. Con menos de seis meses, una sola turbulencia te empuja a liquidar inversiones a destiempo o a tomar deuda cara. Con seis meses, mantienes la calma y dejas que tu portafolio trabaje sin presión.</p>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">Gasto mensual</div><div class="value">${E.formatCOP(gastos)}</div></div>
+          <div class="kpi"><div class="label">Meta de fondo (6 meses)</div><div class="value highlight">${E.formatCOP(objetivoFE)}</div></div>
+          <div class="kpi"><div class="label">Estado actual</div><div class="value">${tieneFE ? '<span class="tag tag-success">Constituido</span>' : '<span class="tag tag-warn">Por construir</span>'}</div></div>
+          <div class="kpi"><div class="label">Asignación sugerida</div><div class="value">${E.formatCOP(allocation.fondoEmergencia)}</div></div>
+        </div>
+        <h3>Dónde guardarlo</h3>
+        <p>El fondo de emergencia no es para generar retorno, es para estar disponible. La regla: cuenta de alta liquidez que pague por encima de la inflación. En Colombia, tres opciones razonables:</p>
+        <ul>
+          <li><strong>Rappipay Ahorro</strong>: 9.25% E.A., liquidez total.</li>
+          <li><strong>Nu Cuenta</strong>: 13.0% E.A. en el primer monto, sin amarre.</li>
+          <li><strong>Pibank</strong>: 8.50% E.A., alternativa estable.</li>
+        </ul>
+        <div class="disclaimer">
+          <strong>Regla de oro:</strong> el fondo de emergencia no se toca para inversión, no se toca para gustos, no se toca para "una oportunidad". Solo se usa cuando la vida te golpea con algo no previsto. Si lo tocas por otra razón, deja de cumplir su función.
+        </div>
       `;
     }
 
     function renderPerfil(client, profile, allocation) {
       const tag = tagForProfile(profile);
       $('sec-perfil').innerHTML = `
-        <h2>1. Perfil del Cliente</h2>
+        <h2>3. Perfil del Cliente</h2>
         <div class="kpi-grid">
           <div class="kpi"><div class="label">Perfil ARCA</div><div class="value"><span class="tag ${tag}">${profile.toUpperCase()}</span></div></div>
           <div class="kpi"><div class="label">Capital invertible</div><div class="value">${E.formatCOP(allocation.capitalInvertible)}</div></div>
           <div class="kpi"><div class="label">Fondo emergencia</div><div class="value">${E.formatCOP(allocation.fondoEmergencia)}</div></div>
-          <div class="kpi"><div class="label">Objetivo mensual</div><div class="value">${E.formatCOP(client.objetivo)}</div></div>
+          <div class="kpi"><div class="label">Aporte mensual</div><div class="value">${E.formatCOP(client.objetivo)}</div></div>
         </div>
         <h3>Lectura del perfil</h3>
         <p>${perfilLectura(profile)}</p>
-        ${allocation.fondoEmergencia > 0 ? `
-          <div class="disclaimer disclaimer-warn">
-            <strong>Antes de invertir:</strong> destina ${E.formatCOP(allocation.fondoEmergencia)} a un fondo de emergencia (6 meses de gastos). Ubicalo en cuenta de alta liquidez (Rappipay, Nu, Pibank) — no se toca para inversión.
-          </div>` : ''}
       `;
     }
 
     function perfilLectura(profile) {
       const map = {
-        conservador: 'Priorizas preservación de capital. Tu cartera está cargada hacia renta fija (con PEI como ancla principal) y caja productiva. El crecimiento será más lento pero más estable.',
+        conservador: 'Priorizas preservación de capital. Tu cartera está cargada hacia renta fija con PEI como ancla principal, y caja productiva. El crecimiento será más lento pero más estable.',
         moderado:    'Buscas equilibrio entre crecimiento y estabilidad. Tu cartera reparte entre acciones de calidad, PEI como núcleo de renta fija y una capa pequeña de alternativos.',
-        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera reparte 35% en acciones, 15% en renta fija (PEI ancla), 15% en caja productiva y 35% en alternativos — la apuesta más diferenciada de Castle, vía oro, REITs y DeFi (CCI cuando aplique). Horizonte largo es obligatorio.'
+        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera reparte 35% en acciones, 15% en renta fija con PEI ancla, 15% en caja productiva y 35% en alternativos. Es la apuesta más diferenciada de Castle vía oro, REITs y DeFi (CCI cuando aplique). El horizonte largo es obligatorio.'
       };
       return map[profile] || map.moderado;
     }
 
-    function renderDeudas(debtPlan) {
+    function renderDeudas(debtPlan, client) {
+      const capDisp = client.capital || 0;
+      const ataqueInicial = capDisp * 0.50;
+
       if (!debtPlan.hayDeudas) {
         $('sec-deudas').innerHTML = `
-          <h2>2. Diagnóstico de Deudas</h2>
+          <h2>4. Diagnóstico de Deudas y Bola de Nieve</h2>
           <p>${debtPlan.mensajeEstrategia}</p>
+          <p>Estás libre de deuda. Esa es la posición desde la que se construye patrimonio sólido. El 50% destinado al ataque pasa directo al motor de inversión.</p>
           <span class="tag tag-success">Libre de deuda</span>
         `;
         return;
@@ -580,44 +666,94 @@
           <td>Mes ${d.mesPagoFinal}</td>
         </tr>`).join('');
       $('sec-deudas').innerHTML = `
-        <h2>2. Diagnóstico de Deudas — Bola de Nieve</h2>
+        <h2>4. Diagnóstico de Deudas y Bola de Nieve</h2>
+
+        <h3>Por qué usamos la Bola de Nieve</h3>
+        <p>Esta estrategia, popularizada por Dave Ramsey y respaldada por estudios de comportamiento financiero de la Universidad de Northwestern y Harvard Business Review, no es la más eficiente en pura aritmética cuando hay tasas altas. Su ventaja está en otra dimensión: la psicológica. Liquidar la deuda más pequeña primero genera una victoria temprana, real y tangible. Esa victoria construye convicción, y la convicción es la materia prima que sostiene la disciplina financiera durante meses.</p>
+        <p>Ramsey lo dice así: "Las finanzas personales son 20% conocimiento y 80% comportamiento". Por eso recomendamos este método: porque el cliente que liquida una deuda completa, aunque sea pequeña, descubre que es capaz. Y desde esa convicción, ataca la siguiente. La bola se hace más grande, el músculo financiero también.</p>
+
         <p>${debtPlan.mensajeEstrategia}</p>
+
         <div class="kpi-grid">
           <div class="kpi"><div class="label">Deuda total</div><div class="value">${E.formatCOP(debtPlan.saldoTotal)}</div></div>
           <div class="kpi"><div class="label">Cuotas mínimas</div><div class="value">${E.formatCOP(debtPlan.cuotaMinimaTotal)}</div></div>
           <div class="kpi"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(debtPlan.flujoLibreParaAtaque)}</div></div>
           <div class="kpi"><div class="label">Libertad de deuda</div><div class="value">${debtPlan.mesesParaLibertad} meses</div></div>
         </div>
-        <p class="muted">El cronograma queda ordenado por <strong>cuota mensual</strong> de menor a mayor. La idea: liquidar primero la cuota más pequeña para liberar flujo y construir momentum.</p>
+
+        <p class="muted">Cronograma ordenado por <strong>cuota mensual</strong> de menor a mayor. La idea: liquidar primero la cuota más pequeña para liberar flujo y construir momentum.</p>
         <table>
           <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Tasa</th><th>Cuota mín.</th><th>Pago en</th><th>Liquidada</th></tr></thead>
           <tbody>${filas}</tbody>
         </table>
+
+        <h3>El Ataque con la Bola de Nieve</h3>
+
+        <h4>Paso 1: El Choque de Capital (uso de la liquidez)</h4>
+        <p>Aquí entra en juego tu capital disponible, el que sale después de hacer el presupuesto. Toma el <strong>50% de ese capital</strong> (después de separar el 25% para el fondo de emergencia en una cuenta de alta rentabilidad) y liquida instantáneamente las primeras deudas de la lista.</p>
+        <div class="disclaimer">
+          <strong>Tu choque inicial:</strong> ${E.formatCOP(ataqueInicial)} para liquidar de un solo golpe las primeras deudas ordenadas por cuota mínima.
+        </div>
+
+        <h4>Paso 2: Rodar la Bola</h4>
+        <p>Si el capital disponible se acaba y aún quedan deudas más grandes, aquí empieza la magia matemática. Toma el pago mínimo que estabas destinando a las deudas que ya liquidaste en el paso anterior, y súmalo al pago de la siguiente deuda en la lista.</p>
+        <p><strong>Fórmula del asesor:</strong></p>
+        <p style="font-family: var(--font-display); color: var(--cc-gold); font-size: 1.05rem; margin: 8px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.08); border-left: 3px solid var(--cc-gold); border-radius: 6px;">Pago Nuevo = Pago Mínimo + Flujo Liberado + Ingreso Extra</p>
+        <p>Continúa pagando el mínimo en las deudas grandes, pero ataca la siguiente deuda más pequeña con toda la fuerza de este nuevo pago consolidado. Esa es la bola rodando.</p>
+
+        <h3>Aceleradores del Asesor Financiero</h3>
+        <p>Mientras aplicas la bola de nieve, dos palancas avanzadas multiplican la velocidad del proceso:</p>
+        <div class="card-nested">
+          <h4>Negociación de Tasas (Compra de Cartera)</h4>
+          <p>Llama a otros bancos. Pregunta si te compran la deuda de las tarjetas de crédito a una tasa menor. Esto no reduce el capital adeudado, pero hace que más dinero de tu pago mensual vaya al capital y no a los intereses del banco. Es plata recuperada del vacío.</p>
+        </div>
+        <div class="card-nested">
+          <h4>El Principio de Parkinson</h4>
+          <p>La Ley de Parkinson dice que "los gastos se expanden hasta llenar los ingresos disponibles". Para evitar esto, automatiza los pagos de tu Bola de Nieve al día siguiente de recibir tus ingresos. No dejes que el dinero "nade" en tu cuenta. Lo que no ves, no se gasta.</p>
+        </div>
+
         <div class="disclaimer">
           <strong>Empieza a invertir desde ya.</strong> ${escape(debtPlan.mensajeHabito || 'Aunque sea un monto simbólico, mientras pagas la bola de nieve, abre tu primera posición de inversión. La prioridad ahora no es el retorno, es el hábito de mover capital al sistema cada mes.')}
-        </div>
-        <div class="disclaimer disclaimer-warn">
-          <strong>Nota matemática:</strong> con tasas de deuda &gt;15% E.A., la bola de nieve es subóptima en pura aritmética. La elegimos igual porque el cliente que liquida una deuda completa gana más que con un cálculo financiero — gana convicción.
         </div>
       `;
     }
 
-    function renderGap(gap) {
-      const status = gap.objetivoAlcanzado
-        ? `<span class="tag tag-success">Objetivo alcanzado con capital actual</span>`
-        : `<span class="tag tag-warn">Brecha mensual: ${E.formatCOP(Math.abs(gap.brecha))}</span>`;
+    function renderCapitalAdicional(client, allocation, profile) {
+      const aporteMensual = client.objetivo || 0;
+      const aporteAnual = aporteMensual * 12;
+      const plazo = client.plazo || 5;
+      const aportePlazoTotal = aporteMensual * 12 * plazo;
+
+      const pcts = allocation.porcentajes || {};
+      const distribucion = ['acciones', 'rentaFija', 'caja', 'alternativos'].map((cat) => ({
+        cat,
+        pct: pcts[cat] || 0,
+        monto: aporteMensual * (pcts[cat] || 0)
+      }));
+
+      const filasDistrib = distribucion.map((d) => `
+        <tr>
+          <td><strong>${labelCat(d.cat)}</strong></td>
+          <td>${E.formatPct(d.pct)}</td>
+          <td class="highlight">${E.formatCOP(d.monto)}</td>
+        </tr>`).join('');
+
       $('sec-gap').innerHTML = `
-        <h2>3. Diagnóstico de Inversión</h2>
-        ${status}
+        <h2>5. Capital adicional a invertir mes a mes</h2>
+        <p>El portafolio no se construye con un solo aporte inicial. La constante es lo que mueve la aguja: cada mes vamos a sumar capital fresco a la arquitectura. Esa disciplina, sostenida en el tiempo, es la palanca que convierte capital pequeño en patrimonio real.</p>
         <div class="kpi-grid">
-          <div class="kpi"><div class="label">Flujo esperado/mes</div><div class="value">${E.formatCOP(gap.flujoMensualEsperado)}</div></div>
-          <div class="kpi"><div class="label">Objetivo/mes</div><div class="value">${E.formatCOP(gap.objetivoMensual)}</div></div>
-          <div class="kpi"><div class="label">Capital requerido</div><div class="value">${E.formatCOP(gap.capitalRequerido)}</div></div>
-          <div class="kpi"><div class="label">Déficit capital</div><div class="value">${E.formatCOP(gap.deficitCapital)}</div></div>
+          <div class="kpi"><div class="label">Aporte mensual</div><div class="value highlight">${E.formatCOP(aporteMensual)}</div></div>
+          <div class="kpi"><div class="label">Aporte anual</div><div class="value">${E.formatCOP(aporteAnual)}</div></div>
+          <div class="kpi"><div class="label">Horizonte</div><div class="value">${plazo} ${plazo === 1 ? 'año' : 'años'}</div></div>
+          <div class="kpi"><div class="label">Total aportado en el plazo</div><div class="value">${E.formatCOP(aportePlazoTotal)}</div></div>
         </div>
-        <p class="muted">
-          Cálculo basado en retorno esperado anual del perfil. Para cerrar la brecha hay 3 palancas: aumentar capital invertido, alargar horizonte, o subir el perfil de riesgo (con consciencia de la mayor volatilidad).
-        </p>
+        <h3>Cómo distribuir cada aporte mensual</h3>
+        <p>Cada mes el capital nuevo se reparte siguiendo la misma proporción ARCA del perfil <strong>${profile}</strong>:</p>
+        <table>
+          <thead><tr><th>Bucket</th><th>%</th><th>Monto mensual</th></tr></thead>
+          <tbody>${filasDistrib}</tbody>
+        </table>
+        <p class="muted">El truco no está en acertar el momento exacto del mercado, sino en estar comprando todos los meses sin falta. El precio promedio se acomoda solo, y la disciplina hace el resto.</p>
       `;
     }
 
@@ -630,7 +766,7 @@
           <td>${descCat(cat)}</td>
         </tr>`).join('');
       $('sec-arca').innerHTML = `
-        <h2>4. Arquitectura ARCA</h2>
+        <h2>6. Arquitectura ARCA</h2>
         <p class="muted">Distribución del capital invertible (${E.formatCOP(allocation.capitalInvertible)}) en las 4 categorías Castle.</p>
         <table>
           <thead><tr><th>Categoría</th><th>%</th><th>Monto COP</th><th>Función</th></tr></thead>
@@ -644,124 +780,176 @@
     }
     function descCat(cat) {
       return ({
-        acciones: 'Crecimiento — ETFs USA + dividendos',
-        rentaFija: 'Estabilidad — PEI + TES + bonos USD',
-        caja: 'Liquidez productiva — Rappipay/Nu/Pibank',
-        alternativos: 'Diversificación — oro, REITs, DeFi'
+        acciones: 'Crecimiento vía ETFs USA y dividendos',
+        rentaFija: 'Estabilidad con PEI como vehículo unificado',
+        caja: 'Liquidez productiva en Rappipay, Nu o Pibank',
+        alternativos: 'Diversificación con oro, REITs y DeFi'
       })[cat] || '';
     }
 
     function renderRentaFija(etfs, allocation) {
       const pei = etfs.rentaFija.find((r) => r.es_principal) || etfs.rentaFija[0];
-      const otros = etfs.rentaFija.filter((r) => r !== pei);
       const montoRF = allocation.montos.rentaFija;
-      const montoPEI = montoRF * 0.7;
-      const montoComplemento = montoRF * 0.3;
-
-      const tablaOtros = otros.length ? `
-        <h3>Complementos defensivos (30% de la renta fija)</h3>
-        <table>
-          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th><th>Moneda</th><th>Nota</th></tr></thead>
-          <tbody>${otros.map((r) => `
-            <tr>
-              <td><strong>${escape(r.ticker)}</strong></td>
-              <td>${escape(r.nombre)}</td>
-              <td>${escape(r.retorno_ref)}</td>
-              <td>${escape(r.moneda || '—')}</td>
-              <td>${escape(r.nota || '')}</td>
-            </tr>
-          `).join('')}</tbody>
-        </table>` : '';
 
       $('sec-rentafija').innerHTML = `
-        <h2>5. Renta Fija — PEI como Ancla</h2>
-        <p class="muted">La filosofía Castle prioriza PEI como núcleo de la renta fija para todos los perfiles. Es un vehículo de doble revalorización: distribución trimestral más apreciación del activo subyacente.</p>
+        <h2>7. Renta Fija con PEI</h2>
+        <p>En Castle Capital tomamos una decisión clara: la renta fija de los portafolios se canaliza en un solo vehículo, PEI. Los ETFs de bonos del gobierno (TES, BIL, AGG) ofrecen rentabilidades reales muy bajas y agregan complejidad sin retorno proporcional. La diversificación dentro de la renta fija no se justifica en el contexto colombiano actual.</p>
 
         <div class="highlight-pei">
-          <h3>${escape(pei.nombre)} <span class="tag tag-pei">PRINCIPAL</span></h3>
+          <h3>${escape(pei.nombre)} <span class="tag tag-pei">VEHÍCULO ÚNICO</span></h3>
           <div class="kpi-grid" style="margin-top: 8px;">
             <div class="kpi"><div class="label">Ticker</div><div class="value">${escape(pei.ticker)}</div></div>
             <div class="kpi"><div class="label">Retorno referencia</div><div class="value">${escape(pei.retorno_ref)}</div></div>
-            <div class="kpi"><div class="label">Asignación sugerida</div><div class="value">${E.formatCOP(montoPEI)}</div></div>
-            <div class="kpi"><div class="label">Vehículo</div><div class="value" style="font-size: 0.95rem;">${escape(pei.vehiculo || '—')}</div></div>
+            <div class="kpi"><div class="label">Asignación sugerida</div><div class="value">${E.formatCOP(montoRF)}</div></div>
+            <div class="kpi"><div class="label">Vehículo</div><div class="value" style="font-size: 0.95rem;">${escape(pei.vehiculo || 'Titularización Inmobiliaria (BVC)')}</div></div>
           </div>
           <p style="margin-top: 12px;">${escape(pei.nota)}</p>
-          <p class="muted"><strong>Cómo comprar:</strong> ${escape(pei.broker_sugerido || 'Trii o Tyba')} — operación PSE inmediata desde tu cuenta bancaria.</p>
+          <p class="muted"><strong>Cómo comprar:</strong> ${escape(pei.broker_sugerido || 'Trii o Tyba')}, operación PSE inmediata desde tu cuenta bancaria.</p>
         </div>
 
-        ${tablaOtros}
-
         <div class="disclaimer">
-          <strong>Lógica Castle:</strong> 70% del bucket de renta fija va a PEI (ancla con apreciación), 30% se reparte entre TES y bonos USD para diversificación de moneda y duración.
-          Asignación sugerida: <strong>${E.formatCOP(montoPEI)} en PEI</strong> + <strong>${E.formatCOP(montoComplemento)} en complementos</strong>.
+          <strong>Lógica Castle:</strong> el 100% del bucket de renta fija (${E.formatCOP(montoRF)}) va a PEI. Doble revalorización en un solo vehículo: distribución trimestral más apreciación del activo inmobiliario subyacente.
         </div>
       `;
     }
 
-    function renderETFs(etfs, profile) {
-      const tabla = (titulo, items) => items && items.length ? `
-        <h3>${titulo}</h3>
+    function renderETFs(etfs, profile, allocation) {
+      const montoAcciones = (allocation && allocation.montos && allocation.montos.acciones) || 0;
+      const acciones = etfs.acciones || [];
+      const cantidadETFs = acciones.length || 1;
+      const montoPorETF = montoAcciones / cantidadETFs;
+
+      const tablaAcciones = acciones.length ? `
+        <h3>ETFs de Acciones para tu perfil ${profile}</h3>
+        <p class="muted">Asignación total a acciones: <strong>${E.formatCOP(montoAcciones)}</strong>. Distribución proporcional entre los ${cantidadETFs} ETFs recomendados, con DCA en 6 a 12 meses.</p>
         <table>
-          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th><th>Nota</th></tr></thead>
-          <tbody>${items.map((e) => `
+          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th><th>Asignación</th><th>Nota</th></tr></thead>
+          <tbody>${acciones.map((e) => `
             <tr>
-              <td><strong>${escape(e.ticker || '—')}</strong></td>
+              <td><strong>${escape(e.ticker || '')}</strong></td>
               <td>${escape(e.nombre)}</td>
+              <td>${escape(e.retorno_ref)}</td>
+              <td class="highlight">${E.formatCOP(montoPorETF)}</td>
+              <td>${escape(e.nota || '')}</td>
+            </tr>
+          `).join('')}</tbody>
+        </table>` : '';
+
+      const tablaCaja = (etfs.caja && etfs.caja.length) ? `
+        <h3>Caja productiva</h3>
+        <table>
+          <thead><tr><th>Producto</th><th>Retorno ref.</th><th>Nota</th></tr></thead>
+          <tbody>${etfs.caja.map((e) => `
+            <tr>
+              <td><strong>${escape(e.nombre)}</strong></td>
               <td>${escape(e.retorno_ref)}</td>
               <td>${escape(e.nota || '')}</td>
             </tr>
           `).join('')}</tbody>
         </table>` : '';
+
       $('sec-etfs').innerHTML = `
-        <h2>6. ETFs Recomendados</h2>
+        <h2>8. ETFs Recomendados (con DCA)</h2>
         <p class="muted">Selección para perfil <strong>${profile}</strong>. Retornos históricos no son garantía de rendimiento futuro.</p>
-        ${tabla('Acciones — núcleo de cartera', etfs.acciones)}
-        ${tabla('Caja productiva', etfs.caja)}
+
+        <h3>El método: Dollar Cost Average (DCA)</h3>
+        <p>Una de las trampas más comunes del inversionista nuevo es invertir todo el capital de golpe el día que llega al broker. Si el mercado cae al día siguiente, esa entrada se vuelve un golpe emocional difícil de manejar y muchos terminan vendiendo en pérdida.</p>
+        <p>El <strong>Dollar Cost Average</strong>, o "promedio del costo en dólares", resuelve esto con una idea simple: en lugar de invertir todo el capital de un solo movimiento, lo divides en partes iguales y compras durante varios meses, sin importar el precio del mercado. Cuando el mercado sube, compras menos unidades; cuando cae, compras más. Al final, tu precio promedio se acomoda solo y dejas de depender de "acertar el momento".</p>
+        <p>Para nuestro plan, el 35% del capital invertible se asigna a acciones y se ejecuta vía DCA. Si recomendamos varios ETFs, repartes el monto total proporcionalmente entre todos ellos cada mes que ejecutes el aporte.</p>
+
+        <div class="card-nested">
+          <h4>Ejemplo aplicado a tu plan</h4>
+          <p>Tu asignación a acciones es <strong>${E.formatCOP(montoAcciones)}</strong>, repartida en ${cantidadETFs} ETFs. Si ejecutas el DCA en 6 meses, cada mes inviertes:</p>
+          <p><strong>${E.formatCOP(montoAcciones / 6)} mensuales totales</strong>, divididos en <strong>${E.formatCOP(montoAcciones / 6 / cantidadETFs)} por cada ETF</strong>.</p>
+          <p class="muted">Si prefieres ejecutar en 12 meses, divides entre 12. La regla: la misma cantidad, en la misma fecha, sin mirar el precio.</p>
+        </div>
+
+        ${tablaAcciones}
+        ${tablaCaja}
       `;
     }
 
-    function renderDefi(defi, montoAlt) {
+    function renderDefi(defi, montoAlt, client) {
       if (!defi) { $('sec-defi').innerHTML = ''; return; }
       const tag = defi.tier === 0 ? 'tag-warn' : defi.tier === 1 ? 'tag-blue' : defi.tier === 2 ? 'tag-gold' : 'tag-success';
 
       const noDefiBlock = defi.noDefi ? `
-        <h3>Mientras tanto — alternativos sin DeFi</h3>
+        <h3>Mientras tanto, alternativos sin DeFi</h3>
         <table>
           <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th></tr></thead>
           <tbody>${defi.noDefi.map((i) => `<tr><td><strong>${escape(i.ticker)}</strong></td><td>${escape(i.nombre)}</td><td>${escape(i.retorno_ref)}</td></tr>`).join('')}</tbody>
         </table>` : '';
 
-      const instrumentos = (defi.instrumentos || []).map((inst) => {
-        if (inst.tipo === 'defi_educacion') {
-          return `<div class="card-nested"><h3>${escape(inst.nombre)}</h3><p>${escape(inst.contenido)}</p></div>`;
-        }
-        const pasos = inst.pasos ? `<ol>${inst.pasos.map((p) => `<li>${escape(p)}</li>`).join('')}</ol>` : '';
-        const hf = inst.health_factor_min ? `<p><strong>Health Factor mínimo:</strong> ${inst.health_factor_min}${inst.health_factor_objetivo ? ` (objetivo ${inst.health_factor_objetivo})` : ''}</p>` : '';
-        const cap = inst.capital_minimo_cop ? `<p><strong>Capital mínimo:</strong> ${E.formatCOP(inst.capital_minimo_cop)}</p>` : '';
-        return `<div class="card-nested">
-          <h3>${escape(inst.nombre)}</h3>
-          <p><strong>Red:</strong> ${escape(inst.red || '—')} · <strong>APY referencia:</strong> ${escape(inst.apy_ref || '—')}</p>
-          ${pasos}${hf}${cap}
-        </div>`;
-      }).join('');
-
       const proy = E.projectDefiReturns(montoAlt, defi.tier, 1);
       const proyBlock = proy ? `
-        <h3>Proyección DeFi (1 año, sobre ${E.formatCOP(montoAlt)})</h3>
+        <h3>Proyección DeFi (1 año sobre ${E.formatCOP(montoAlt)})</h3>
         <table>
           <thead><tr><th>Escenario</th><th>APY</th><th>Valor final</th><th>Ganancia</th></tr></thead>
           <tbody>${proy.map((p) => `<tr><td>${escape(p.escenario)}</td><td>${E.formatPct(p.apy)}</td><td class="highlight">${E.formatCOP(p.valorFinal)}</td><td>${E.formatCOP(p.gananciaAnual)}</td></tr>`).join('')}</tbody>
         </table>` : '';
 
+      const monto20 = montoAlt * 0.20;
+      const monto80 = montoAlt * 0.80;
+
+      const playbookCastle = `
+        <h3>El playbook Castle paso a paso</h3>
+        <p class="muted">Esta es la secuencia exacta que ejecutamos en CCI. No es teoría, es la operación real que aplicamos para extraer rendimiento de la liquidez DeFi con riesgo controlado.</p>
+
+        <div class="card-nested">
+          <h4>Paso 1. Construye el colateral en Aave</h4>
+          <p>Compra Bitcoin y Ethereum en Bitso o Binance, transfiere a la red de tu elección y deposítalos en Aave V3 como colateral. Esa posición queda generando supply APY mientras te abre la puerta al endeudamiento controlado.</p>
+        </div>
+
+        <div class="card-nested">
+          <h4>Paso 2. Solicita un préstamo conservador del 25%</h4>
+          <p>Sobre el colateral depositado, solicita un préstamo del 25% del valor. Mantenemos un Loan To Value bajo a propósito: el Health Factor se mantiene alto y la posición queda lejos de cualquier zona de liquidación. Esa es la primera capa de capital adicional para trabajar.</p>
+        </div>
+
+        <div class="card-nested">
+          <h4>Paso 3. DCA en XRP con el 20% del capital disponible</h4>
+          <p>Toma el 20% del capital disponible (en tu caso, ${E.formatCOP(monto20)}) y ejecuta un Dollar Cost Average en Binance comprando XRP. La idea es construir esa posición en el tiempo, no de golpe, para promediar el costo de entrada.</p>
+        </div>
+
+        <div class="card-nested">
+          <h4>Paso 4. LPs concentrados con el 80% restante</h4>
+          <p>Con el otro 80% (${E.formatCOP(monto80)}), establece posiciones en protocolos de liquidez con tres pares:</p>
+          <ul>
+            <li><strong>ETH / USD</strong>: par direccional con cobertura en stablecoin.</li>
+            <li><strong>BTC / USD</strong>: par direccional sobre el activo ancla cripto.</li>
+            <li><strong>ETH / BTC</strong>: par cruzado con rangos estrechos calibrados por Julián para maximizar fees por unidad de capital.</li>
+          </ul>
+          <p class="muted">El rebalanceo y los rangos exactos los gestiona Castle bajo Contrato de Mandato. La operación requiere monitoreo activo.</p>
+        </div>
+
+        <div class="card-nested">
+          <h4>Paso 5. Apalanca y diversifica en Solana</h4>
+          <p>Con la posición de Aave consolidada, solicita préstamos adicionales hasta llevar el Health Factor del préstamo a 2.5. El capital que sale de allí va a dos destinos:</p>
+          <ul>
+            <li>Protocolos de liquidez en la red de Solana, especialmente el par <strong>SOL / USD</strong>.</li>
+            <li>Diversificación parcial en acciones tecnológicas líderes como <strong>Google</strong> a través del bucket de acciones.</li>
+          </ul>
+          <p class="muted">Health Factor objetivo del 2.5: margen amplio de seguridad incluso ante caídas pronunciadas del colateral.</p>
+        </div>
+      `;
+
+      const ejecutaPlaybookCastle = (defi.tier >= 2) || client.esCCI;
+
       $('sec-defi').innerHTML = `
-        <h2>7. Estrategia DeFi</h2>
+        <h2>9. Estrategia DeFi</h2>
         <p><span class="tag ${tag}">${escape(defi.titulo)}</span></p>
         <p>${escape(defi.contenido)}</p>
-        ${instrumentos}
+
+        ${ejecutaPlaybookCastle ? playbookCastle : `
+          <div class="disclaimer">
+            <strong>Pre requisito:</strong> antes de ejecutar el playbook completo de DeFi (BTC y ETH como colateral, préstamos en Aave, LPs concentrados y diversificación en Solana), recomendamos que primero te familiarices con el ecosistema. Cuando estés listo, esta es la secuencia que aplicaremos.
+          </div>
+          ${playbookCastle}
+        `}
+
         ${proyBlock}
         ${noDefiBlock}
         <div class="disclaimer"><strong>CTA:</strong> ${escape(defi.cta)}</div>
-        ${defi.tier >= 2 ? `<div class="disclaimer disclaimer-warn">Esta estrategia requiere gestión activa y monitoreo. Solo disponible bajo Contrato de Mandato de Inversión con Castle Capital. Castle Capital no garantiza retornos.</div>` : ''}
+        <div class="disclaimer disclaimer-warn">Esta estrategia requiere gestión activa y monitoreo. Solo se ejecuta bajo Contrato de Mandato de Inversión con Castle Capital. Castle Capital no garantiza retornos.</div>
       `;
     }
 
@@ -774,13 +962,13 @@
           ${esc.proyecciones.map((p) => `<td class="highlight">${E.formatCOP(p.valorFinal)}</td>`).join('')}
         </tr>`).join('');
       $('sec-proyecciones').innerHTML = `
-        <h2>8. Proyecciones</h2>
+        <h2>10. Proyecciones</h2>
         <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)}</p>
         <table>
           <thead><tr><th>Escenario</th><th>Tasa anual</th>${horizontes.map((h) => `<th>${h} ${h > 1 ? 'años' : 'año'}</th>`).join('')}</tr></thead>
           <tbody>${filas}</tbody>
         </table>
-        <p class="muted">Los escenarios son ilustrativos. La tasa Base usa el retorno esperado del perfil; Conservador y Optimista aplican un ±40% sobre esa tasa.</p>
+        <p class="muted">Los escenarios son ilustrativos. La tasa Base usa el retorno esperado del perfil. Conservador y Optimista aplican una variación del 40% sobre esa tasa.</p>
       `;
     }
 
@@ -788,85 +976,83 @@
       const card = (b, titulo) => b ? `
         <div class="card-nested">
           <h3>${titulo}</h3>
-          <p><strong>${escape(b.nombre)}</strong>${b.regulado ? ` — ${escape(b.regulado)}` : ''}</p>
-          <p><strong>Comisión:</strong> ${escape(b.comision_acciones || b.comision_compra || '—')}</p>
+          <p><strong>${escape(b.nombre)}</strong>${b.regulado ? `, regulado por ${escape(b.regulado)}` : ''}</p>
+          <p><strong>Comisión:</strong> ${escape(b.comision_acciones || b.comision_compra || 'No aplica')}</p>
           <p><strong>Depósito:</strong> ${escape(b.deposito)}</p>
           <p class="muted">${escape(b.nota || '')}</p>
         </div>` : '';
       $('sec-brokers').innerHTML = `
-        <h2>9. ¿Dónde Ejecutar?</h2>
+        <h2>11. ¿Dónde Ejecutar?</h2>
         <p class="muted">Recomendación de brokers para tu capital (${E.formatCOP(capital)}) y perfil.</p>
-        ${card(brokerRec.principal, 'Broker principal — ETFs internacionales')}
-        ${card(brokerRec.complementoLocal, 'Complemento local — PEI, TES, renta fija COP')}
-        ${card(brokerRec.cripto, 'On-ramp cripto (si aplica DeFi)')}
+        ${card(brokerRec.principal, 'Broker principal para ETFs internacionales')}
+        ${card(brokerRec.complementoLocal, 'Broker local para PEI y renta fija COP')}
+        ${card(brokerRec.cripto, 'On ramp cripto (si aplica DeFi)')}
       `;
     }
 
     function renderEjecucion(allocation, etfs, brokerRec, defi) {
       const pasos = [];
       const pei = etfs.rentaFija.find((r) => r.es_principal) || etfs.rentaFija[0];
-      const principalETF = etfs.acciones[0];
+      const acciones = etfs.acciones || [];
+      const cantidadETFs = acciones.length || 1;
       const localBroker = (brokerRec.complementoLocal && brokerRec.complementoLocal.nombre) || 'Trii';
       const intlBroker = (brokerRec.principal && brokerRec.principal.nombre) || 'XTB';
 
       if (allocation.fondoEmergencia > 0) {
-        pasos.push(`Aparta <strong>${E.formatCOP(allocation.fondoEmergencia)}</strong> en cuenta de alta liquidez (Rappipay/Nu/Pibank). Esta es tu reserva de 6 meses — no se toca.`);
+        pasos.push(`Aparta <strong>${E.formatCOP(allocation.fondoEmergencia)}</strong> en cuenta de alta liquidez (Rappipay, Nu o Pibank). Esta es tu reserva de 6 meses, no se toca para inversión.`);
       }
       if (allocation.montos.caja > 0) {
-        pasos.push(`Mueve <strong>${E.formatCOP(allocation.montos.caja)}</strong> a caja productiva (${(etfs.caja[0] && etfs.caja[0].nombre) || 'Rappipay'}). Rendimiento sin amarres.`);
+        pasos.push(`Mueve <strong>${E.formatCOP(allocation.montos.caja)}</strong> a caja productiva (${(etfs.caja[0] && etfs.caja[0].nombre) || 'Rappipay'}). Es liquidez con rendimiento sin amarres.`);
       }
       if (allocation.montos.rentaFija > 0) {
-        const montoPEI = allocation.montos.rentaFija * 0.7;
-        const montoOtros = allocation.montos.rentaFija * 0.3;
-        pasos.push(`<strong>Renta fija — núcleo PEI:</strong> compra <strong>${E.formatCOP(montoPEI)}</strong> de <strong>${escape(pei.ticker)}</strong> (${escape(pei.nombre)}) vía ${localBroker}. Es la posición ancla de toda la cartera.`);
-        if (montoOtros > 0) {
-          pasos.push(`<strong>Complemento defensivo:</strong> distribuye <strong>${E.formatCOP(montoOtros)}</strong> entre TES-LP (Trii) y BIL/AGG (vía ${intlBroker}) para diversificación de duración y moneda.`);
-        }
+        pasos.push(`<strong>Renta fija con PEI:</strong> compra <strong>${E.formatCOP(allocation.montos.rentaFija)}</strong> de <strong>${escape(pei.ticker)}</strong> (${escape(pei.nombre)}) vía ${localBroker}. Es la posición ancla de toda la cartera.`);
       }
       if (allocation.montos.acciones > 0) {
-        pasos.push(`<strong>Acciones:</strong> compra <strong>${E.formatCOP(allocation.montos.acciones)}</strong> vía ${intlBroker}. Núcleo: ${principalETF ? principalETF.ticker : 'VOO'}. Considera DCA en 3-6 meses si entras hoy.`);
+        const montoPorETF = allocation.montos.acciones / cantidadETFs;
+        const tickers = acciones.map((e) => e.ticker).join(', ');
+        pasos.push(`<strong>Acciones (DCA):</strong> compra <strong>${E.formatCOP(allocation.montos.acciones)}</strong> vía ${intlBroker} repartido entre ${cantidadETFs} ETFs (${tickers}), con <strong>${E.formatCOP(montoPorETF)}</strong> por cada uno. Ejecuta en 6 a 12 meses la misma cantidad cada mes.`);
       }
       if (allocation.montos.alternativos > 0) {
         if (defi && defi.tier >= 2) {
-          pasos.push(`<strong>Alternativos:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong>. Activa CCI (Tier ${defi.tier}) con Julián para ejecución bajo Contrato de Mandato.`);
+          pasos.push(`<strong>Alternativos (DeFi):</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong>. Activa CCI Tier ${defi.tier} con Julián para ejecutar el playbook de 5 pasos bajo Contrato de Mandato.`);
         } else {
-          pasos.push(`<strong>Alternativos sin DeFi:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong> a GLD/IAU (oro) + VNQ (REITs) vía ${intlBroker}.`);
+          pasos.push(`<strong>Alternativos sin DeFi:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong> a GLD o IAU (oro) y VNQ (REITs) vía ${intlBroker}.`);
         }
       }
 
       $('sec-ejecucion').innerHTML = `
-        <h2>10. Plan de Ejecución Paso a Paso</h2>
+        <h2>12. Plan de Ejecución Paso a Paso</h2>
         <ol>${pasos.map((p) => `<li style="margin-bottom: 10px;">${p}</li>`).join('')}</ol>
         <h3>Cadencia recomendada</h3>
         <ul>
-          <li>Revisión mensual: rebalanceo si una categoría se desvía &gt;5% del target.</li>
-          <li>Aporte mensual del flujo libre directo al núcleo de acciones (${(etfs.acciones[0] && etfs.acciones[0].ticker) || 'VOO'}) y a PEI alternadamente.</li>
-          <li>Revisión anual completa: reasignación si cambia perfil de vida (matrimonio, hijos, retiro).</li>
+          <li>Revisión mensual: rebalanceo si una categoría se desvía más del 5% del target.</li>
+          <li>Aporte mensual del capital adicional, repartido entre acciones y PEI según la proporción ARCA del perfil.</li>
+          <li>Revisión anual completa: reasignación si cambia el perfil de vida (matrimonio, hijos, retiro).</li>
         </ul>
       `;
     }
 
     function renderProximos(defi) {
       $('sec-proximos').innerHTML = `
-        <h2>11. Próximos Pasos</h2>
+        <h2>13. Próximos Pasos</h2>
         <div class="card-nested">
           <h3>1. Implementa este plan en 30 días</h3>
-          <p>Ejecuta los pasos del punto 10 en orden. Documenta cada movimiento. Si tienes dudas en cualquier paso — agenda una sesión.</p>
+          <p>Ejecuta los pasos del Plan de Ejecución en orden. Documenta cada movimiento. Si tienes dudas en cualquier paso, agenda una sesión.</p>
         </div>
         <div class="card-nested">
           <h3>2. ¿Quieres maximizar tus alternativos?</h3>
           <p>${defi && defi.tier >= 2
             ? 'Tu perfil califica para CCI. Agenda sesión de implementación con Julián para activar la estrategia bajo Contrato de Mandato.'
-            : 'Cuando tengas experiencia DeFi básica (wallet propia + primer movimiento en Bitso), avanza a CCI Básico para activar el yield stack.'}</p>
+            : 'Cuando tengas experiencia DeFi básica (wallet propia y primer movimiento en Bitso), avanza a CCI Básico para activar el stack de rendimiento.'}</p>
         </div>
         <div class="card-nested">
           <h3>3. Mantente cerca</h3>
           <p>Esta arquitectura es viva. El mercado cambia, tu vida cambia, tu perfil cambia. Revisión cada 12 meses con Castle Capital.</p>
         </div>
         <div class="disclaimer disclaimer-warn">
-          <strong>Aviso legal:</strong> Castle Capital SAS es una empresa de consultoría financiera. Este documento es orientativo y no constituye asesoría en valores ni promesa de rentabilidad. Castle Capital NO capta recursos del público. Toda inversión implica riesgo, incluido pérdida de capital. Las decisiones finales son del cliente.
+          <strong>Aviso legal:</strong> Castle Capital SAS es una empresa de consultoría financiera. Este documento es orientativo y no constituye asesoría en valores ni promesa de rentabilidad. Castle Capital NO capta recursos del público. Toda inversión implica riesgo, incluida la pérdida de capital. Las decisiones finales son del cliente.
         </div>
-        <div class="section-footer-brand">— Castle Capital · Diseño · Estructura · Legado —</div>
+        <div class="section-footer-brand">Castle Capital · Diseño · Estructura · Legado</div>
       `;
     }
 
@@ -902,13 +1088,15 @@
       const brokerRec = E.recommendBroker(client.capital, profile, BROKERS_BANK);
 
       renderPortada(client);
+      renderPresupuesto(client, allocation);
+      renderFondoEmergencia(client, allocation);
       renderPerfil(client, profile, allocation);
-      renderDeudas(debtPlan);
-      renderGap(gap);
+      renderDeudas(debtPlan, client);
+      renderCapitalAdicional(client, allocation, profile);
       renderArca(allocation);
       renderRentaFija(etfs, allocation);
-      renderETFs(etfs, profile);
-      renderDefi(defi, allocation.montos.alternativos);
+      renderETFs(etfs, profile, allocation);
+      renderDefi(defi, allocation.montos.alternativos, client);
       renderProyecciones(proyecciones, allocation);
       renderBrokers(brokerRec, client.capital);
       renderEjecucion(allocation, etfs, brokerRec, defi);
@@ -945,7 +1133,7 @@
     }
 
     // ═══════════════════════════════════════
-    // STEPPER — progreso visual del formulario
+    // STEPPER. Progreso visual del formulario
     // ═══════════════════════════════════════
     function updateStepper() {
       const steps = document.querySelectorAll('#stepper .step');
@@ -990,40 +1178,40 @@
     }
 
     // ═══════════════════════════════════════
-    // CHAT ASSISTANT — Aria de Castle Capital
+    // CHAT ASSISTANT. Aria de Castle Capital
     // ═══════════════════════════════════════
     const CHAT_KB = {
       'qué-es-arca': {
         title: '¿Qué es ARCA?',
         body: `<p><strong>ARCA</strong> es la arquitectura Castle de 4 buckets para distribuir tu capital:</p>
           <ul>
-            <li><strong>A</strong>cciones — crecimiento vía ETFs USA y dividendos</li>
-            <li><strong>R</strong>enta fija — estabilidad con PEI como ancla, TES y bonos USD</li>
-            <li><strong>C</strong>aja productiva — liquidez con Rappipay, Nu o Pibank</li>
-            <li><strong>A</strong>lternativos — diversificación con oro, REITs y DeFi</li>
+            <li><strong>A</strong>cciones, crecimiento vía ETFs USA y dividendos</li>
+            <li><strong>R</strong>enta fija, estabilidad con PEI como vehículo unificado</li>
+            <li><strong>C</strong>aja productiva, liquidez con Rappipay, Nu o Pibank</li>
+            <li><strong>A</strong>lternativos, diversificación con oro, REITs y DeFi</li>
           </ul>
           <p>Tu perfil (conservador, moderado o agresivo) define el % asignado a cada bucket.</p>`
       },
       'qué-es-pei': {
         title: '¿Qué es PEI?',
         body: `<p><strong>PEI · Patrimonio Estrategias Inmobiliarias</strong> es una titularización inmobiliaria listada en la BVC.</p>
-          <p>Es la <strong>ancla principal</strong> de la renta fija Castle: bienes raíces comerciales premium en Colombia con doble revalorización — distribución trimestral (8–10% E.A.) más apreciación del activo.</p>
-          <p>Se compra vía <strong>Trii o Tyba</strong> con PSE inmediato. Castle asigna el 70% del bucket de renta fija a PEI.</p>`
+          <p>Es el <strong>vehículo único</strong> de renta fija Castle Capital: bienes raíces comerciales premium en Colombia con doble revalorización, distribución trimestral entre 8 y 10% E.A. más apreciación del activo.</p>
+          <p>Se compra vía <strong>Trii o Tyba</strong> con PSE inmediato. Castle asigna el 100% del bucket de renta fija a PEI.</p>`
       },
       'qué-es-cci': {
         title: '¿Qué es Castle Crypto Income?',
         body: `<p><strong>CCI</strong> es el producto estrella de Castle Capital. Implementación de pools de liquidez DeFi (Uniswap V3) más estrategias de borrowing en Aave V3.</p>
-          <p>Existen 3 niveles: <strong>educación</strong> (T1), <strong>básico</strong> (T2 — conservador, sin leverage agresivo) y <strong>full</strong> (T3 — leverage stack con Health Factor controlado).</p>
+          <p>Existen 3 niveles: <strong>educación</strong> (T1), <strong>básico</strong> (T2, conservador, sin leverage agresivo) y <strong>full</strong> (T3, leverage stack con Health Factor controlado).</p>
           <p>Solo se ejecuta bajo <strong>Contrato de Mandato de Inversión</strong>. El cliente mantiene siempre la custodia de su capital.</p>`
       },
       'cómo-funciona': {
         title: '¿Cómo funciona esta herramienta?',
         body: `<p>En 4 pasos:</p>
           <ul>
-            <li><strong>1.</strong> Completas tus datos — capital, ingresos, gastos, objetivo</li>
+            <li><strong>1.</strong> Completas tus datos: capital, ingresos, gastos, aporte mensual</li>
             <li><strong>2.</strong> Respondes 2 preguntas para definir tu perfil ARCA</li>
             <li><strong>3.</strong> Indicas si tienes deudas vigentes</li>
-            <li><strong>4.</strong> Generas tu plan personalizado — diagnóstico, asignación, ETFs, brokers, proyecciones y plan de ejecución paso a paso</li>
+            <li><strong>4.</strong> Generas tu plan personalizado con diagnóstico, asignación, ETFs, brokers, proyecciones y plan de ejecución paso a paso</li>
           </ul>
           <p>Al final puedes <strong>descargar el PDF</strong> con todo el plan listo para compartir.</p>`
       },
@@ -1031,15 +1219,15 @@
         title: 'Marco legal',
         body: `<p><strong>Castle Capital SAS</strong> es una empresa de consultoría financiera. Esta herramienta es orientativa y no constituye asesoría en valores ni promesa de rentabilidad.</p>
           <p>Castle Capital <strong>NO capta recursos del público</strong>. Toda inversión implica riesgo, incluido la pérdida de capital. Las decisiones finales son del cliente.</p>
-          <p>CCI opera bajo Contrato de Mandato — el cliente mantiene la custodia de su capital en todo momento.</p>`
+          <p>CCI opera bajo Contrato de Mandato. El cliente mantiene la custodia de su capital en todo momento.</p>`
       },
       'agendar': {
         title: 'Agendar sesión',
         body: `<p>Para activar tu plan o resolver dudas concretas, agenda una sesión 1:1 con Julián.</p>
           <p>Contacto directo:</p>
           <ul>
-            <li><strong>Email</strong> — castlecapital.contacto@gmail.com</li>
-            <li><strong>WhatsApp</strong> — pídelo en la sesión inicial</li>
+            <li><strong>Email:</strong> castlecapital.contacto@gmail.com</li>
+            <li><strong>WhatsApp:</strong> pídelo en la sesión inicial</li>
           </ul>
           <p>Antes de la sesión, descarga tu PDF y tráelo a la conversación.</p>`
       }
@@ -1062,7 +1250,7 @@
       }
       return {
         title: 'No tengo respuesta directa',
-        body: `<p>No tengo una respuesta directa a esa pregunta — pero estoy entrenada en los conceptos de Castle Capital.</p>
+        body: `<p>No tengo una respuesta directa a esa pregunta, pero estoy entrenada en los conceptos de Castle Capital.</p>
           <p>Prueba con: <strong>ARCA, PEI, CCI, marco legal</strong>, o cómo funciona la herramienta. Para temas concretos, agenda una sesión con Julián.</p>`
       };
     }
@@ -1188,7 +1376,7 @@
     }
 
     // ═══════════════════════════════════════
-    // SCROLL REVEAL — IntersectionObserver
+    // SCROLL REVEAL. IntersectionObserver
     // Inspirado en framer-motion `whileInView`.
     // ═══════════════════════════════════════
     let scrollObserver = null;

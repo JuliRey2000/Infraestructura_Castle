@@ -102,7 +102,7 @@ function debtStrategy(debts, monthlyIncome, monthlyExpenses, monthlyObjective) {
     mesesParaLibertad: mesAcumulado,
     saldoTotal: saldoAcumulado,
     primeraDeuda: primera ? primera.nombre : null,
-    mensajeEstrategia: `Bola de nieve: empieza por la deuda con la cuota mensual más baja — ${primera ? primera.nombre : 'la primera'} (cuota ${formatCOP(primera ? primera.cuotaMinima : 0)}). Apenas la liquides, esa misma cuota mensual se redirige a la siguiente deuda. Es subóptimo en pura matemática, pero gana el momentum y construye el hábito. Estimado: ${mesAcumulado} meses para libertad de deuda.`,
+    mensajeEstrategia: `Bola de nieve: empieza por la deuda con la cuota mensual más baja, ${primera ? primera.nombre : 'la primera'} (cuota ${formatCOP(primera ? primera.cuotaMinima : 0)}). Apenas la liquides, esa misma cuota mensual se redirige a la siguiente deuda. Es subóptimo en pura matemática, pero gana el momentum y construye el hábito. Estimado: ${mesAcumulado} meses para libertad de deuda.`,
     mensajeHabito: 'En paralelo a la bola de nieve, sugerimos empezar a invertir un monto pequeño aunque sea simbólico. La meta no es el retorno todavía, es construir el hábito de mover capital al sistema cada mes.'
   };
 }
@@ -166,7 +166,7 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
   if (exp === 'ninguna') {
     return {
       tier: 0,
-      titulo: 'Tier 0 — Sin DeFi',
+      titulo: 'Tier 0. Sin DeFi',
       contenido: 'Tu exposición alternativa va a oro (GLD/IAU) y REITs (VNQ). DeFi requiere experiencia previa.',
       instrumentos: alt.no_defi || [],
       cta: '¿Te gustaría aprender DeFi? Avanza a Tier 1 cuando tengas wallet propia y operes en Bitso.'
@@ -176,7 +176,7 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
   if (exp === 'basica' || exp === 'básica') {
     return {
       tier: 1,
-      titulo: 'Tier 1 — Educación DeFi',
+      titulo: 'Tier 1. Educación DeFi',
       contenido: 'Aún no inviertes en DeFi. Primero entiendes los protocolos.',
       instrumentos: alt.tier1_educacion || [],
       noDefi: alt.no_defi || [],
@@ -188,7 +188,7 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
   if (exp === 'intermedia' && !esCCI) {
     return {
       tier: 2,
-      titulo: 'Tier 2 — CCI Básico (Aave + Uniswap V3)',
+      titulo: 'Tier 2. CCI Básico (Aave y Uniswap V3)',
       contenido: 'Tienes experiencia DeFi. Recomendamos CCI Básico: estrategia conservadora con LTV ≤ 50%.',
       instrumentos: alt.tier2_cci_basico || [],
       cta: 'Para implementar CCI Básico, agenda sesión de setup con Julián (incluida en el producto).',
@@ -199,7 +199,7 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
 
   return {
     tier: 3,
-    titulo: 'Tier 3 — CCI Full (Aave Leverage + LP Stack)',
+    titulo: 'Tier 3. CCI Full (Aave Leverage y LP Stack)',
     contenido: 'Eres cliente CCI. Estrategia full: leverage controlado + LP concentrado + rebalanceo semanal.',
     instrumentos: alt.tier3_cci || [],
     cta: 'Continúa bajo Contrato de Mandato de Inversión. Monitoreo activo por Julián.',

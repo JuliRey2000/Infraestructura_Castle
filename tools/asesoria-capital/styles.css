@@ -114,6 +114,22 @@ body {
   letter-spacing: 1px;
 }
 
+.brand-logo--img {
+  width: 64px;
+  height: 64px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.25));
+}
+
+.brand-title-accent {
+  color: var(--cc-gold);
+  font-style: normal;
+}
+
 .brand-title {
   font-family: var(--font-display);
   font-size: 26px;
@@ -1849,6 +1865,19 @@ table tbody tr:hover { background: rgba(201, 168, 76, 0.04); }
     background: var(--cc-imperial) !important;
     color: var(--cc-gold) !important;
     border-color: var(--cc-gold) !important;
+  }
+
+  .brand-logo--img {
+    background: transparent !important;
+    border: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .brand-title-accent {
+    color: var(--cc-gold) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .brand-title { color: var(--cc-midnight) !important; }
