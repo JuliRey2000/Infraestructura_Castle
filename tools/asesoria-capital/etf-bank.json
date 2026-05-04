@@ -171,8 +171,9 @@
         "nombre": "SPDR Gold Shares",
         "retorno_ref": "60.2% YTD",
         "horizonte": "largo",
-        "nota": "Cobertura inflacionaria y refugio en crisis",
-        "requiere_defi": false
+        "nota": "ETF de oro: cobertura inflacionaria y refugio en crisis",
+        "requiere_defi": false,
+        "categoria": "oro"
       },
       {
         "ticker": "IAU",
@@ -180,15 +181,35 @@
         "retorno_ref": "similar GLD, TER inferior",
         "horizonte": "largo",
         "nota": "Alternativa más barata a GLD",
-        "requiere_defi": false
+        "requiere_defi": false,
+        "categoria": "oro"
       },
       {
-        "ticker": "VNQ",
-        "nombre": "Vanguard Real Estate ETF",
-        "retorno_ref": "7.4% anualizado 10y",
+        "ticker": "BTC",
+        "nombre": "Bitcoin (compra directa en Binance)",
+        "retorno_ref": "Volátil, ancla cripto a largo plazo",
         "horizonte": "largo",
-        "nota": "REITs USA — flujo de renta inmobiliaria internacional",
-        "requiere_defi": false
+        "nota": "On-ramp Binance vía P2P COP. Custodia en wallet propia.",
+        "requiere_defi": false,
+        "categoria": "cripto"
+      },
+      {
+        "ticker": "ETH",
+        "nombre": "Ethereum (compra directa en Binance)",
+        "retorno_ref": "Volátil, expuesto a actividad DeFi",
+        "horizonte": "largo",
+        "nota": "Activo base del ecosistema DeFi. Custodia en wallet propia.",
+        "requiere_defi": false,
+        "categoria": "cripto"
+      },
+      {
+        "ticker": "XRP",
+        "nombre": "XRP (compra directa en Binance)",
+        "retorno_ref": "Volátil, exposición pago transfronterizo",
+        "horizonte": "largo",
+        "nota": "Tesis de pagos transfronterizos. Custodia en wallet propia.",
+        "requiere_defi": false,
+        "categoria": "cripto"
       }
     ],
     "tier1_educacion": [
@@ -209,20 +230,19 @@
     ],
     "tier2_cci_basico": [
       {
-        "nombre": "CCI Básico — Aave + Uniswap V3",
+        "nombre": "CCI Básico: Uniswap V3 con LTV ≤ 50%",
         "tipo": "defi_producto_cci",
         "tier": 2,
-        "apy_ref": "25-50% APY neto",
+        "apy_ref": "25 a 40% APY neto",
         "red": "Base",
         "pasos": [
-          "Depósito de USDC como colateral en Aave V3",
-          "Borrow conservador (LTV ≤ 50%, sin leverage agresivo)",
           "LP en Uniswap V3 ETH/USDC con rango ±15%",
+          "LTV ≤ 50% sobre el capital expuesto",
+          "Sin leverage ni borrowing en Aave (eso es CCI Premium)",
           "Rebalanceo cada 2 semanas o si sale del rango"
         ],
         "health_factor_min": 2.0,
         "capital_minimo_cop": 2000000,
-        "requiere_mandato": true,
         "requiere_setup": true,
         "nota_setup": "Requiere sesión de implementación con Julián (2-3 horas). Incluida en CCI Básico.",
         "cta": "Agenda tu sesión de setup con Julián para activar CCI Básico."
@@ -246,8 +266,7 @@
         "health_factor_objetivo": 1.8,
         "fee_tier": "0.05% (alta liquidez) o 0.3% (volatilidad)",
         "exclusivo_cci": true,
-        "requiere_mandato": true,
-        "disclaimer": "Requiere gestión activa semanal y monitoreo de liquidaciones. Solo para clientes Castle Crypto Income bajo Contrato de Mandato de Inversión."
+        "disclaimer": "Requiere gestión activa semanal y monitoreo de liquidaciones. Solo para clientes Castle Crypto Income con gestión activa de Castle."
       },
       {
         "nombre": "Uniswap V3 ETH/WBTC (Base)",
@@ -256,9 +275,8 @@
         "apy_ref": "25-60% APY",
         "red": "Base",
         "fee_tier": "0.3%",
-        "nota": "Volatilidad mayor — solo capital > $5M COP equivalente",
-        "exclusivo_cci": true,
-        "requiere_mandato": true
+        "nota": "Volatilidad mayor: solo capital > $5M COP equivalente",
+        "exclusivo_cci": true
       }
     ]
   }

@@ -170,6 +170,10 @@ function projectPortfolioMonthly(capitalInicial, profile, years, aporteMensual) 
   const totalMeses = (years || 5) * 12;
   const aporte = Math.max(0, aporteMensual || 0);
 
+  // Resolución adaptativa: para horizontes largos guardamos cada 3 meses para no saturar la curva,
+  // para horizontes cortos guardamos cada mes para mayor fidelidad en el hover.
+  const stride = totalMeses > 120 ? 3 : 1;
+
   return escenarios.map((esc) => {
     const tasaMensual = Math.pow(1 + esc.rate, 1 / 12) - 1;
     const puntos = [];
@@ -177,7 +181,7 @@ function projectPortfolioMonthly(capitalInicial, profile, years, aporteMensual) 
     puntos.push({ mes: 0, anio: 0, valor });
     for (let m = 1; m <= totalMeses; m++) {
       valor = valor * (1 + tasaMensual) + aporte;
-      if (m % 6 === 0 || m === totalMeses) {
+      if (m % stride === 0 || m === totalMeses) {
         puntos.push({ mes: m, anio: m / 12, valor });
       }
     }
@@ -219,8 +223,9 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
     return {
       tier: 0,
       titulo: 'Tier 0. Sin DeFi',
-      contenido: 'Tu exposición alternativa va a oro (GLD/IAU) y REITs (VNQ). DeFi requiere experiencia previa.',
+      contenido: 'Tu exposición alternativa va a oro (GLD/IAU) y compra directa de cripto en Binance (BTC, ETH, XRP). DeFi requiere experiencia previa.',
       instrumentos: alt.no_defi || [],
+      noDefi: alt.no_defi || [],
       cta: '¿Te gustaría aprender DeFi? Avanza a Tier 1 cuando tengas wallet propia y operes en Binance.'
     };
   }
@@ -240,8 +245,8 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
   if (exp === 'intermedia' && !esCCI) {
     return {
       tier: 2,
-      titulo: 'Tier 2. CCI Básico (Aave y Uniswap V3)',
-      contenido: 'Tienes experiencia DeFi. Recomendamos CCI Básico: estrategia conservadora con LTV ≤ 50%.',
+      titulo: 'Tier 2. CCI Básico (solo Uniswap V3)',
+      contenido: 'Tienes experiencia DeFi. Recomendamos CCI Básico: solo Uniswap V3 con LTV ≤ 50%, sin leverage.',
       instrumentos: alt.tier2_cci_basico || [],
       cta: 'Para implementar CCI Básico, agenda sesión de setup con Julián (incluida en el producto).',
       requiereSetup: true,
@@ -254,7 +259,7 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
     titulo: 'Tier 3. CCI Full (Aave Leverage y LP Stack)',
     contenido: 'Eres cliente CCI. Estrategia full: leverage controlado + LP concentrado + rebalanceo semanal.',
     instrumentos: alt.tier3_cci || [],
-    cta: 'Continúa bajo Contrato de Mandato de Inversión. Monitoreo activo por Julián.',
+    cta: 'Continúa con la gestión activa de Castle. Monitoreo y operación por Julián.',
     montoSugerido: montoAlternativos
   };
 }

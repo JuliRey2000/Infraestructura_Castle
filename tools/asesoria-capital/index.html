@@ -142,6 +142,7 @@
                 <option value="3">3 años</option>
                 <option value="5" selected>5 años</option>
                 <option value="10">10 años</option>
+                <option value="15">15 años</option>
                 <option value="20">20 años</option>
               </select>
             </div>
@@ -259,6 +260,7 @@
         <div class="section card" id="sec-fondo"></div>
         <div class="section card" id="sec-perfil"></div>
         <div class="section card" id="sec-deudas"></div>
+        <div class="section card hidden" id="sec-flujo-negativo"></div>
         <div class="section card" id="sec-gap"></div>
         <div class="section card" id="sec-arca"></div>
         <div class="section card" id="sec-rentafija"></div>
@@ -391,9 +393,11 @@
       ],
       alternativos: {
         no_defi: [
-          { ticker: 'GLD', nombre: 'SPDR Gold Shares', retorno_ref: '60.2% YTD', horizonte: 'largo', nota: 'Refugio anti-inflación' },
-          { ticker: 'IAU', nombre: 'iShares Gold Trust', retorno_ref: 'Similar GLD, TER inferior', horizonte: 'largo', nota: 'Alternativa más barata' },
-          { ticker: 'VNQ', nombre: 'Vanguard Real Estate ETF', retorno_ref: '7.4% anualizado 10y', horizonte: 'largo', nota: 'REITs USA' }
+          { ticker: 'GLD', nombre: 'SPDR Gold Shares', retorno_ref: '60.2% YTD', horizonte: 'largo', nota: 'ETF de oro: cobertura inflacionaria', categoria: 'oro' },
+          { ticker: 'IAU', nombre: 'iShares Gold Trust', retorno_ref: 'Similar GLD, TER inferior', horizonte: 'largo', nota: 'Alternativa más barata a GLD', categoria: 'oro' },
+          { ticker: 'BTC', nombre: 'Bitcoin (compra directa en Binance)', retorno_ref: 'Volátil, ancla cripto a largo plazo', horizonte: 'largo', nota: 'On-ramp Binance vía P2P COP. Custodia en wallet propia.', categoria: 'cripto' },
+          { ticker: 'ETH', nombre: 'Ethereum (compra directa en Binance)', retorno_ref: 'Volátil, expuesto a actividad DeFi', horizonte: 'largo', nota: 'Activo base del ecosistema DeFi. Custodia en wallet propia.', categoria: 'cripto' },
+          { ticker: 'XRP', nombre: 'XRP (compra directa en Binance)', retorno_ref: 'Volátil, exposición pago transfronterizo', horizonte: 'largo', nota: 'Tesis de pagos transfronterizos. Custodia en wallet propia.', categoria: 'cripto' }
         ],
         tier1_educacion: [
           {
@@ -702,7 +706,7 @@
       const map = {
         conservador: 'Priorizas preservación de capital. Tu cartera está cargada hacia renta fija con PEI como ancla principal, y caja productiva. El crecimiento será más lento pero más estable.',
         moderado:    'Buscas equilibrio entre crecimiento y estabilidad. Tu cartera reparte entre acciones de calidad, PEI como núcleo de renta fija y una capa pequeña de alternativos.',
-        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera reparte 35% en acciones, 15% en renta fija con PEI ancla, 15% en caja productiva y 35% en alternativos. Es la apuesta más diferenciada de Castle vía oro, REITs y DeFi (CCI cuando aplique). El horizonte largo es obligatorio.'
+        agresivo:    'Toleras volatilidad por mayor crecimiento. Tu cartera reparte 35% en acciones, 15% en renta fija con PEI ancla, 15% en caja productiva y 35% en alternativos. Es la apuesta más diferenciada de Castle vía oro y cripto (BTC, ETH, XRP) o DeFi cuando el perfil aplique. El horizonte largo es obligatorio.'
       };
       return map[profile] || map.moderado;
     }
@@ -779,6 +783,85 @@
       `;
     }
 
+    // === Caso especial: gastos > ingresos ===
+    // Cuando el flujo libre mensual es negativo, no tiene sentido proyectar inversión.
+    // La prioridad es: cubrir el déficit primero (bola de nieve si hay deudas + generar ingresos extra).
+    // Mostramos un bloque dedicado con ideas concretas y banner de mentoría con Julián.
+    function renderFlujoNegativo(client) {
+      const ingresos = client.ingresos || 0;
+      const gastos = client.gastos || 0;
+      const flujo = ingresos - gastos;
+      const sec = $('sec-flujo-negativo');
+
+      if (flujo >= 0) {
+        sec.classList.add('hidden');
+        sec.innerHTML = '';
+        return false;
+      }
+
+      sec.classList.remove('hidden');
+      sec.innerHTML = `
+        <h2>Tu situación primero: gastos mayores que ingresos</h2>
+
+        <div class="alert-block alert-block--orange">
+          <div class="alert-block__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="alert-block__body">
+            <strong>Tu flujo libre mensual es negativo: ${E.formatCOP(flujo)}.</strong>
+            <p>Significa que cada mes gastas más de lo que ingresa. Antes de mover capital al motor de inversión, tu prioridad es cerrar esa brecha. No tendría sentido proyectar rendimientos sobre un sistema que está perdiendo dinero por la base.</p>
+          </div>
+        </div>
+
+        <h3>Primer paso: la Bola de Nieve es tu única estrategia activa</h3>
+        <p>Mientras el flujo sea negativo, no hay nada para invertir. Toda la energía financiera va a un solo objetivo: liberar flujo. La Bola de Nieve te da la ruta exacta. Empiezas por la deuda con la cuota mensual más baja, la liquidas, y rediriges esa cuota a la siguiente. La sensación de ganar momentum es lo que sostiene el hábito durante los meses difíciles.</p>
+        <p class="muted">Si aún no marcaste tus deudas en la sección anterior, vuelve y agrégalas. Sin ese mapa, la bola no rueda.</p>
+
+        <h3>Segundo paso: construir nuevas fuentes de ingresos</h3>
+        <p>Reducir gastos tiene un piso. Aumentar ingresos no lo tiene. Mientras la bola de nieve trabaja por el lado del pasivo, tu jugada paralela es abrir frentes de ingreso adicional. Tres ideas concretas que cualquier persona puede activar en menos de 30 días:</p>
+
+        <div class="ideas-grid">
+          <div class="idea-card">
+            <div class="idea-card__num">1</div>
+            <h4>Freelance digital en plataformas globales</h4>
+            <p>Workana, Upwork, Fiverr y Freelancer pagan en USD por servicios de redacción, diseño, traducción, edición de video, asistencia virtual o programación. Solo necesitas una habilidad que ya tengas y una conexión a internet. Empezás cobrando bajo y subes tarifas con cada reseña positiva.</p>
+          </div>
+          <div class="idea-card">
+            <div class="idea-card__num">2</div>
+            <h4>Etiquetar datos para entrenar IA</h4>
+            <p>Plataformas como Outlier, Remotasks o Appen pagan en dólares por tareas simples de revisión, corrección y etiquetado para modelos de inteligencia artificial. Te registras, pasas una prueba corta y trabajas a tu ritmo. Es la forma más rápida de monetizar lectura, escritura o sentido común.</p>
+          </div>
+          <div class="idea-card">
+            <div class="idea-card__num">3</div>
+            <h4>Vender lo que ya no usas + tienda sin inventario</h4>
+            <p>Liquida lo que tienes en casa por Mercado Libre, Marketplace o Tienda Nube y con ese capital semilla abres una tienda de dropshipping (Shopify, TiendaNube). Vendes sin guardar inventario y el proveedor envía directo al cliente. Margen entre el 20 y el 40%.</p>
+          </div>
+        </div>
+
+        <p class="muted">Estas son tres rutas probadas. Si quieres más profundidad o ideas adicionales, vale la pena consultar guías como <a href="https://www.shopify.com/es/blog/como-ganar-dinero-online-en-colombia" target="_blank" rel="noopener">Shopify Colombia: 25 ideas para 2026</a> o <a href="https://www.shopify.com/es/blog/como-ganar-dinero-desde-casa-en-colombia" target="_blank" rel="noopener">20 formas de ganar dinero desde casa</a>.</p>
+
+        <div class="cta-banner cta-banner--mentoria">
+          <span class="cta-banner__pill">Mentoría 1:1 con Julián</span>
+          <h3>Acelera tu salida con <em>trading aplicado</em></h3>
+          <p class="cta-lede">Si tu objetivo es generar más de USD 1.000 mensuales en los primeros 6 meses, una mentoría 1:1 con Julián es el atajo más limpio. Trabajamos sobre tu perfil, tu capital disponible y tu velocidad de aprendizaje. No es una promesa, es un sistema con disciplina, pruebas y revisiones semanales.</p>
+          <ul class="cta-banner__bullets">
+            <li>Diagnóstico de tu situación y plan personal de salida</li>
+            <li>Sesiones semanales con Julián para revisar tus operaciones</li>
+            <li>Acceso a la metodología Castle Capital aplicada a tu cuenta</li>
+            <li>Comunidad privada para mantener el ritmo y la disciplina</li>
+          </ul>
+          <div class="cta-banner-actions">
+            <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20me%20interesa%20la%20mentor%C3%ADa%201%3A1%20en%20trading%20para%20generar%20ingresos%20extra." target="_blank" rel="noopener">Quiero mi mentoría con Julián</a>
+            <a class="btn-link-soft" href="mailto:castlecapitalemily@gmail.com">Escribir por correo</a>
+          </div>
+          <p class="cta-banner__legal">Los retornos pasados no garantizan retornos futuros. Trading implica riesgo de pérdida. La mentoría te da el sistema y la disciplina, no rendimientos garantizados.</p>
+        </div>
+
+        <p class="muted">Las secciones de inversión que siguen quedan plegadas a propósito. Las puedes abrir si quieres ver la arquitectura sugerida cuando recuperes flujo positivo, pero tu enfoque hoy debería ser este bloque.</p>
+      `;
+      return true;
+    }
+
     function renderCapitalAdicional(client, allocation, profile) {
       const aporteMensual = client.objetivo || 0;
       const aporteAnual = aporteMensual * 12;
@@ -844,7 +927,7 @@
         acciones: 'Crecimiento vía ETFs USA y dividendos',
         rentaFija: 'Estabilidad con PEI como vehículo unificado',
         caja: 'Liquidez productiva en Rappipay, Nu o Pibank',
-        alternativos: 'Diversificación con oro, REITs y DeFi'
+        alternativos: 'Diversificación con oro y cripto (BTC, ETH, XRP) o DeFi'
       })[cat] || '';
     }
 
@@ -936,10 +1019,16 @@
         : 'tier-card--three';
 
       // === TIER hero (grande y visible) ===
+      // Para Tier 0, el dígito se envuelve en .tier-zero para forzar el cero
+      // ovalado con línea transversal (estilo zero slashed) y diferenciarlo de la letra O.
+      const tierDigit = defi.tier === 0
+        ? `<span class="tier-zero" aria-label="cero">0</span>`
+        : `${defi.tier}`;
+      const tierNumHTML = `TIER ${tierDigit}`;
       const tierHero = `
         <div class="tier-hero ${tierColor}">
           <div class="tier-hero__label">Tu nivel DeFi actual</div>
-          <div class="tier-hero__num">TIER ${defi.tier}</div>
+          <div class="tier-hero__num">${tierNumHTML}</div>
           <div class="tier-hero__title">${escape(defi.titulo.replace(/^Tier\s*\d+\.\s*/i, ''))}</div>
           <p class="tier-hero__desc">${escape(defi.contenido)}</p>
         </div>
@@ -951,10 +1040,10 @@
           <div class="cci-rec-card cci-rec-card--basico">
             <div class="cci-rec-card__badge">Recomendado para ti</div>
             <h3 class="cci-rec-card__title">CCI Básico</h3>
-            <div class="cci-rec-card__return">25 – 40%<span>retorno anual estimado*</span></div>
+            <div class="cci-rec-card__return">25 a 40%<span>retorno anual estimado*</span></div>
             <ul class="cci-rec-card__list">
-              <li>Aave V3 + Uniswap V3 con LTV ≤ 50%</li>
-              <li>Estrategia conservadora bajo Contrato de Mandato</li>
+              <li>Solo Uniswap V3 con LTV ≤ 50%</li>
+              <li>Estrategia conservadora con gestión activa de Castle</li>
               <li>Sesión de setup incluida</li>
             </ul>
             <a class="btn-orange" href="#sec-proximos">Agendar sesión gratuita</a>
@@ -962,10 +1051,10 @@
           <div class="cci-rec-card cci-rec-card--premium">
             <div class="cci-rec-card__badge cci-rec-card__badge--premium">Premium</div>
             <h3 class="cci-rec-card__title">CCI Premium</h3>
-            <div class="cci-rec-card__return">35 – 80%<span>retorno anual estimado*</span></div>
+            <div class="cci-rec-card__return">35 a 80%<span>retorno anual estimado*</span></div>
             <ul class="cci-rec-card__list">
-              <li>Leverage stack con Health Factor controlado</li>
-              <li>LP concentrado y rebalanceo activo semanal</li>
+              <li>Aave V3 + Uniswap V3 con leverage stack</li>
+              <li>Health Factor controlado y rebalanceo activo semanal</li>
               <li><strong>Disponible tras sesión con uno de nuestros expertos</strong></li>
             </ul>
             <a class="btn-orange" href="#sec-proximos">Agendar sesión gratuita</a>
@@ -991,7 +1080,7 @@
                   <td><strong>Tier 0</strong></td>
                   <td>Sin DeFi</td>
                   <td>Sin experiencia previa con cripto</td>
-                  <td>Alternativos vía oro (GLD/IAU) y REITs (VNQ)</td>
+                  <td>Alternativos vía oro (GLD/IAU) y compra directa de BTC/ETH/XRP en Binance</td>
                 </tr>
                 <tr${defi.tier === 1 ? ' class="is-current"' : ''}>
                   <td><strong>Tier 1</strong></td>
@@ -1003,13 +1092,13 @@
                   <td><strong>Tier 2</strong></td>
                   <td>CCI Básico</td>
                   <td>Experiencia intermedia, listo para capital</td>
-                  <td>LP en Uniswap V3 + supply en Aave, LTV ≤ 50%, sin leverage agresivo</td>
+                  <td>Solo LP en Uniswap V3 con LTV ≤ 50%, sin leverage</td>
                 </tr>
                 <tr${defi.tier === 3 ? ' class="is-current"' : ''}>
                   <td><strong>Tier 3</strong></td>
                   <td>CCI Premium</td>
                   <td>Cliente activo, sesión con experto</td>
-                  <td>Leverage stack + LP concentrado + rebalanceo semanal</td>
+                  <td>Aave V3 + Uniswap V3 con leverage stack y rebalanceo semanal</td>
                 </tr>
               </tbody>
             </table>
@@ -1026,7 +1115,7 @@
           </div>
           <div class="playbook-disclosure__body">
             <strong>Esta estrategia debe ser ejecutada y monitorizada periódicamente por un experto.</strong>
-            <p>Lo que ves abajo está publicado <em>únicamente con carácter educativo</em>. Si quieres beneficiarte de esta operación con seguridad, ejecútala bajo <strong>CCI Básico</strong> (25–40% de retorno anual estimado) o <strong>CCI Premium</strong> (35–80% de retorno anual estimado, disponible tras sesión con experto).</p>
+            <p>Lo que ves abajo está publicado <em>únicamente con carácter educativo</em>. Si quieres beneficiarte de esta operación con seguridad, ejecútala bajo <strong>CCI Básico</strong> (25 a 40% de retorno anual estimado) o <strong>CCI Premium</strong> (35 a 80% de retorno anual estimado, disponible tras sesión con experto).</p>
             <p class="playbook-disclosure__legal">Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos y dependen de la operación activa, las condiciones del mercado y la ejecución del experto.</p>
           </div>
         </div>
@@ -1064,7 +1153,7 @@
             <li><strong>BTC / USD</strong>: par direccional sobre el activo ancla cripto.</li>
             <li><strong>ETH / BTC</strong>: par cruzado con rangos estrechos calibrados por Julián.</li>
           </ul>
-          <p class="muted">El rebalanceo y los rangos exactos los gestiona Castle bajo Contrato de Mandato.</p>
+          <p class="muted">El rebalanceo y los rangos exactos los gestiona Castle.</p>
         </div>
 
         <div class="card-nested">
@@ -1088,15 +1177,16 @@
 
       const noDefiBlock = defi.noDefi ? `
         <h3>Mientras tanto, alternativos sin DeFi</h3>
+        <p class="muted">Dos vehículos para tu bucket de alternativos: ETFs de oro (GLD/IAU) y compra directa en Binance de las tres cripto que recomendamos (Bitcoin, Ether, XRP). Cualquier otra cosa queda fuera del plan Castle.</p>
         <table>
-          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th></tr></thead>
-          <tbody>${defi.noDefi.map((i) => `<tr><td><strong>${escape(i.ticker)}</strong></td><td>${escape(i.nombre)}</td><td>${escape(i.retorno_ref)}</td></tr>`).join('')}</tbody>
+          <thead><tr><th>Ticker</th><th>Nombre</th><th>Categoría</th><th>Retorno ref.</th></tr></thead>
+          <tbody>${defi.noDefi.map((i) => `<tr><td><strong>${escape(i.ticker)}</strong></td><td>${escape(i.nombre)}</td><td>${escape(i.categoria || 'general')}</td><td>${escape(i.retorno_ref)}</td></tr>`).join('')}</tbody>
         </table>` : '';
 
       const ctaBanner = `
         <div class="cta-banner">
           <h3>¿Quieres mejorar <em>tu rentabilidad</em>?</h3>
-          <p class="cta-lede">Esta arquitectura es solo el comienzo. La operación viva — pools concentrados, ajustes de Health Factor y rebalanceos — la ejecutamos contigo bajo Contrato de Mandato. Una sesión 1:1 con Julián define si tu perfil califica y cómo activarla.</p>
+          <p class="cta-lede">Esta arquitectura es solo el comienzo. La operación viva (pools concentrados, ajustes de Health Factor y rebalanceos) la ejecutamos contigo en gestión activa con Castle. Una sesión 1:1 con Julián define si tu perfil califica y cómo activarla.</p>
           <div class="cta-banner-actions">
             <a class="btn-orange" href="#sec-proximos">Agendar con Julián</a>
             <a class="btn-link-soft" href="#sec-proximos">Ver contacto y agenda</a>
@@ -1138,6 +1228,10 @@
         <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)} · Aporte mensual ${E.formatCOP(aporteMensual)} · Plazo ${plazo} ${plazo > 1 ? 'años' : 'año'}</p>
 
         <div class="projection-chart-wrap">
+          <div class="projection-chart-tooltip" id="projection-tooltip" role="status" aria-live="polite">
+            <div class="projection-chart-tooltip__title">Pasa el cursor sobre la gráfica</div>
+            <div class="projection-chart-tooltip__hint">Verás el capital proyectado en cada momento del plazo.</div>
+          </div>
           ${chartSVG}
           <div class="projection-chart-legend">
             <span class="legend-item"><span class="dot dot--conservador"></span>Conservador</span>
@@ -1152,34 +1246,44 @@
         </table>
         <p class="muted">Los escenarios son ilustrativos. La tasa Base usa el retorno esperado del perfil. Conservador y Optimista aplican una variación del 40% sobre esa tasa. Retornos pasados no garantizan retornos futuros.</p>
       `;
+
+      attachProjectionInteractivity(monthlyData, plazo);
     }
 
     // Construye un gráfico SVG de líneas para las 3 proyecciones (con DCA si aplica).
+    // Usa curvas suavizadas (Catmull-Rom convertido a Bezier) y un eje Y con padding mínimo
+    // para que la diferencia entre escenarios sea visible incluso cuando los números son grandes.
     function buildProjectionChart(series, plazoAnios) {
       if (!series || !series.length) return '';
-      const W = 720;
-      const H = 320;
-      const padL = 70;
-      const padR = 24;
+      const W = 760;
+      const H = 360;
+      const padL = 78;
+      const padR = 32;
       const padT = 24;
-      const padB = 44;
+      const padB = (plazoAnios >= 10) ? 70 : 52;
 
       // Determinar dominios
       let maxY = 0;
+      let minY = Infinity;
       let maxX = 0;
       series.forEach((s) => {
         s.puntos.forEach((p) => {
           if (p.valor > maxY) maxY = p.valor;
+          if (p.valor < minY) minY = p.valor;
           if (p.mes > maxX) maxX = p.mes;
         });
       });
-      maxY = maxY * 1.05 || 1;
+      if (!isFinite(minY)) minY = 0;
       maxX = maxX || 12;
 
-      const xScale = (mes) => padL + (mes / maxX) * (W - padL - padR);
-      const yScale = (valor) => padT + (1 - valor / maxY) * (H - padT - padB);
+      // Escala Y con padding del 8% arriba y abajo para diferenciar las 3 líneas.
+      const rangeY = Math.max(1, maxY - minY);
+      const yMin = Math.max(0, minY - rangeY * 0.08);
+      const yMax = maxY + rangeY * 0.08;
 
-      // Compactar números grandes a M / mil M
+      const xScale = (mes) => padL + (mes / maxX) * (W - padL - padR);
+      const yScale = (valor) => padT + (1 - (valor - yMin) / (yMax - yMin)) * (H - padT - padB);
+
       const compactCOP = (n) => {
         if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + ' mil M';
         if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + ' M';
@@ -1190,21 +1294,29 @@
       // Eje Y: 5 líneas
       const yTicks = [];
       for (let i = 0; i <= 4; i++) {
-        const v = (maxY / 4) * i;
+        const v = yMin + ((yMax - yMin) / 4) * i;
         const y = yScale(v);
         yTicks.push(`
           <line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" class="chart-grid" />
-          <text x="${padL - 8}" y="${y + 4}" class="chart-axis-label" text-anchor="end">${compactCOP(v)}</text>
+          <text x="${padL - 10}" y="${y + 4}" class="chart-axis-label" text-anchor="end">${compactCOP(v)}</text>
         `);
       }
 
-      // Eje X: 1 marca por año
+      // Eje X: si plazo > 8 años, etiquetamos cada 2 años en diagonal; si menor, cada año.
+      const stepX = plazoAnios >= 16 ? 4 : (plazoAnios >= 8 ? 2 : 1);
+      const rotate = plazoAnios >= 10;
       const xTicks = [];
-      for (let a = 0; a <= plazoAnios; a++) {
+      for (let a = 0; a <= plazoAnios; a += stepX) {
         const x = xScale(a * 12);
+        const labelText = a === 0 ? 'Hoy' : (a + (a > 1 ? ' años' : ' año'));
+        const labelY = H - padB + (rotate ? 16 : 20);
+        const transform = rotate
+          ? `transform="rotate(-38 ${x} ${labelY})"`
+          : '';
+        const anchor = rotate ? 'end' : 'middle';
         xTicks.push(`
           <line x1="${x}" y1="${H - padB}" x2="${x}" y2="${H - padB + 5}" class="chart-axis" />
-          <text x="${x}" y="${H - padB + 20}" class="chart-axis-label" text-anchor="middle">${a === 0 ? 'Hoy' : (a + (a > 1 ? ' años' : ' año'))}</text>
+          <text x="${x}" y="${labelY}" class="chart-axis-label chart-axis-label--x ${rotate ? 'is-rotated' : ''}" text-anchor="${anchor}" ${transform}>${labelText}</text>
         `);
       }
 
@@ -1219,30 +1331,168 @@
         Optimista: 'line-optimista'
       };
 
+      // Path suavizado vía Catmull-Rom -> cubic Bezier (tensión 0.5).
+      const buildSmoothPath = (puntos) => {
+        if (!puntos.length) return '';
+        const pts = puntos.map((p) => ({ x: xScale(p.mes), y: yScale(p.valor) }));
+        if (pts.length === 1) return `M${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
+        let d = 'M' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[i - 1] || pts[i];
+          const p1 = pts[i];
+          const p2 = pts[i + 1];
+          const p3 = pts[i + 2] || p2;
+          const c1x = p1.x + (p2.x - p0.x) / 6;
+          const c1y = p1.y + (p2.y - p0.y) / 6;
+          const c2x = p2.x - (p3.x - p1.x) / 6;
+          const c2y = p2.y - (p3.y - p1.y) / 6;
+          d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+        }
+        return d;
+      };
+
       const lines = series.map((s) => {
-        const path = s.puntos.map((p, i) => {
-          const x = xScale(p.mes);
-          const y = yScale(p.valor);
-          return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
-        }).join(' ');
+        const path = buildSmoothPath(s.puntos);
         const lastPoint = s.puntos[s.puntos.length - 1];
         const labelX = xScale(lastPoint.mes);
         const labelY = yScale(lastPoint.valor);
         return `
-          <path d="${path}" class="chart-line ${cssClass[s.escenario]}" stroke="${colors[s.escenario]}" />
-          <circle cx="${labelX}" cy="${labelY}" r="4" fill="${colors[s.escenario]}" class="chart-end-dot" />
+          <path d="${path}" class="chart-line ${cssClass[s.escenario]}" stroke="${colors[s.escenario]}" data-escenario="${escape(s.escenario)}" />
+          <circle cx="${labelX}" cy="${labelY}" r="4.5" fill="${colors[s.escenario]}" class="chart-end-dot" data-escenario="${escape(s.escenario)}" />
+          <text x="${labelX + 6}" y="${labelY - 6}" class="chart-end-label" fill="${colors[s.escenario]}">${compactCOP(lastPoint.valor)}</text>
         `;
       }).join('');
 
+      // Hover guides: línea vertical + un dot por escenario + área de captura.
+      const hoverGuide = `
+        <g id="chart-hover-guide" class="chart-hover-guide" pointer-events="none" opacity="0">
+          <line id="chart-hover-line" x1="0" y1="${padT}" x2="0" y2="${H - padB}" class="chart-hover-line" />
+          ${series.map((s) => `<circle data-escenario="${escape(s.escenario)}" r="5.5" class="chart-hover-dot" fill="${colors[s.escenario]}" />`).join('')}
+        </g>
+      `;
+      const captureRect = `<rect id="chart-capture" x="${padL}" y="${padT}" width="${W - padL - padR}" height="${H - padT - padB}" fill="transparent" pointer-events="all" />`;
+
       return `
-        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="projection-chart" role="img" aria-label="Proyección del portafolio en el tiempo">
+        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="projection-chart" role="img" aria-label="Proyección del portafolio en el tiempo"
+             data-padl="${padL}" data-padr="${padR}" data-padt="${padT}" data-padb="${padB}" data-w="${W}" data-h="${H}"
+             data-maxx="${maxX}" data-ymin="${yMin}" data-ymax="${yMax}">
           ${yTicks.join('')}
           <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" class="chart-axis" />
           <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" class="chart-axis" />
           ${xTicks.join('')}
           ${lines}
+          ${hoverGuide}
+          ${captureRect}
         </svg>
       `;
+    }
+
+    // Hover interactivity: vertical line follows cursor, tooltip shows portfolio progression.
+    function attachProjectionInteractivity(series, plazoAnios) {
+      const svg = document.querySelector('#sec-proyecciones .projection-chart');
+      const tooltip = document.getElementById('projection-tooltip');
+      const guide = document.getElementById('chart-hover-guide');
+      const guideLine = document.getElementById('chart-hover-line');
+      const capture = document.getElementById('chart-capture');
+      if (!svg || !tooltip || !guide || !capture) return;
+
+      const padL = parseFloat(svg.getAttribute('data-padl'));
+      const padR = parseFloat(svg.getAttribute('data-padr'));
+      const padT = parseFloat(svg.getAttribute('data-padt'));
+      const padB = parseFloat(svg.getAttribute('data-padb'));
+      const W = parseFloat(svg.getAttribute('data-w'));
+      const H = parseFloat(svg.getAttribute('data-h'));
+      const maxX = parseFloat(svg.getAttribute('data-maxx'));
+      const yMin = parseFloat(svg.getAttribute('data-ymin'));
+      const yMax = parseFloat(svg.getAttribute('data-ymax'));
+
+      const colors = { Conservador: '#7AA1D2', Base: '#C9A84C', Optimista: '#E8954F' };
+
+      const xToMes = (x) => ((x - padL) / (W - padL - padR)) * maxX;
+      const yScale = (valor) => padT + (1 - (valor - yMin) / (yMax - yMin)) * (H - padT - padB);
+
+      const interpolate = (puntos, mes) => {
+        if (!puntos.length) return null;
+        if (mes <= puntos[0].mes) return puntos[0].valor;
+        for (let i = 0; i < puntos.length - 1; i++) {
+          const a = puntos[i];
+          const b = puntos[i + 1];
+          if (mes >= a.mes && mes <= b.mes) {
+            const t = (mes - a.mes) / Math.max(1, b.mes - a.mes);
+            return a.valor + (b.valor - a.valor) * t;
+          }
+        }
+        return puntos[puntos.length - 1].valor;
+      };
+
+      const formatMonthLabel = (mes) => {
+        if (mes <= 0) return 'Hoy';
+        const totalMeses = Math.round(mes);
+        const anios = Math.floor(totalMeses / 12);
+        const meses = totalMeses % 12;
+        if (anios === 0) return `${meses} ${meses === 1 ? 'mes' : 'meses'}`;
+        if (meses === 0) return `${anios} ${anios === 1 ? 'año' : 'años'}`;
+        return `${anios} ${anios === 1 ? 'año' : 'años'} y ${meses} ${meses === 1 ? 'mes' : 'meses'}`;
+      };
+
+      const getSvgPoint = (evt) => {
+        const pt = svg.createSVGPoint();
+        const touch = evt.touches && evt.touches[0];
+        pt.x = touch ? touch.clientX : evt.clientX;
+        pt.y = touch ? touch.clientY : evt.clientY;
+        const ctm = svg.getScreenCTM();
+        if (!ctm) return { x: 0, y: 0 };
+        const inv = ctm.inverse();
+        const local = pt.matrixTransform(inv);
+        return { x: local.x, y: local.y };
+      };
+
+      const update = (evt) => {
+        const { x } = getSvgPoint(evt);
+        const xClamped = Math.max(padL, Math.min(W - padR, x));
+        const mes = Math.max(0, Math.min(maxX, xToMes(xClamped)));
+
+        guide.setAttribute('opacity', '1');
+        guideLine.setAttribute('x1', xClamped);
+        guideLine.setAttribute('x2', xClamped);
+
+        const rows = series.map((s) => {
+          const v = interpolate(s.puntos, mes);
+          const dot = guide.querySelector(`.chart-hover-dot[data-escenario="${s.escenario}"]`);
+          if (dot) {
+            dot.setAttribute('cx', xClamped);
+            dot.setAttribute('cy', yScale(v));
+          }
+          return { escenario: s.escenario, valor: v, color: colors[s.escenario] };
+        });
+
+        const labelTime = formatMonthLabel(mes);
+        tooltip.classList.add('is-active');
+        tooltip.innerHTML = `
+          <div class="projection-chart-tooltip__title">${labelTime}</div>
+          ${rows.map((r) => `
+            <div class="projection-chart-tooltip__row">
+              <span class="projection-chart-tooltip__dot" style="background:${r.color}"></span>
+              <span class="projection-chart-tooltip__label">${r.escenario}</span>
+              <span class="projection-chart-tooltip__value">${E.formatCOP(r.valor)}</span>
+            </div>`).join('')}
+        `;
+      };
+
+      const clear = () => {
+        guide.setAttribute('opacity', '0');
+        tooltip.classList.remove('is-active');
+        tooltip.innerHTML = `
+          <div class="projection-chart-tooltip__title">Pasa el cursor sobre la gráfica</div>
+          <div class="projection-chart-tooltip__hint">Verás el capital proyectado en cada momento del plazo.</div>
+        `;
+      };
+
+      capture.addEventListener('mousemove', update);
+      capture.addEventListener('mouseleave', clear);
+      capture.addEventListener('touchstart', (e) => { e.preventDefault(); update(e); }, { passive: false });
+      capture.addEventListener('touchmove', (e) => { e.preventDefault(); update(e); }, { passive: false });
+      capture.addEventListener('touchend', clear);
     }
 
     function renderBrokers(brokerRec, capital) {
@@ -1287,9 +1537,9 @@
       }
       if (allocation.montos.alternativos > 0) {
         if (defi && defi.tier >= 2) {
-          pasos.push(`<strong>Alternativos (DeFi):</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong>. Activa CCI Tier ${defi.tier} con Julián para ejecutar el playbook de 5 pasos bajo Contrato de Mandato.`);
+          pasos.push(`<strong>Alternativos (DeFi):</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong>. Activa CCI Tier ${defi.tier} con Julián para ejecutar el playbook de 5 pasos en gestión activa con Castle.`);
         } else {
-          pasos.push(`<strong>Alternativos sin DeFi:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong> a GLD o IAU (oro) y VNQ (REITs) vía ${intlBroker}.`);
+          pasos.push(`<strong>Alternativos sin DeFi:</strong> asigna <strong>${E.formatCOP(allocation.montos.alternativos)}</strong> a GLD o IAU (oro) vía ${intlBroker} y a compra directa en Binance de BTC, ETH y XRP. Custodia siempre en wallet propia.`);
         }
       }
 
@@ -1307,8 +1557,8 @@
 
     function renderProximos(defi) {
       const ctaCCI = (defi && defi.tier >= 2)
-        ? `<p>Tu perfil califica para CCI. Agenda <strong>sesión gratuita y sin compromiso</strong> con Julián para activar la estrategia bajo Contrato de Mandato.</p>`
-        : `<p><strong>Agenda una sesión gratuita con Julián</strong> para evaluar si tu perfil clasifica para la implementación de <strong>CCI Básico</strong> (25–40% de retorno anual estimado) o <strong>CCI Premium</strong> (35–80% de retorno anual estimado). La sesión es totalmente gratuita y sin compromiso: solo se firma Contrato de Mandato si tú decides avanzar.</p>
+        ? `<p>Tu perfil califica para CCI. Agenda <strong>sesión gratuita y sin compromiso</strong> con Julián para activar la estrategia.</p>`
+        : `<p><strong>Agenda una sesión gratuita con Julián</strong> para evaluar si tu perfil clasifica para la implementación de <strong>CCI Básico</strong> (25 a 40% de retorno anual estimado) o <strong>CCI Premium</strong> (35 a 80% de retorno anual estimado). La sesión es totalmente gratuita y sin compromiso.</p>
             <p class="muted" style="font-size: 0.85rem;">*Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos.</p>
             <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20quiero%20agendar%20una%20sesi%C3%B3n%20gratuita%20para%20clasificar%20para%20CCI%20B%C3%A1sico%20o%20Premium." target="_blank" rel="noopener" style="margin-top: 8px;">Agendar sesión gratuita</a>`;
 
@@ -1324,7 +1574,7 @@
         </div>
         <div class="card-nested">
           <h3>3. Agenda con Julián</h3>
-          <p>La forma más directa de activar tu plan es una sesión 1:1. Ahí resolvemos dudas, ajustamos parámetros y, si aplica, firmamos el Contrato de Mandato.</p>
+          <p>La forma más directa de activar tu plan es una sesión 1:1. Ahí resolvemos dudas y ajustamos los parámetros para tu caso.</p>
           <ul>
             <li><strong>Email:</strong> <a href="mailto:castlecapitalemily@gmail.com" style="color: var(--cc-orange-soft);">castlecapitalemily@gmail.com</a></li>
             <li><strong>WhatsApp:</strong> <a href="https://wa.me/573209454181" style="color: var(--cc-orange-soft);">+57 320 945 4181</a></li>
@@ -1392,6 +1642,7 @@
       renderFondoEmergencia(client, allocation);
       renderPerfil(client, profile, allocation);
       renderDeudas(debtPlan, client, allocation);
+      const flujoNegativo = renderFlujoNegativo(client);
       renderCapitalAdicional(client, allocation, profile);
       renderArca(allocation);
       renderRentaFija(etfs, allocation);
@@ -1402,11 +1653,56 @@
       renderEjecucion(allocation, etfs, brokerRec, defi);
       renderProximos(defi);
 
+      // Si el flujo libre es negativo, plegamos las secciones de inversión para
+      // mantener el foco del cliente en cerrar la brecha primero.
+      collapseInvestSectionsIfNeeded(flujoNegativo);
+
       $('result-sub').textContent = `Plan personalizado · ${client.nombre} · ${E.formatDate()}`;
       $('form-section').style.display = 'none';
       $('result-section').classList.add('visible');
       attachScrollReveal();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Cuando flujoNegativo === true, envuelve las cards de inversión en un
+    // <details> colapsado preservando los nodos originales (y sus event listeners,
+    // incluida la interactividad de la gráfica).
+    function collapseInvestSectionsIfNeeded(flujoNegativo) {
+      const investIds = ['sec-gap', 'sec-arca', 'sec-rentafija', 'sec-etfs', 'sec-defi', 'sec-proyecciones', 'sec-brokers', 'sec-ejecucion'];
+      investIds.forEach((id) => {
+        const sec = $(id);
+        if (!sec) return;
+        if (!flujoNegativo) {
+          sec.classList.remove('collapsed-invest');
+          return;
+        }
+        sec.classList.add('collapsed-invest');
+
+        // Extraer h2 y resto de hijos sin perder sus handlers
+        const h2 = sec.querySelector('h2');
+        const headTitle = h2 ? h2.textContent.trim() : 'Sección';
+        const bodyChildren = Array.from(sec.childNodes).filter((n) => n !== h2);
+
+        const details = document.createElement('details');
+        details.className = 'invest-collapsed';
+
+        const summary = document.createElement('summary');
+        summary.innerHTML = `
+          <h2 class="invest-collapsed__title">${escape(headTitle)}</h2>
+          <span class="invest-collapsed__hint">Plegada porque tu flujo libre es negativo. Toca para abrir.</span>
+          <span class="invest-collapsed__chevron" aria-hidden="true">▾</span>
+        `;
+
+        const body = document.createElement('div');
+        body.className = 'invest-collapsed__body';
+        bodyChildren.forEach((node) => body.appendChild(node));
+
+        details.appendChild(summary);
+        details.appendChild(body);
+
+        sec.innerHTML = '';
+        sec.appendChild(details);
+      });
     }
 
     function downloadPDF() {
@@ -1511,7 +1807,7 @@
             <li><strong>Acciones</strong>: crecimiento vía ETFs USA y dividendos.</li>
             <li><strong>Renta fija</strong>: estabilidad con PEI como vehículo unificado.</li>
             <li><strong>Caja productiva</strong>: liquidez con Rappipay, Nu o Pibank.</li>
-            <li><strong>Alternativos</strong>: diversificación con oro, REITs y DeFi.</li>
+            <li><strong>Alternativos</strong>: diversificación con oro y cripto (BTC, ETH, XRP) o DeFi.</li>
           </ul>
           <p>Tu perfil (conservador, moderado o agresivo) define el % asignado a cada bucket.</p>`
       },
@@ -1523,9 +1819,9 @@
       },
       'qué-es-cci': {
         title: '¿Qué es Castle Crypto Income?',
-        body: `<p><strong>CCI</strong> es el producto estrella de Castle Capital. Implementación de pools de liquidez DeFi (Uniswap V3) más estrategias de borrowing en Aave V3.</p>
-          <p>Existen 3 niveles: <strong>educación</strong> (T1), <strong>básico</strong> (T2, conservador, sin leverage agresivo) y <strong>full</strong> (T3, leverage stack con Health Factor controlado).</p>
-          <p>Solo se ejecuta bajo <strong>Contrato de Mandato de Inversión</strong>. El cliente mantiene siempre la custodia de su capital.</p>`
+        body: `<p><strong>CCI</strong> es el producto estrella de Castle Capital. Implementación de pools de liquidez en Uniswap V3 (Básico) y estrategias avanzadas de borrowing con Aave V3 (Premium).</p>
+          <p>Existen 3 niveles: <strong>educación</strong> (T1), <strong>básico</strong> (T2, solo Uniswap V3 con LTV ≤ 50%, sin leverage) y <strong>premium</strong> (T3, Aave V3 + leverage stack con Health Factor controlado).</p>
+          <p>El cliente mantiene siempre la custodia de su capital. Castle ejecuta la operación de manera activa.</p>`
       },
       'cómo-funciona': {
         title: '¿Cómo funciona esta herramienta?',
@@ -1551,7 +1847,7 @@
       },
       'invertir-bolsa': {
         title: '¿Cómo se invierte en bolsa?',
-        body: `<p>El método Castle para bolsa es simple y aburrido — y por eso funciona:</p>
+        body: `<p>El método Castle para bolsa es simple y aburrido, y por eso funciona:</p>
           <ul>
             <li><strong>ETFs sobre acciones individuales.</strong> Compras un índice (S&amp;P 500, Nasdaq, dividendos) y heredas la diversificación.</li>
             <li><strong>DCA (Dollar Cost Average).</strong> Compras la misma cantidad cada mes, sin importar el precio. El promedio se acomoda solo.</li>
@@ -1570,14 +1866,14 @@
             <li><strong>On-ramp confiable.</strong> Binance es nuestro on-ramp recomendado: liquidez global y P2P en COP.</li>
             <li><strong>Custodia propia (cuando aplique).</strong> Wallet personal con frase de recuperación segura.</li>
           </ul>
-          <p>DeFi es el nivel siguiente: pools, leverage, rebalanceo. Eso ya es CCI bajo Contrato de Mandato.</p>`
+          <p>DeFi es el nivel siguiente: pools, leverage, rebalanceo. Eso ya es CCI con gestión activa de Castle.</p>`
       },
       'seguridad': {
         title: 'Seguridad de tu capital',
         body: `<p>Tu capital nunca pasa por nuestras manos. Reglas Castle:</p>
           <ul>
             <li><strong>Custodia siempre del cliente.</strong> Brokers regulados (XTB, Trii) y wallets propias en cripto.</li>
-            <li><strong>Contrato de Mandato.</strong> En CCI nosotros operamos sobre tus posiciones, pero el capital está en tu nombre.</li>
+            <li><strong>Gestión activa de Castle.</strong> En CCI nosotros operamos sobre tus posiciones, pero el capital está en tu nombre.</li>
             <li><strong>2FA en todo.</strong> Brokers, exchanges, wallets. Sin 2FA no hay operación.</li>
             <li><strong>Frase semilla offline.</strong> Nunca en la nube, nunca por mensaje. Papel o metal.</li>
             <li><strong>Diversificación de riesgo.</strong> Múltiples brokers y redes, no un único punto de falla.</li>
