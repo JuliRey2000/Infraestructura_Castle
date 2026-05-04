@@ -1228,10 +1228,6 @@
         <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)} · Aporte mensual ${E.formatCOP(aporteMensual)} · Plazo ${plazo} ${plazo > 1 ? 'años' : 'año'}</p>
 
         <div class="projection-chart-wrap">
-          <div class="projection-chart-tooltip" id="projection-tooltip" role="status" aria-live="polite">
-            <div class="projection-chart-tooltip__title">Pasa el cursor sobre la gráfica</div>
-            <div class="projection-chart-tooltip__hint">Verás el capital proyectado en cada momento del plazo.</div>
-          </div>
           ${chartSVG}
           <div class="projection-chart-legend">
             <span class="legend-item"><span class="dot dot--conservador"></span>Conservador</span>
@@ -1258,7 +1254,7 @@
       const W = 760;
       const H = 360;
       const padL = 78;
-      const padR = 32;
+      const padR = 76;
       const padT = 24;
       const padB = (plazoAnios >= 10) ? 70 : 52;
 
@@ -1285,9 +1281,10 @@
       const yScale = (valor) => padT + (1 - (valor - yMin) / (yMax - yMin)) * (H - padT - padB);
 
       const compactCOP = (n) => {
-        if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + ' mil M';
-        if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + ' M';
-        if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + ' k';
+        if (n >= 1e12) return '$' + (n / 1e12).toFixed(1) + 'B';
+        if (n >= 1e9)  return '$' + (n / 1e9).toFixed(1) + 'MM';
+        if (n >= 1e6)  return '$' + (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + 'M';
+        if (n >= 1e3)  return '$' + (n / 1e3).toFixed(0) + 'K';
         return '$' + Math.round(n);
       };
 
@@ -1359,7 +1356,7 @@
         return `
           <path d="${path}" class="chart-line ${cssClass[s.escenario]}" stroke="${colors[s.escenario]}" data-escenario="${escape(s.escenario)}" />
           <circle cx="${labelX}" cy="${labelY}" r="4.5" fill="${colors[s.escenario]}" class="chart-end-dot" data-escenario="${escape(s.escenario)}" />
-          <text x="${labelX + 6}" y="${labelY - 6}" class="chart-end-label" fill="${colors[s.escenario]}">${compactCOP(lastPoint.valor)}</text>
+          <text x="${labelX + 8}" y="${labelY + 4}" class="chart-end-label" text-anchor="start" fill="${colors[s.escenario]}">${compactCOP(lastPoint.valor)}</text>
         `;
       }).join('');
 
@@ -1394,7 +1391,7 @@
       const guide = document.getElementById('chart-hover-guide');
       const guideLine = document.getElementById('chart-hover-line');
       const capture = document.getElementById('chart-capture');
-      if (!svg || !tooltip || !guide || !capture) return;
+      if (!svg || !guide || !capture) return;
 
       const padL = parseFloat(svg.getAttribute('data-padl'));
       const padR = parseFloat(svg.getAttribute('data-padr'));
@@ -1466,26 +1463,27 @@
           return { escenario: s.escenario, valor: v, color: colors[s.escenario] };
         });
 
-        const labelTime = formatMonthLabel(mes);
-        tooltip.classList.add('is-active');
-        tooltip.innerHTML = `
-          <div class="projection-chart-tooltip__title">${labelTime}</div>
-          ${rows.map((r) => `
-            <div class="projection-chart-tooltip__row">
-              <span class="projection-chart-tooltip__dot" style="background:${r.color}"></span>
-              <span class="projection-chart-tooltip__label">${r.escenario}</span>
-              <span class="projection-chart-tooltip__value">${E.formatCOP(r.valor)}</span>
-            </div>`).join('')}
-        `;
+        if (tooltip) {
+          const labelTime = formatMonthLabel(mes);
+          tooltip.classList.add('is-active');
+          tooltip.innerHTML = `
+            <div class="projection-chart-tooltip__title">${labelTime}</div>
+            ${rows.map((r) => `
+              <div class="projection-chart-tooltip__row">
+                <span class="projection-chart-tooltip__dot" style="background:${r.color}"></span>
+                <span class="projection-chart-tooltip__label">${r.escenario}</span>
+                <span class="projection-chart-tooltip__value">${E.formatCOP(r.valor)}</span>
+              </div>`).join('')}
+          `;
+        }
       };
 
       const clear = () => {
         guide.setAttribute('opacity', '0');
-        tooltip.classList.remove('is-active');
-        tooltip.innerHTML = `
-          <div class="projection-chart-tooltip__title">Pasa el cursor sobre la gráfica</div>
-          <div class="projection-chart-tooltip__hint">Verás el capital proyectado en cada momento del plazo.</div>
-        `;
+        if (tooltip) {
+          tooltip.classList.remove('is-active');
+          tooltip.innerHTML = '';
+        }
       };
 
       capture.addEventListener('mousemove', update);

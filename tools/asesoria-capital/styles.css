@@ -2625,42 +2625,27 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   margin-bottom: var(--space-sm);
 }
 .tier-hero__num {
-  font-family: var(--font-display);
-  font-size: clamp(3.2rem, 8vw, 5.5rem);
+  font-family: var(--font-ui), system-ui, -apple-system, sans-serif;
+  font-size: clamp(3rem, 7.5vw, 5rem);
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -1px;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
   background: linear-gradient(135deg, var(--cc-gold-light), var(--cc-gold) 50%, var(--cc-orange));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: var(--space-sm);
-  font-feature-settings: "zero" 1, "tnum" 1;
-  font-variant-numeric: slashed-zero tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: lining-nums tabular-nums;
+  padding: 0.05em 0;
 }
 
 .tier-hero__num .tier-zero {
-  position: relative;
   display: inline-block;
-  font-family: var(--font-data), 'Menlo', 'Consolas', monospace;
-  font-feature-settings: "zero" 1, "tnum" 1;
-  font-variant-numeric: slashed-zero tabular-nums;
-  transform: scaleX(0.95);
-  transform-origin: center;
-  letter-spacing: -2px;
-}
-
-.tier-hero__num .tier-zero::after {
-  content: '';
-  position: absolute;
-  left: 14%;
-  right: 14%;
-  top: 50%;
-  height: 0.08em;
-  background: linear-gradient(135deg, var(--cc-gold-light), var(--cc-gold) 50%, var(--cc-orange));
-  transform: translateY(-50%) rotate(-22deg);
-  border-radius: 2px;
-  pointer-events: none;
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variant-numeric: inherit;
+  letter-spacing: inherit;
 }
 .tier-hero__title {
   font-family: var(--font-display);
