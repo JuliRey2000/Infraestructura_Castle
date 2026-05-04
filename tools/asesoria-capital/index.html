@@ -1229,6 +1229,9 @@
 
         <div class="projection-chart-wrap">
           ${chartSVG}
+          <div id="projection-tooltip" class="projection-chart-tooltip" role="status" aria-live="polite">
+            <div class="projection-chart-tooltip__hint">Pasa el mouse sobre la gráfica para ver la evolución mes a mes.</div>
+          </div>
           <div class="projection-chart-legend">
             <span class="legend-item"><span class="dot dot--conservador"></span>Conservador</span>
             <span class="legend-item"><span class="dot dot--base"></span>Base</span>
@@ -1482,7 +1485,7 @@
         guide.setAttribute('opacity', '0');
         if (tooltip) {
           tooltip.classList.remove('is-active');
-          tooltip.innerHTML = '';
+          tooltip.innerHTML = '<div class="projection-chart-tooltip__hint">Pasa el mouse sobre la gráfica para ver la evolución mes a mes.</div>';
         }
       };
 
