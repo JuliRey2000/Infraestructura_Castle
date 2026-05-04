@@ -71,26 +71,15 @@
   ],
   "cripto": [
     {
-      "nombre": "Bitso",
-      "comision_compra": "0.65% maker / 0.65% taker (escalonado)",
-      "deposito": "PSE Colombia, transferencia bancaria",
-      "moneda": "COP/USDC/BTC/ETH",
-      "minimo": "$30.000 COP",
-      "regulado": "Inscrito como PSAV en México (Colombia: en trámite)",
-      "recomendado_para": ["intermedia DeFi"],
-      "capital_min_cop": 100000,
-      "nota": "Mejor on-ramp COP→cripto en Colombia. Necesario para entrar a DeFi"
-    },
-    {
       "nombre": "Binance",
       "comision_compra": "0.10% spot (descuento con BNB)",
-      "deposito": "P2P, transferencia internacional",
+      "deposito": "P2P en COP, transferencia internacional, tarjeta",
       "moneda": "Multi-cripto",
       "minimo": "$10 USD",
       "regulado": "Variable por jurisdicción",
-      "recomendado_para": ["intermedia DeFi"],
+      "recomendado_para": ["ninguna", "basica", "intermedia DeFi"],
       "capital_min_cop": 50000,
-      "nota": "Para usuarios con experiencia — comisiones bajas, P2P para Colombia"
+      "nota": "On-ramp recomendado para Castle Capital. Liquidez global, comisiones bajas y P2P en COP. Activa 2FA antes de depositar."
     }
   ]
 }

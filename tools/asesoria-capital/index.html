@@ -32,7 +32,7 @@
       </h1>
       <p class="hero-lede">
         Diseñamos la estructura que pone tu capital a trabajar bajo lógica matemática y la filosofía Castle.
-        Incluye diagnóstico, perfil ARCA, asignación por buckets y un plan ejecutable paso a paso.
+        Incluye diagnóstico, perfil de cliente, asignación por buckets de Arquitectura CCI y un plan ejecutable paso a paso.
       </p>
       <div class="hero-stats" role="list">
         <div class="hero-stat" role="listitem">
@@ -41,7 +41,7 @@
         </div>
         <div class="hero-stat" role="listitem">
           <div class="num">3</div>
-          <span class="lbl">Perfiles ARCA</span>
+          <span class="lbl">Perfiles Castle</span>
         </div>
         <div class="hero-stat" role="listitem">
           <div class="num">PDF</div>
@@ -58,7 +58,7 @@
       </div>
       <div class="step" data-step="perfil">
         <span class="step-num">2</span>
-        <span class="step-label">Perfil ARCA</span>
+        <span class="step-label">Tu Perfil</span>
       </div>
       <div class="step" data-step="deudas">
         <span class="step-num">3</span>
@@ -119,6 +119,20 @@
             </div>
             <p class="form-hint" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Lo que vas a aportar (no esperar) al portafolio cada mes.</p>
           </div>
+          <div class="form-group form-group--full">
+            <label>¿Cómo quieres usar tu flujo libre mensual (Ingresos − Gastos)?</label>
+            <div class="radio-row radio-row--stacked">
+              <label class="radio-option">
+                <input type="radio" name="usarFlujoLibre" value="todo" />
+                <span><strong>Invertir todo el flujo libre.</strong> Suma el flujo libre completo (Ingresos − Gastos) al motor de inversión.</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="usarFlujoLibre" value="solo-aporte" checked />
+                <span><strong>Solo el aporte mensual indicado arriba.</strong> El resto del flujo libre queda libre para gastos personales o ahorros.</span>
+              </label>
+            </div>
+            <p class="form-hint" style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Este ajuste evita sumar capital que no irá realmente al portafolio.</p>
+          </div>
           <div class="form-group">
             <label for="plazo">Plazo objetivo</label>
             <div class="input-icon-wrap">
@@ -154,7 +168,7 @@
       </div>
 
       <div class="form-section" data-section="perfil">
-        <h3 class="form-section-title">Perfil ARCA · 2 preguntas</h3>
+        <h3 class="form-section-title">Tu Perfil · 2 preguntas</h3>
         <div class="form-grid">
           <div class="form-group">
             <label>¿Estarías cómodo viendo tu cartera caer un 20% temporalmente?</label>
@@ -163,12 +177,15 @@
               <label><input type="radio" name="q1" value="no" checked /> No, me incomoda</label>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="q2-group">
             <label>¿Necesitarás este capital en los próximos 5 años?</label>
             <div class="radio-row">
               <label><input type="radio" name="q2" value="si" checked /> Sí</label>
               <label><input type="radio" name="q2" value="no" /> No, es de largo plazo</label>
             </div>
+            <p id="q2-auto-hint" class="form-hint hidden" style="font-size: 0.85rem; color: var(--cc-orange); margin-top: 6px;">
+              Marcado automáticamente porque tu plazo objetivo es menor a 5 años.
+            </p>
           </div>
           <div class="form-group">
             <label>¿Es cliente activo de Castle Crypto Income (CCI)?</label>
@@ -225,7 +242,7 @@
           <li>Perfil del Cliente</li>
           <li>Diagnóstico de Deudas y Bola de Nieve</li>
           <li>Capital adicional a invertir mes a mes</li>
-          <li>Arquitectura ARCA</li>
+          <li>Arquitectura CCI</li>
           <li>Renta Fija con PEI</li>
           <li>ETFs Recomendados (con DCA)</li>
           <li>Estrategia DeFi</li>
@@ -299,7 +316,7 @@
     <div class="chat-body" id="chat-body" aria-live="polite"></div>
 
     <div class="chat-suggestions" id="chat-suggestions" role="group" aria-label="Preguntas sugeridas">
-      <button type="button" class="chat-chip" data-q="qué-es-arca">¿Qué es ARCA?</button>
+      <button type="button" class="chat-chip" data-q="qué-es-arca">¿Qué es Arquitectura CCI?</button>
       <button type="button" class="chat-chip" data-q="qué-es-pei">¿Qué es PEI?</button>
       <button type="button" class="chat-chip" data-q="qué-es-cci">Castle Crypto Income</button>
       <button type="button" class="chat-chip" data-q="cómo-funciona">¿Cómo funciona la herramienta?</button>
@@ -441,8 +458,7 @@
         { nombre: 'Tyba', comision_acciones: 'Sin comisión TES', deposito: 'PSE', moneda: 'COP', regulado: 'SFC Colombia', recomendado_para: ['conservador'], capital_min_cop: 100000, nota: 'Fondos, TES y PEI, orientado a renta fija COP' }
       ],
       cripto: [
-        { nombre: 'Bitso', comision_compra: '0.65% maker/taker', deposito: 'PSE Colombia', moneda: 'COP/USDC/BTC', recomendado_para: ['intermedia DeFi'], capital_min_cop: 100000, nota: 'Mejor on ramp de COP a cripto en Colombia' },
-        { nombre: 'Binance', comision_compra: '0.10% spot (con BNB)', deposito: 'P2P, transferencia internacional', moneda: 'Multi cripto', recomendado_para: ['intermedia DeFi'], capital_min_cop: 50000, nota: 'Para usuarios con experiencia' }
+        { nombre: 'Binance', comision_compra: '0.10% spot (con BNB)', deposito: 'P2P, transferencia internacional, tarjeta', moneda: 'Multi cripto', recomendado_para: ['ninguna', 'basica', 'intermedia DeFi'], capital_min_cop: 50000, nota: 'On-ramp recomendado para Castle Capital. Liquidez global, tarifas bajas y P2P en COP. Activa 2FA antes de depositar.' }
       ]
     };
 
@@ -578,12 +594,19 @@
       const ingresos = client.ingresos || 0;
       const gastos = client.gastos || 0;
       const flujoLibreMensual = Math.max(0, ingresos - gastos);
+      const aporteIngresado = client.objetivo || 0;
+      const usarTodo = client.usarFlujoLibre;
+      const aporteEfectivo = usarTodo ? Math.max(flujoLibreMensual, aporteIngresado) : aporteIngresado;
       const capitalCliente = client.capital || 0;
-      const capDispTotal = capitalCliente + flujoLibreMensual;
+      const capDispTotal = capitalCliente + aporteEfectivo;
 
       const pctEmergencia = 0.25;
       const pctAtaqueDeudas = 0.50;
       const pctInversionInicial = 0.25;
+
+      const decisionFlujoLibre = usarTodo
+        ? `<p class="muted">Decidiste invertir <strong>todo el flujo libre mensual</strong>. Eso significa que cada mes ${E.formatCOP(aporteEfectivo)} entran al motor de inversión.</p>`
+        : `<p class="muted">Decidiste invertir solo el aporte mensual indicado (<strong>${E.formatCOP(aporteIngresado)}</strong>). El restante del flujo libre (${E.formatCOP(Math.max(0, flujoLibreMensual - aporteIngresado))}) queda fuera del portafolio para gastos personales o ahorros.</p>`;
 
       $('sec-presupuesto').innerHTML = `
         <h2>1. Presupuesto: el punto de partida</h2>
@@ -599,10 +622,11 @@
           <div class="kpi"><div class="label">Ingresos mensuales</div><div class="value">${E.formatCOP(ingresos)}</div></div>
           <div class="kpi"><div class="label">Gastos mensuales</div><div class="value">${E.formatCOP(gastos)}</div></div>
           <div class="kpi kpi--orange"><div class="label">Flujo libre mensual</div><div class="value highlight">${E.formatCOP(flujoLibreMensual)}</div></div>
+          <div class="kpi"><div class="label">Aporte mensual efectivo</div><div class="value highlight">${E.formatCOP(aporteEfectivo)}</div></div>
           <div class="kpi"><div class="label">Capital ingresado</div><div class="value">${E.formatCOP(capitalCliente)}</div></div>
           <div class="kpi"><div class="label">Capital disponible total</div><div class="value highlight">${E.formatCOP(capDispTotal)}</div></div>
         </div>
-        <p class="muted">Tu capital disponible total es la suma de lo que ya tienes en mano (${E.formatCOP(capitalCliente)}) más el flujo libre que generas cada mes (${E.formatCOP(flujoLibreMensual)}). Ese es el motor con el que vamos a trabajar.</p>
+        ${decisionFlujoLibre}
         <h3>Cómo vamos a usar tu capital disponible</h3>
         <p>Tu capital disponible total (${E.formatCOP(capDispTotal)}) tiene tres misiones, en este orden:</p>
         <table>
@@ -624,7 +648,7 @@
               <td><strong>25%</strong></td>
               <td>Inversión inicial</td>
               <td>${E.formatCOP(capDispTotal * pctInversionInicial)}</td>
-              <td>Despliegue en la Arquitectura ARCA (renta fija, acciones, alternativos)</td>
+              <td>Despliegue en la Arquitectura CCI (renta fija, acciones, alternativos)</td>
             </tr>
           </tbody>
         </table>
@@ -664,7 +688,7 @@
       $('sec-perfil').innerHTML = `
         <h2>3. Perfil del Cliente</h2>
         <div class="kpi-grid">
-          <div class="kpi"><div class="label">Perfil ARCA</div><div class="value"><span class="tag ${tag}">${profile.toUpperCase()}</span></div></div>
+          <div class="kpi"><div class="label">Perfil de cliente</div><div class="value"><span class="tag ${tag}">${profile.toUpperCase()}</span></div></div>
           <div class="kpi"><div class="label">Capital invertible</div><div class="value">${E.formatCOP(allocation.capitalInvertible)}</div></div>
           <div class="kpi"><div class="label">Fondo emergencia</div><div class="value">${E.formatCOP(allocation.fondoEmergencia)}</div></div>
           <div class="kpi"><div class="label">Aporte mensual</div><div class="value">${E.formatCOP(client.objetivo)}</div></div>
@@ -785,7 +809,7 @@
           <div class="kpi"><div class="label">Total aportado en el plazo</div><div class="value">${E.formatCOP(aportePlazoTotal)}</div></div>
         </div>
         <h3>Cómo distribuir cada aporte mensual</h3>
-        <p>Cada mes el capital nuevo se reparte siguiendo la misma proporción ARCA del perfil <strong>${profile}</strong>:</p>
+        <p>Cada mes el capital nuevo se reparte siguiendo la misma proporción de Arquitectura CCI del perfil <strong>${profile}</strong>:</p>
         <table>
           <thead><tr><th>Bucket</th><th>%</th><th>Monto mensual</th></tr></thead>
           <tbody>${filasDistrib}</tbody>
@@ -803,7 +827,7 @@
           <td>${descCat(cat)}</td>
         </tr>`).join('');
       $('sec-arca').innerHTML = `
-        <h2>6. Arquitectura ARCA</h2>
+        <h2>6. Arquitectura CCI</h2>
         <p class="muted">Distribución del capital invertible (${E.formatCOP(allocation.capitalInvertible)}) en las 4 categorías Castle.</p>
         <table>
           <thead><tr><th>Categoría</th><th>%</th><th>Monto COP</th><th>Función</th></tr></thead>
@@ -906,47 +930,130 @@
 
     function renderDefi(defi, montoAlt, client) {
       if (!defi) { $('sec-defi').innerHTML = ''; return; }
-      const tag = defi.tier === 0 ? 'tag-warn' : defi.tier === 1 ? 'tag-blue' : defi.tier === 2 ? 'tag-gold' : 'tag-success';
+      const tierColor = defi.tier === 0 ? 'tier-card--zero'
+        : defi.tier === 1 ? 'tier-card--one'
+        : defi.tier === 2 ? 'tier-card--two'
+        : 'tier-card--three';
 
-      const noDefiBlock = defi.noDefi ? `
-        <h3>Mientras tanto, alternativos sin DeFi</h3>
-        <table>
-          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th></tr></thead>
-          <tbody>${defi.noDefi.map((i) => `<tr><td><strong>${escape(i.ticker)}</strong></td><td>${escape(i.nombre)}</td><td>${escape(i.retorno_ref)}</td></tr>`).join('')}</tbody>
-        </table>` : '';
+      // === TIER hero (grande y visible) ===
+      const tierHero = `
+        <div class="tier-hero ${tierColor}">
+          <div class="tier-hero__label">Tu nivel DeFi actual</div>
+          <div class="tier-hero__num">TIER ${defi.tier}</div>
+          <div class="tier-hero__title">${escape(defi.titulo.replace(/^Tier\s*\d+\.\s*/i, ''))}</div>
+          <p class="tier-hero__desc">${escape(defi.contenido)}</p>
+        </div>
+      `;
 
-      const proy = E.projectDefiReturns(montoAlt, defi.tier, 1);
-      const proyBlock = proy ? `
-        <h3>Proyección DeFi (1 año sobre ${E.formatCOP(montoAlt)})</h3>
-        <table>
-          <thead><tr><th>Escenario</th><th>APY</th><th>Valor final</th><th>Ganancia</th></tr></thead>
-          <tbody>${proy.map((p) => `<tr><td>${escape(p.escenario)}</td><td>${E.formatPct(p.apy)}</td><td class="highlight">${E.formatCOP(p.valorFinal)}</td><td>${E.formatCOP(p.gananciaAnual)}</td></tr>`).join('')}</tbody>
-        </table>` : '';
+      // === Recomendación CCI cuando tier 0 o 1 ===
+      const recomendacionCCI = (defi.tier === 0 || defi.tier === 1) ? `
+        <div class="cci-rec-grid">
+          <div class="cci-rec-card cci-rec-card--basico">
+            <div class="cci-rec-card__badge">Recomendado para ti</div>
+            <h3 class="cci-rec-card__title">CCI Básico</h3>
+            <div class="cci-rec-card__return">25 – 40%<span>retorno anual estimado*</span></div>
+            <ul class="cci-rec-card__list">
+              <li>Aave V3 + Uniswap V3 con LTV ≤ 50%</li>
+              <li>Estrategia conservadora bajo Contrato de Mandato</li>
+              <li>Sesión de setup incluida</li>
+            </ul>
+            <a class="btn-orange" href="#sec-proximos">Agendar sesión gratuita</a>
+          </div>
+          <div class="cci-rec-card cci-rec-card--premium">
+            <div class="cci-rec-card__badge cci-rec-card__badge--premium">Premium</div>
+            <h3 class="cci-rec-card__title">CCI Premium</h3>
+            <div class="cci-rec-card__return">35 – 80%<span>retorno anual estimado*</span></div>
+            <ul class="cci-rec-card__list">
+              <li>Leverage stack con Health Factor controlado</li>
+              <li>LP concentrado y rebalanceo activo semanal</li>
+              <li><strong>Disponible tras sesión con uno de nuestros expertos</strong></li>
+            </ul>
+            <a class="btn-orange" href="#sec-proximos">Agendar sesión gratuita</a>
+          </div>
+        </div>
+        <p class="cci-rec-disclaimer">*Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos y dependen de las condiciones del mercado, la liquidez de los pools y la ejecución activa de la estrategia.</p>
+      ` : '';
 
-      // Paso 2: préstamo Aave = 25% del colateral (capital alternativo)
+      // === Dropdown con la clasificación de TODOS los TIERs ===
+      const tierClassificationDetails = `
+        <details class="tier-classification">
+          <summary>
+            <span>Ver clasificación de los 4 niveles DeFi</span>
+            <span class="tier-classification__chevron" aria-hidden="true">▾</span>
+          </summary>
+          <div class="tier-classification__body">
+            <table class="tier-table">
+              <thead>
+                <tr><th>Tier</th><th>Nivel</th><th>Quién entra</th><th>Estrategia</th></tr>
+              </thead>
+              <tbody>
+                <tr${defi.tier === 0 ? ' class="is-current"' : ''}>
+                  <td><strong>Tier 0</strong></td>
+                  <td>Sin DeFi</td>
+                  <td>Sin experiencia previa con cripto</td>
+                  <td>Alternativos vía oro (GLD/IAU) y REITs (VNQ)</td>
+                </tr>
+                <tr${defi.tier === 1 ? ' class="is-current"' : ''}>
+                  <td><strong>Tier 1</strong></td>
+                  <td>Educación DeFi</td>
+                  <td>Experiencia básica, wallet propia</td>
+                  <td>Aprendizaje de Aave V3 y Uniswap V3 sin capital expuesto</td>
+                </tr>
+                <tr${defi.tier === 2 ? ' class="is-current"' : ''}>
+                  <td><strong>Tier 2</strong></td>
+                  <td>CCI Básico</td>
+                  <td>Experiencia intermedia, listo para capital</td>
+                  <td>LP en Uniswap V3 + supply en Aave, LTV ≤ 50%, sin leverage agresivo</td>
+                </tr>
+                <tr${defi.tier === 3 ? ' class="is-current"' : ''}>
+                  <td><strong>Tier 3</strong></td>
+                  <td>CCI Premium</td>
+                  <td>Cliente activo, sesión con experto</td>
+                  <td>Leverage stack + LP concentrado + rebalanceo semanal</td>
+                </tr>
+              </tbody>
+            </table>
+            ${defi.tier !== null ? `<p class="muted" style="margin-top: 12px;">La fila resaltada corresponde a tu tier actual. Para subir de nivel, agenda sesión con Julián.</p>` : ''}
+          </div>
+        </details>
+      `;
+
+      // === Disclosure prominente ANTES del playbook ===
+      const playbookDisclosure = `
+        <div class="playbook-disclosure">
+          <div class="playbook-disclosure__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          </div>
+          <div class="playbook-disclosure__body">
+            <strong>Esta estrategia debe ser ejecutada y monitorizada periódicamente por un experto.</strong>
+            <p>Lo que ves abajo está publicado <em>únicamente con carácter educativo</em>. Si quieres beneficiarte de esta operación con seguridad, ejecútala bajo <strong>CCI Básico</strong> (25–40% de retorno anual estimado) o <strong>CCI Premium</strong> (35–80% de retorno anual estimado, disponible tras sesión con experto).</p>
+            <p class="playbook-disclosure__legal">Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos y dependen de la operación activa, las condiciones del mercado y la ejecución del experto.</p>
+          </div>
+        </div>
+      `;
+
+      // === Playbook Castle paso a paso ===
       const prestamoAave = montoAlt * 0.25;
-      // Paso 3: DCA XRP = 20% del préstamo Aave
       const dcaXRP = prestamoAave * 0.20;
-      // Paso 4: LPs = 80% restante del préstamo Aave
       const lpsAave = prestamoAave * 0.80;
 
       const playbookCastle = `
-        <h3>El playbook Castle paso a paso</h3>
+        <h3>El playbook Castle paso a paso (educativo)</h3>
         <p class="muted">Esta es la secuencia exacta que ejecutamos en CCI. No es teoría, es la operación real que aplicamos para extraer rendimiento de la liquidez DeFi con riesgo controlado.</p>
 
         <div class="card-nested">
           <h4>Paso 1. Construye el colateral en Aave</h4>
-          <p>Compra Bitcoin y Ethereum en Bitso o Binance, transfiere a la red de tu elección y deposítalos en Aave V3 como colateral. Esa posición queda generando supply APY mientras te abre la puerta al endeudamiento controlado.</p>
+          <p>Compra Bitcoin y Ethereum en Binance, transfiere a la red de tu elección y deposítalos en Aave V3 como colateral. Esa posición queda generando supply APY mientras te abre la puerta al endeudamiento controlado.</p>
         </div>
 
         <div class="card-nested">
           <h4>Paso 2. Solicita un préstamo conservador del 25% sobre Aave</h4>
-          <p>Sobre el colateral depositado en Aave, solicita un préstamo del <strong>25% del valor</strong> (≈ ${E.formatCOP(prestamoAave)}). Mantenemos un Loan To Value bajo a propósito: el Health Factor se mantiene alto y la posición queda lejos de cualquier zona de liquidación. Esa es la primera capa de capital adicional para trabajar.</p>
+          <p>Sobre el colateral depositado en Aave, solicita un préstamo del <strong>25% del valor</strong> (≈ ${E.formatCOP(prestamoAave)}). Mantenemos un Loan To Value bajo a propósito: el Health Factor se mantiene alto y la posición queda lejos de cualquier zona de liquidación.</p>
         </div>
 
         <div class="card-nested">
           <h4>Paso 3. DCA en XRP con el 20% del préstamo</h4>
-          <p>Toma el <strong>20% del préstamo que acabas de pedir en Aave</strong> (≈ ${E.formatCOP(dcaXRP)}) y ejecuta un Dollar Cost Average en Binance comprando XRP. La idea es construir esa posición en el tiempo, no de golpe, para promediar el costo de entrada.</p>
+          <p>Toma el <strong>20% del préstamo</strong> (≈ ${E.formatCOP(dcaXRP)}) y ejecuta un DCA en Binance comprando XRP. Construyes la posición en el tiempo, no de golpe.</p>
         </div>
 
         <div class="card-nested">
@@ -955,23 +1062,36 @@
           <ul>
             <li><strong>ETH / USD</strong>: par direccional con cobertura en stablecoin.</li>
             <li><strong>BTC / USD</strong>: par direccional sobre el activo ancla cripto.</li>
-            <li><strong>ETH / BTC</strong>: par cruzado con rangos estrechos calibrados por Julián para maximizar fees por unidad de capital.</li>
+            <li><strong>ETH / BTC</strong>: par cruzado con rangos estrechos calibrados por Julián.</li>
           </ul>
-          <p class="muted">El rebalanceo y los rangos exactos los gestiona Castle bajo Contrato de Mandato. La operación requiere monitoreo activo.</p>
+          <p class="muted">El rebalanceo y los rangos exactos los gestiona Castle bajo Contrato de Mandato.</p>
         </div>
 
         <div class="card-nested">
-          <h4>Paso 5. Segundo préstamo sobre los pools de Uniswap y diversificación en Solana</h4>
-          <p>Con las posiciones LP consolidadas en Uniswap, ejecutamos un <strong>segundo préstamo</strong>, esta vez tomando como colateral los propios pools de liquidez de Uniswap. Lo dimensionamos hasta llevar el Health Factor de ese préstamo a <strong>2.5</strong>. El capital que sale de allí va a dos destinos:</p>
+          <h4>Paso 5. Segundo préstamo y diversificación en Solana</h4>
+          <p>Con las posiciones LP consolidadas, ejecutamos un <strong>segundo préstamo</strong> tomando como colateral los pools de Uniswap, dimensionado hasta llevar el Health Factor a <strong>2.5</strong>. El capital sale a dos destinos:</p>
           <ul>
-            <li>Protocolos de liquidez en la red de Solana, especialmente el par <strong>SOL / USD</strong>.</li>
-            <li>Diversificación parcial en acciones tecnológicas líderes como <strong>Google</strong> a través del bucket de acciones.</li>
+            <li>Protocolos de liquidez en Solana, especialmente el par <strong>SOL / USD</strong>.</li>
+            <li>Diversificación parcial en acciones tecnológicas como <strong>Google</strong>.</li>
           </ul>
-          <p class="muted">Health Factor objetivo de 2.5: margen amplio de seguridad incluso ante caídas pronunciadas del colateral.</p>
         </div>
       `;
 
-      const ejecutaPlaybookCastle = (defi.tier >= 2) || client.esCCI;
+      const proy = E.projectDefiReturns(montoAlt, defi.tier, 1);
+      const proyBlock = proy ? `
+        <h3>Proyección DeFi (1 año sobre ${E.formatCOP(montoAlt)})</h3>
+        <table>
+          <thead><tr><th>Escenario</th><th>APY</th><th>Valor final</th><th>Ganancia</th></tr></thead>
+          <tbody>${proy.map((p) => `<tr><td>${escape(p.escenario)}</td><td>${E.formatPct(p.apy)}</td><td class="highlight">${E.formatCOP(p.valorFinal)}</td><td>${E.formatCOP(p.gananciaAnual)}</td></tr>`).join('')}</tbody>
+        </table>
+        <p class="muted">Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos.</p>` : '';
+
+      const noDefiBlock = defi.noDefi ? `
+        <h3>Mientras tanto, alternativos sin DeFi</h3>
+        <table>
+          <thead><tr><th>Ticker</th><th>Nombre</th><th>Retorno ref.</th></tr></thead>
+          <tbody>${defi.noDefi.map((i) => `<tr><td><strong>${escape(i.ticker)}</strong></td><td>${escape(i.nombre)}</td><td>${escape(i.retorno_ref)}</td></tr>`).join('')}</tbody>
+        </table>` : '';
 
       const ctaBanner = `
         <div class="cta-banner">
@@ -986,21 +1106,19 @@
 
       $('sec-defi').innerHTML = `
         <h2>9. Estrategia DeFi</h2>
-        <p><span class="tag ${tag}">${escape(defi.titulo)}</span></p>
-        <p>${escape(defi.contenido)}</p>
 
-        ${ejecutaPlaybookCastle ? playbookCastle : `
-          <p><strong>Pre requisito.</strong> Antes de ejecutar el playbook completo de DeFi (BTC y ETH como colateral, préstamos en Aave, LPs concentrados y diversificación en Solana), recomendamos que primero te familiarices con el ecosistema. Cuando estés listo, esta es la secuencia que aplicaremos.</p>
-          ${playbookCastle}
-        `}
-
+        ${tierHero}
+        ${tierClassificationDetails}
+        ${recomendacionCCI}
+        ${playbookDisclosure}
+        ${playbookCastle}
         ${proyBlock}
         ${noDefiBlock}
         ${ctaBanner}
       `;
     }
 
-    function renderProyecciones(proyecciones, allocation) {
+    function renderProyecciones(proyecciones, allocation, profile, client) {
       const horizontes = [1, 3, 5];
       const filas = proyecciones.map((esc) => `
         <tr>
@@ -1008,14 +1126,122 @@
           <td>${E.formatPct(esc.tasaAnual)}</td>
           ${esc.proyecciones.map((p) => `<td class="highlight">${E.formatCOP(p.valorFinal)}</td>`).join('')}
         </tr>`).join('');
+
+      const plazo = (client && client.plazo) || 5;
+      const aporteMensual = (allocation && allocation.aporteMensualReal) || 0;
+      const capitalInicial = allocation.capitalInvertible - aporteMensual;
+      const monthlyData = E.projectPortfolioMonthly(Math.max(0, capitalInicial), profile, plazo, aporteMensual);
+      const chartSVG = buildProjectionChart(monthlyData, plazo);
+
       $('sec-proyecciones').innerHTML = `
         <h2>10. Proyecciones</h2>
-        <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)}</p>
+        <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)} · Aporte mensual ${E.formatCOP(aporteMensual)} · Plazo ${plazo} ${plazo > 1 ? 'años' : 'año'}</p>
+
+        <div class="projection-chart-wrap">
+          ${chartSVG}
+          <div class="projection-chart-legend">
+            <span class="legend-item"><span class="dot dot--conservador"></span>Conservador</span>
+            <span class="legend-item"><span class="dot dot--base"></span>Base</span>
+            <span class="legend-item"><span class="dot dot--optimista"></span>Optimista</span>
+          </div>
+        </div>
+
         <table>
           <thead><tr><th>Escenario</th><th>Tasa anual</th>${horizontes.map((h) => `<th>${h} ${h > 1 ? 'años' : 'año'}</th>`).join('')}</tr></thead>
           <tbody>${filas}</tbody>
         </table>
-        <p class="muted">Los escenarios son ilustrativos. La tasa Base usa el retorno esperado del perfil. Conservador y Optimista aplican una variación del 40% sobre esa tasa.</p>
+        <p class="muted">Los escenarios son ilustrativos. La tasa Base usa el retorno esperado del perfil. Conservador y Optimista aplican una variación del 40% sobre esa tasa. Retornos pasados no garantizan retornos futuros.</p>
+      `;
+    }
+
+    // Construye un gráfico SVG de líneas para las 3 proyecciones (con DCA si aplica).
+    function buildProjectionChart(series, plazoAnios) {
+      if (!series || !series.length) return '';
+      const W = 720;
+      const H = 320;
+      const padL = 70;
+      const padR = 24;
+      const padT = 24;
+      const padB = 44;
+
+      // Determinar dominios
+      let maxY = 0;
+      let maxX = 0;
+      series.forEach((s) => {
+        s.puntos.forEach((p) => {
+          if (p.valor > maxY) maxY = p.valor;
+          if (p.mes > maxX) maxX = p.mes;
+        });
+      });
+      maxY = maxY * 1.05 || 1;
+      maxX = maxX || 12;
+
+      const xScale = (mes) => padL + (mes / maxX) * (W - padL - padR);
+      const yScale = (valor) => padT + (1 - valor / maxY) * (H - padT - padB);
+
+      // Compactar números grandes a M / mil M
+      const compactCOP = (n) => {
+        if (n >= 1e9) return '$' + (n / 1e9).toFixed(1) + ' mil M';
+        if (n >= 1e6) return '$' + (n / 1e6).toFixed(1) + ' M';
+        if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + ' k';
+        return '$' + Math.round(n);
+      };
+
+      // Eje Y: 5 líneas
+      const yTicks = [];
+      for (let i = 0; i <= 4; i++) {
+        const v = (maxY / 4) * i;
+        const y = yScale(v);
+        yTicks.push(`
+          <line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" class="chart-grid" />
+          <text x="${padL - 8}" y="${y + 4}" class="chart-axis-label" text-anchor="end">${compactCOP(v)}</text>
+        `);
+      }
+
+      // Eje X: 1 marca por año
+      const xTicks = [];
+      for (let a = 0; a <= plazoAnios; a++) {
+        const x = xScale(a * 12);
+        xTicks.push(`
+          <line x1="${x}" y1="${H - padB}" x2="${x}" y2="${H - padB + 5}" class="chart-axis" />
+          <text x="${x}" y="${H - padB + 20}" class="chart-axis-label" text-anchor="middle">${a === 0 ? 'Hoy' : (a + (a > 1 ? ' años' : ' año'))}</text>
+        `);
+      }
+
+      const colors = {
+        Conservador: '#7AA1D2',
+        Base: '#C9A84C',
+        Optimista: '#E8954F'
+      };
+      const cssClass = {
+        Conservador: 'line-conservador',
+        Base: 'line-base',
+        Optimista: 'line-optimista'
+      };
+
+      const lines = series.map((s) => {
+        const path = s.puntos.map((p, i) => {
+          const x = xScale(p.mes);
+          const y = yScale(p.valor);
+          return (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+        }).join(' ');
+        const lastPoint = s.puntos[s.puntos.length - 1];
+        const labelX = xScale(lastPoint.mes);
+        const labelY = yScale(lastPoint.valor);
+        return `
+          <path d="${path}" class="chart-line ${cssClass[s.escenario]}" stroke="${colors[s.escenario]}" />
+          <circle cx="${labelX}" cy="${labelY}" r="4" fill="${colors[s.escenario]}" class="chart-end-dot" />
+        `;
+      }).join('');
+
+      return `
+        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" class="projection-chart" role="img" aria-label="Proyección del portafolio en el tiempo">
+          ${yTicks.join('')}
+          <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H - padB}" class="chart-axis" />
+          <line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" class="chart-axis" />
+          ${xTicks.join('')}
+          ${lines}
+        </svg>
       `;
     }
 
@@ -1073,24 +1299,28 @@
         <h3>Cadencia recomendada</h3>
         <ul>
           <li>Revisión mensual: rebalanceo si una categoría se desvía más del 5% del target.</li>
-          <li>Aporte mensual del capital adicional, repartido entre acciones y PEI según la proporción ARCA del perfil.</li>
+          <li>Aporte mensual del capital adicional, repartido entre acciones y PEI según la proporción Arquitectura CCI del perfil.</li>
           <li>Revisión anual completa: reasignación si cambia el perfil de vida (matrimonio, hijos, retiro).</li>
         </ul>
       `;
     }
 
     function renderProximos(defi) {
+      const ctaCCI = (defi && defi.tier >= 2)
+        ? `<p>Tu perfil califica para CCI. Agenda <strong>sesión gratuita y sin compromiso</strong> con Julián para activar la estrategia bajo Contrato de Mandato.</p>`
+        : `<p><strong>Agenda una sesión gratuita con Julián</strong> para evaluar si tu perfil clasifica para la implementación de <strong>CCI Básico</strong> (25–40% de retorno anual estimado) o <strong>CCI Premium</strong> (35–80% de retorno anual estimado). La sesión es totalmente gratuita y sin compromiso: solo se firma Contrato de Mandato si tú decides avanzar.</p>
+            <p class="muted" style="font-size: 0.85rem;">*Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos.</p>
+            <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20quiero%20agendar%20una%20sesi%C3%B3n%20gratuita%20para%20clasificar%20para%20CCI%20B%C3%A1sico%20o%20Premium." target="_blank" rel="noopener" style="margin-top: 8px;">Agendar sesión gratuita</a>`;
+
       $('sec-proximos').innerHTML = `
         <h2>13. Próximos Pasos</h2>
         <div class="card-nested">
           <h3>1. Implementa este plan en 30 días</h3>
           <p>Ejecuta los pasos del Plan de Ejecución en orden. Documenta cada movimiento. Si tienes dudas en cualquier paso, agenda una sesión.</p>
         </div>
-        <div class="card-nested">
+        <div class="card-nested card-nested--cta">
           <h3>2. ¿Quieres maximizar tus alternativos?</h3>
-          <p>${defi && defi.tier >= 2
-            ? 'Tu perfil califica para CCI. Agenda sesión de implementación con Julián para activar la estrategia bajo Contrato de Mandato.'
-            : 'Cuando tengas experiencia DeFi básica (wallet propia y primer movimiento en Bitso), avanza a CCI Básico para activar el stack de rendimiento.'}</p>
+          ${ctaCCI}
         </div>
         <div class="card-nested">
           <h3>3. Agenda con Julián</h3>
@@ -1114,18 +1344,24 @@
 
     // === Main flow ===
     function generate() {
+      const plazo = parseInt($('plazo').value, 10) || 5;
+      const usarFlujoLibre = getRadio('usarFlujoLibre') === 'todo';
+      // Si el plazo < 5 años, q2 queda forzado a Sí (necesita capital antes).
+      const q2Forzado = plazo < 5 ? true : (getRadio('q2') === 'si');
+
       const client = {
         nombre: $('nombre').value.trim(),
         capital: parseFormattedNumber($('capital').value),
         ingresos: parseFormattedNumber($('ingresos').value),
         gastos: parseFormattedNumber($('gastos').value),
         objetivo: parseFormattedNumber($('objetivo').value),
-        plazo: parseInt($('plazo').value, 10) || 5,
+        plazo,
         fondoEmergencia: getRadio('fondo') === 'si',
         experiencia: $('experiencia').value,
         esCCI: getRadio('esCCI') === 'si',
         q1: getRadio('q1') === 'si',
-        q2: getRadio('q2') === 'si'
+        q2: q2Forzado,
+        usarFlujoLibre
       };
 
       if (!client.nombre) {
@@ -1140,7 +1376,8 @@
         client.fondoEmergencia,
         client.gastos,
         client.ingresos,
-        client.objetivo
+        client.objetivo,
+        client.usarFlujoLibre
       );
       const debts = readDebts();
       const debtPlan = E.debtStrategy(debts, client.ingresos, client.gastos, client.objetivo);
@@ -1160,7 +1397,7 @@
       renderRentaFija(etfs, allocation);
       renderETFs(etfs, profile, allocation);
       renderDefi(defi, allocation.montos.alternativos, client);
-      renderProyecciones(proyecciones, allocation);
+      renderProyecciones(proyecciones, allocation, profile, client);
       renderBrokers(brokerRec, client.capital);
       renderEjecucion(allocation, etfs, brokerRec, defi);
       renderProximos(defi);
@@ -1241,17 +1478,40 @@
     }
 
     // ═══════════════════════════════════════
+    // Sincroniza Q2 con plazo objetivo: si <5 años, Q2=Sí forzado.
+    // ═══════════════════════════════════════
+    function syncQ2WithPlazo() {
+      const plazo = parseInt($('plazo').value, 10) || 5;
+      const q2Si = document.querySelector('input[name="q2"][value="si"]');
+      const q2No = document.querySelector('input[name="q2"][value="no"]');
+      const hint = $('q2-auto-hint');
+      if (!q2Si || !q2No || !hint) return;
+
+      if (plazo < 5) {
+        q2Si.checked = true;
+        q2Si.disabled = true;
+        q2No.disabled = true;
+        hint.classList.remove('hidden');
+      } else {
+        q2Si.disabled = false;
+        q2No.disabled = false;
+        hint.classList.add('hidden');
+      }
+      if (typeof updateStepper === 'function') updateStepper();
+    }
+
+    // ═══════════════════════════════════════
     // CHAT ASSISTANT. Aria de Castle Capital
     // ═══════════════════════════════════════
     const CHAT_KB = {
       'qué-es-arca': {
-        title: '¿Qué es ARCA?',
-        body: `<p><strong>ARCA</strong> es la arquitectura Castle de 4 buckets para distribuir tu capital:</p>
+        title: '¿Qué es Arquitectura CCI?',
+        body: `<p><strong>Arquitectura CCI</strong> es nuestra arquitectura de 4 buckets para distribuir tu capital de forma equilibrada:</p>
           <ul>
-            <li><strong>A</strong>cciones, crecimiento vía ETFs USA y dividendos</li>
-            <li><strong>R</strong>enta fija, estabilidad con PEI como vehículo unificado</li>
-            <li><strong>C</strong>aja productiva, liquidez con Rappipay, Nu o Pibank</li>
-            <li><strong>A</strong>lternativos, diversificación con oro, REITs y DeFi</li>
+            <li><strong>Acciones</strong>: crecimiento vía ETFs USA y dividendos.</li>
+            <li><strong>Renta fija</strong>: estabilidad con PEI como vehículo unificado.</li>
+            <li><strong>Caja productiva</strong>: liquidez con Rappipay, Nu o Pibank.</li>
+            <li><strong>Alternativos</strong>: diversificación con oro, REITs y DeFi.</li>
           </ul>
           <p>Tu perfil (conservador, moderado o agresivo) define el % asignado a cada bucket.</p>`
       },
@@ -1272,7 +1532,7 @@
         body: `<p>En 4 pasos:</p>
           <ul>
             <li><strong>1.</strong> Completas tus datos: capital, ingresos, gastos, aporte mensual</li>
-            <li><strong>2.</strong> Respondes 2 preguntas para definir tu perfil ARCA</li>
+            <li><strong>2.</strong> Respondes 2 preguntas para definir tu perfil de cliente</li>
             <li><strong>3.</strong> Indicas si tienes deudas vigentes</li>
             <li><strong>4.</strong> Generas tu plan personalizado con diagnóstico, asignación, ETFs, brokers, proyecciones y plan de ejecución paso a paso</li>
           </ul>
@@ -1285,7 +1545,7 @@
             <li><strong>1. Presupuesto.</strong> Conoce tus ingresos y gastos. Lo que no se mide, no se controla.</li>
             <li><strong>2. Fondo de emergencia.</strong> Seis meses de gastos en cuenta líquida. Es tu cimiento.</li>
             <li><strong>3. Bola de nieve.</strong> Si hay deudas, atácalas en orden de cuota más baja a más alta.</li>
-            <li><strong>4. Inversión sistemática.</strong> Capital invertible distribuido en la arquitectura ARCA con aportes mensuales.</li>
+            <li><strong>4. Inversión sistemática.</strong> Capital invertible distribuido en la Arquitectura CCI con aportes mensuales.</li>
           </ul>
           <p>La regla Castle: invertir solo cuando los pasos previos están en pie. La urgencia es enemiga del rendimiento.</p>`
       },
@@ -1307,7 +1567,7 @@
             <li><strong>Asignación limitada.</strong> Va dentro del bucket de alternativos, no es el portafolio principal.</li>
             <li><strong>Solo lo que estés dispuesto a no tocar 3 a 5 años.</strong> No es ahorro, es exposición.</li>
             <li><strong>BTC y ETH como núcleo.</strong> Las altcoins son satélite, nunca el centro.</li>
-            <li><strong>On-ramp confiable.</strong> Bitso o Binance para entrar y salir desde COP.</li>
+            <li><strong>On-ramp confiable.</strong> Binance es nuestro on-ramp recomendado: liquidez global y P2P en COP.</li>
             <li><strong>Custodia propia (cuando aplique).</strong> Wallet personal con frase de recuperación segura.</li>
           </ul>
           <p>DeFi es el nivel siguiente: pools, leverage, rebalanceo. Eso ya es CCI bajo Contrato de Mandato.</p>`
@@ -1349,7 +1609,7 @@
 
     function chatRespond(query) {
       const q = (query || '').toLowerCase();
-      if (q.includes('arca'))   return CHAT_KB['qué-es-arca'];
+      if (q.includes('arca') || q.includes('arquitectura cci') || q.includes('buckets')) return CHAT_KB['qué-es-arca'];
       if (q.includes('pei'))    return CHAT_KB['qué-es-pei'];
       if (q.includes('cci') || q.includes('crypto') || q.includes('defi')) return CHAT_KB['qué-es-cci'];
       if (q.includes('cripto') || q.includes('btc') || q.includes('bitcoin') || q.includes('ethereum')) return CHAT_KB['invertir-cripto'];
@@ -1369,7 +1629,7 @@
       return {
         title: 'No tengo respuesta directa',
         body: `<p>No tengo una respuesta directa a esa pregunta, pero estoy entrenada en los conceptos de Castle Capital.</p>
-          <p>Prueba con: <strong>ARCA, PEI, CCI, finanzas personales, bolsa, cripto, seguridad o diversificación</strong>. Para temas concretos, agenda una sesión con Julián.</p>`
+          <p>Prueba con: <strong>Arquitectura CCI, PEI, CCI, finanzas personales, bolsa, cripto, seguridad o diversificación</strong>. Para temas concretos, agenda una sesión con Julián.</p>`
       };
     }
 
@@ -1441,7 +1701,7 @@
       // Mensaje inicial de bienvenida
       chatAddMessage('bot', `
         <p><strong>Hola, soy Aria.</strong></p>
-        <p>Tu asistente Castle Capital. Pregúntame sobre tu plan, los buckets ARCA, PEI, CCI o cómo agendar una sesión con Julián.</p>
+        <p>Tu asistente Castle Capital. Pregúntame sobre tu plan, los buckets de Arquitectura CCI, PEI, CCI o cómo agendar una sesión con Julián.</p>
       `);
 
       // FAB
@@ -1536,6 +1796,8 @@
       $('reset-btn').addEventListener('click', resetForm);
       $('download-pdf-btn').addEventListener('click', downloadPDF);
       $('back-btn').addEventListener('click', backToForm);
+      $('plazo').addEventListener('change', syncQ2WithPlazo);
+      syncQ2WithPlazo();
       setupStepper();
       setupChat();
       attachScrollReveal();

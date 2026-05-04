@@ -1,7 +1,7 @@
 'use strict';
 
 const ARCA_ALLOCATION = {
-  conservador: { acciones: 0.30, rentaFija: 0.45, caja: 0.20, alternativos: 0.05 },
+  conservador: { acciones: 0.10, rentaFija: 0.55, caja: 0.30, alternativos: 0.05 },
   moderado:    { acciones: 0.55, rentaFija: 0.25, caja: 0.10, alternativos: 0.10 },
   agresivo:    { acciones: 0.35, rentaFija: 0.15, caja: 0.15, alternativos: 0.35 }
 };
@@ -26,24 +26,33 @@ function getArcaAllocation(profile) {
   return ARCA_ALLOCATION[profile] || ARCA_ALLOCATION.moderado;
 }
 
-function calculatePortfolioAllocation(capital, profile, hasEmergencyFund, monthlyExpenses, monthlyIncome, monthlyContribution) {
+function calculatePortfolioAllocation(capital, profile, hasEmergencyFund, monthlyExpenses, monthlyIncome, monthlyContribution, useFlujoLibre) {
   const allocation = getArcaAllocation(profile);
   const emergencyFund = hasEmergencyFund ? 0 : Math.max(0, monthlyExpenses * FONDO_EMERGENCIA_MESES);
 
   const flujoLibreMensual = Math.max(0, (monthlyIncome || 0) - (monthlyExpenses || 0));
   const aporteMensual = Math.max(0, monthlyContribution || 0);
 
-  // Capital invertible = capital disponible (cliente) + flujo libre mensual + aporte mensual adicional
-  // menos fondo de emergencia que se aparta del capital base.
+  // Si el cliente decide usar SOLO el aporte adicional (no todo el flujo libre),
+  // el aporte mensual real para invertir es solamente lo que ingresó como objetivo.
+  // Si decide usar todo el flujo libre, sumamos ambos.
+  const usarFlujoLibre = useFlujoLibre !== false; // default true (compat)
+  const aporteMensualReal = usarFlujoLibre
+    ? Math.max(flujoLibreMensual, aporteMensual)
+    : aporteMensual;
+
   const capitalBase = Math.max(0, capital - emergencyFund);
-  const investableCapital = capitalBase + flujoLibreMensual + aporteMensual;
+  const investableCapital = capitalBase + aporteMensualReal;
+  const capitalDisponibleTotal = capital + (usarFlujoLibre ? flujoLibreMensual : aporteMensual);
 
   return {
     capitalTotal: capital,
     fondoEmergencia: emergencyFund,
     flujoLibreMensual,
     aporteMensual,
-    capitalDisponibleTotal: capital + flujoLibreMensual,
+    aporteMensualReal,
+    usarFlujoLibre,
+    capitalDisponibleTotal,
     capitalInvertible: investableCapital,
     perfil: profile,
     porcentajes: allocation,
@@ -147,6 +156,39 @@ function projectPortfolio(allocation, profile, years) {
   }));
 }
 
+// Genera puntos mensuales para gráfica de línea, con o sin aporte mensual recurrente.
+// Si aporteMensual > 0, simula DCA: cada mes se suma el aporte y se capitaliza.
+// Si aporteMensual = 0, es solo capitalización compuesta del capital inicial.
+function projectPortfolioMonthly(capitalInicial, profile, years, aporteMensual) {
+  const baseRate = RETORNO_ESPERADO[profile] || 0.10;
+  const escenarios = [
+    { nombre: 'Conservador', rate: baseRate * 0.6 },
+    { nombre: 'Base',        rate: baseRate },
+    { nombre: 'Optimista',   rate: baseRate * 1.4 }
+  ];
+
+  const totalMeses = (years || 5) * 12;
+  const aporte = Math.max(0, aporteMensual || 0);
+
+  return escenarios.map((esc) => {
+    const tasaMensual = Math.pow(1 + esc.rate, 1 / 12) - 1;
+    const puntos = [];
+    let valor = capitalInicial;
+    puntos.push({ mes: 0, anio: 0, valor });
+    for (let m = 1; m <= totalMeses; m++) {
+      valor = valor * (1 + tasaMensual) + aporte;
+      if (m % 6 === 0 || m === totalMeses) {
+        puntos.push({ mes: m, anio: m / 12, valor });
+      }
+    }
+    return {
+      escenario: esc.nombre,
+      tasaAnual: esc.rate,
+      puntos
+    };
+  });
+}
+
 function recommendBroker(capital, profile, brokersBank) {
   const todos = [
     ...(brokersBank.internacional || []),
@@ -179,7 +221,7 @@ function calcDefiStrategy(experiencia, esCCI, montoAlternativos, etfBank) {
       titulo: 'Tier 0. Sin DeFi',
       contenido: 'Tu exposición alternativa va a oro (GLD/IAU) y REITs (VNQ). DeFi requiere experiencia previa.',
       instrumentos: alt.no_defi || [],
-      cta: '¿Te gustaría aprender DeFi? Avanza a Tier 1 cuando tengas wallet propia y operes en Bitso.'
+      cta: '¿Te gustaría aprender DeFi? Avanza a Tier 1 cuando tengas wallet propia y operes en Binance.'
     };
   }
 
@@ -317,6 +359,7 @@ const CastleEngine = {
   selectETFs,
   debtStrategy,
   projectPortfolio,
+  projectPortfolioMonthly,
   recommendBroker,
   calcDefiStrategy,
   calcAaveLeverage,
