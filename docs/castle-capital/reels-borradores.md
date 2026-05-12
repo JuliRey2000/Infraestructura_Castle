@@ -11,6 +11,7 @@ Archivo para almacenar borradores de reels listos o en proceso, con su estado y 
 **Tema:** Gestión del riesgo / position sizing
 **Fecha:** 2026-04-29
 **Origen:** Copy de Julián revisado por Copy Chief — Variante B seleccionada
+**Asignado:** Día 1 — Campaña Mayo 2026 (6 mayo)
 
 ### Copy
 
@@ -45,6 +46,7 @@ Archivo para almacenar borradores de reels listos o en proceso, con su estado y 
 **Tema:** Mentalidad / propósito del dinero / legado
 **Fecha:** 2026-04-29
 **Origen:** Idea de Julián — desarrollada por Copy Chief
+**Asignado:** Día 5 — Campaña Mayo 2026 (10 mayo)
 
 ### Copy (Variante recomendada — Reframe Filosófico)
 

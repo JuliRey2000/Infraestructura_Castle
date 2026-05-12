@@ -367,3 +367,6 @@ build/
 .aiox-core/local/
 .claude/settings.local.json
 .aiox/install-log.txt
+
+# Asesoria Capital — Supabase credentials
+tools/asesoria-capital/config.js

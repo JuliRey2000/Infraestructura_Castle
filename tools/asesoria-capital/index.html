@@ -6,6 +6,7 @@
   <title>Arquitectura Financiera Castle Capital</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="engine.js"></script>
+  <script src="config.js" onerror="console.info('[Castle] config.js no encontrado — Supabase deshabilitado.')"></script>
 </head>
 <body>
   <!-- Ambient lights (gradient orbs background) -->
@@ -52,20 +53,24 @@
 
     <!-- Stepper de secciones -->
     <nav class="stepper no-print" id="stepper" aria-label="Progreso del formulario">
-      <div class="step is-active" data-step="datos">
+      <div class="step is-active" data-step="contacto">
         <span class="step-num">1</span>
+        <span class="step-label">Contacto</span>
+      </div>
+      <div class="step" data-step="datos">
+        <span class="step-num">2</span>
         <span class="step-label">Datos</span>
       </div>
       <div class="step" data-step="perfil">
-        <span class="step-num">2</span>
+        <span class="step-num">3</span>
         <span class="step-label">Tu Perfil</span>
       </div>
       <div class="step" data-step="deudas">
-        <span class="step-num">3</span>
+        <span class="step-num">4</span>
         <span class="step-label">Deudas</span>
       </div>
       <div class="step" data-step="generar">
-        <span class="step-num">4</span>
+        <span class="step-num">5</span>
         <span class="step-label">Generar</span>
       </div>
     </nav>
@@ -81,15 +86,88 @@
         </div>
       </div>
 
-      <div class="form-section" data-section="datos">
+      <div class="form-section" data-section="contacto">
+        <h3 class="form-section-title">Tus datos de contacto</h3>
         <div class="form-grid">
           <div class="form-group">
-            <label for="nombre">Nombre completo</label>
+            <label for="nombre">Nombre completo *</label>
             <div class="input-icon-wrap">
-              <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <input id="nombre" type="text" placeholder="Ej: María Fernanda Pérez" />
+              <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input id="nombre" type="text" placeholder="Ej: María Fernanda Pérez"
+                     autocomplete="name" />
             </div>
           </div>
+
+          <div class="form-group">
+            <label for="email">Correo electrónico *</label>
+            <div class="input-icon-wrap">
+              <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <input id="email" type="email" placeholder="maria@ejemplo.com"
+                     autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="celular">Celular (Colombia) *</label>
+            <div class="input-icon-wrap">
+              <svg class="icon-leading" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+              </svg>
+              <input id="celular" type="tel" placeholder="3XX XXX XXXX"
+                     autocomplete="tel" maxlength="10" inputmode="numeric" />
+            </div>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label class="checkbox-label">
+              <input type="checkbox" id="acepta-politica" />
+              <span>
+                He leído y acepto la
+                <button type="button" class="link-btn" id="ver-politica-btn">
+                  Política de Tratamiento de Datos Personales
+                </button>
+                de Castle Capital, conforme a la Ley 1581 de 2012. *
+              </span>
+            </label>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label class="checkbox-label">
+              <input type="checkbox" id="acepta-contacto" />
+              <span>
+                Acepto ser contactado por un miembro del equipo de Castle Capital en los próximos días
+                para orientarme en la mejor decisión de inversión y recibir correos informativos,
+                invitaciones a clases, insights e ideas de inversión. *
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section" data-section="datos">
+        <div class="privacy-notice" role="note">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>
+            <strong>Tus datos financieros son privados.</strong>
+            La información que ingreses aquí (ingresos, gastos y aporte mensual) se usa
+            <em>únicamente en tu navegador</em> para calcular el plan. No se envía ni almacena
+            en nuestros servidores. Al recargar la página, desaparece.
+          </span>
+        </div>
+        <div class="form-grid">
           <div class="form-group">
             <label for="capital">Capital disponible (COP)</label>
             <div class="input-icon-wrap">
@@ -199,6 +277,19 @@
       </div>
 
       <div class="form-section" data-section="deudas">
+        <div class="privacy-notice" role="note">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span>
+            <strong>Información confidencial.</strong>
+            Los datos de tus deudas se usan solo para calcular la estrategia de la bola de nieve
+            dentro de tu plan. <em>No se guardan en nuestros servidores</em> y desaparecen al
+            recargar la página.
+          </span>
+        </div>
         <h3 class="form-section-title">Deudas · opcional</h3>
         <div class="form-group">
           <label>¿Tiene deudas vigentes?</label>
@@ -215,9 +306,19 @@
         </div>
       </div>
 
-      <div class="action-row">
-        <button type="button" class="btn" id="generate-btn">
-          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <div class="action-row" id="step-nav">
+        <button type="button" class="btn btn-ghost" id="btn-prev" style="display:none">
+          ← Anterior
+        </button>
+        <button type="button" class="btn" id="btn-next">
+          Siguiente →
+        </button>
+        <button type="button" class="btn" id="generate-btn" style="display:none">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
           Generar Arquitectura
         </button>
         <button type="button" class="btn btn-ghost" id="reset-btn">Limpiar</button>
@@ -1593,6 +1694,108 @@
       `;
     }
 
+    // ═══════════════════════════════════════
+    // MULTI-STEP NAVIGATION
+    // ═══════════════════════════════════════
+    var FORM_STEPS = ['contacto', 'datos', 'perfil', 'deudas'];
+    var currentStepIdx = 0;
+
+    function showStep(idx) {
+      FORM_STEPS.forEach(function(section, i) {
+        var el = document.querySelector('[data-section="' + section + '"]');
+        if (el) el.style.display = (i === idx) ? '' : 'none';
+      });
+      $('btn-prev').style.display = (idx === 0) ? 'none' : '';
+      var isLast = (idx === FORM_STEPS.length - 1);
+      $('btn-next').style.display = isLast ? 'none' : '';
+      $('generate-btn').style.display = isLast ? '' : 'none';
+      currentStepIdx = idx;
+      updateStepperActive(idx);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateStepperActive(idx) {
+      document.querySelectorAll('#stepper .step').forEach(function(step, i) {
+        step.classList.remove('is-active', 'is-done');
+        if (i < idx) step.classList.add('is-done');
+        else if (i === idx) step.classList.add('is-active');
+      });
+    }
+
+    function validateStep(idx) {
+      if (idx === 0) {
+        var nombre = $('nombre').value.trim();
+        var email  = $('email').value.trim();
+        var cel    = $('celular').value.trim();
+        if (!nombre) {
+          alert('Ingresa tu nombre completo.'); $('nombre').focus(); return false;
+        }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          alert('Ingresa un correo electrónico válido.'); $('email').focus(); return false;
+        }
+        if (!cel || !/^3\d{9}$/.test(cel)) {
+          alert('Ingresa un celular colombiano válido (10 dígitos, comienza con 3).');
+          $('celular').focus(); return false;
+        }
+        if (!$('acepta-politica').checked) {
+          alert('Debes aceptar la Política de Tratamiento de Datos para continuar.'); return false;
+        }
+        if (!$('acepta-contacto').checked) {
+          alert('Debes aceptar ser contactado por el equipo de Castle Capital para continuar.');
+          return false;
+        }
+        return true;
+      }
+      if (idx === 1) {
+        if (!$('capital').value.trim()) {
+          alert('Ingresa tu capital disponible.'); $('capital').focus(); return false;
+        }
+        return true;
+      }
+      return true;
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStepIdx)) return;
+      if (currentStepIdx < FORM_STEPS.length - 1) showStep(currentStepIdx + 1);
+    }
+
+    function prevStep() {
+      if (currentStepIdx > 0) showStep(currentStepIdx - 1);
+    }
+
+    // ═══════════════════════════════════════
+    // SUPABASE — guarda solo datos de contacto + capital
+    // ═══════════════════════════════════════
+    function saveProspectAsync(data) {
+      var cfg = window.CASTLE_CONFIG;
+      if (!cfg || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
+      fetch(cfg.supabaseUrl + '/rest/v1/prospects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': cfg.supabaseAnonKey,
+          'Authorization': 'Bearer ' + cfg.supabaseAnonKey,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({
+          nombre:          data.nombre,
+          email:           data.email,
+          celular:         data.celular,
+          capital:         data.capital,
+          riesgo:          data.riesgo,
+          experiencia:     data.experiencia,
+          es_cci:          data.esCCI,
+          acepta_contacto: data.aceptaContacto,
+        }),
+      }).then(function(r) {
+        if (!r.ok) console.warn('[Castle] Prospect not saved — Supabase returned', r.status);
+        else console.log('[Castle] Prospect saved to Supabase.');
+      }).catch(function() {
+        console.warn('[Castle] Prospect save skipped — Supabase unavailable.');
+      });
+    }
+
     // === Main flow ===
     function generate() {
       const plazo = parseInt($('plazo').value, 10) || 5;
@@ -1663,6 +1866,17 @@
       $('result-section').classList.add('visible');
       attachScrollReveal();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      saveProspectAsync({
+        nombre:         client.nombre,
+        email:          $('email').value.trim(),
+        celular:        $('celular').value.trim(),
+        capital:        client.capital,
+        riesgo:         profile,
+        experiencia:    client.experiencia,
+        esCCI:          client.esCCI,
+        aceptaContacto: $('acepta-contacto').checked,
+      });
     }
 
     // Cuando flujoNegativo === true, envuelve las cards de inversión en un
@@ -1723,10 +1937,13 @@
     }
 
     function resetForm() {
-      document.querySelectorAll('input[type="text"], input[type="number"]').forEach((i) => { i.value = ''; });
+      document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"]')
+        .forEach((i) => { i.value = ''; });
+      $('acepta-politica').checked = false;
+      $('acepta-contacto').checked = false;
       $('debts-list').innerHTML = '';
       $('debts-container').classList.add('hidden');
-      if (typeof updateStepper === 'function') updateStepper();
+      showStep(0);
     }
 
     // ═══════════════════════════════════════
@@ -1734,42 +1951,47 @@
     // ═══════════════════════════════════════
     function updateStepper() {
       const steps = document.querySelectorAll('#stepper .step');
-      const datosOK   = !!$('nombre').value.trim() && $('capital').value.trim() !== '';
+      const contactoOK = !!$('nombre').value.trim()
+        && !!$('email').value.trim()
+        && !!$('celular').value.trim()
+        && $('acepta-politica').checked
+        && $('acepta-contacto').checked;
+      const datosOK   = $('capital').value.trim() !== '';
       const perfilOK  = !!getRadio('q1') && !!getRadio('q2') && !!getRadio('esCCI');
       const deudasOK  = !!getRadio('hasDebt');
-      const allReady  = datosOK && perfilOK && deudasOK;
+      const allReady  = contactoOK && datosOK && perfilOK && deudasOK;
 
       const states = {
-        datos:   datosOK,
-        perfil:  perfilOK,
-        deudas:  deudasOK,
-        generar: allReady
+        contacto: contactoOK,
+        datos:    datosOK,
+        perfil:   perfilOK,
+        deudas:   deudasOK,
+        generar:  allReady
       };
 
-      steps.forEach((step) => {
+      steps.forEach((step, i) => {
         const key = step.dataset.step;
         step.classList.remove('is-active', 'is-done');
         if (states[key]) step.classList.add('is-done');
+        if (i === currentStepIdx) {
+          step.classList.remove('is-done');
+          step.classList.add('is-active');
+        }
       });
-
-      // Activa el primero que NO esté hecho
-      const firstPending = Array.from(steps).find((s) => !states[s.dataset.step]);
-      if (firstPending) {
-        firstPending.classList.remove('is-done');
-        firstPending.classList.add('is-active');
-      } else {
-        steps[steps.length - 1].classList.add('is-active');
-      }
     }
 
     function setupStepper() {
-      const fields = ['nombre', 'capital'];
+      const fields = ['nombre', 'email', 'celular', 'capital'];
       fields.forEach((id) => {
         const el = $(id);
         if (el) el.addEventListener('input', updateStepper);
       });
       document.querySelectorAll('input[type="radio"]').forEach((r) => {
         r.addEventListener('change', updateStepper);
+      });
+      ['acepta-politica', 'acepta-contacto'].forEach((id) => {
+        const el = $(id);
+        if (el) el.addEventListener('change', updateStepper);
       });
       updateStepper();
     }
@@ -2094,11 +2316,111 @@
       $('download-pdf-btn').addEventListener('click', downloadPDF);
       $('back-btn').addEventListener('click', backToForm);
       $('plazo').addEventListener('change', syncQ2WithPlazo);
+
+      // Multi-step navigation
+      $('btn-next').addEventListener('click', nextStep);
+      $('btn-prev').addEventListener('click', prevStep);
+
+      // Modal política de datos
+      $('ver-politica-btn').addEventListener('click', function() {
+        $('politica-dialog').showModal();
+      });
+      $('close-politica-btn').addEventListener('click', function() {
+        $('politica-dialog').close();
+      });
+      $('aceptar-politica-btn').addEventListener('click', function() {
+        $('acepta-politica').checked = true;
+        updateStepper();
+        $('politica-dialog').close();
+      });
+      $('politica-dialog').addEventListener('click', function(e) {
+        if (e.target === $('politica-dialog')) $('politica-dialog').close();
+      });
+
       syncQ2WithPlazo();
       setupStepper();
       setupChat();
       attachScrollReveal();
+
+      // Init: mostrar solo el primer step
+      showStep(0);
     });
   </script>
+
+  <dialog id="politica-dialog" class="policy-dialog">
+    <div class="policy-dialog-inner">
+      <button type="button" class="dialog-close" id="close-politica-btn" aria-label="Cerrar">✕</button>
+
+      <h2>Política de Tratamiento de Datos Personales</h2>
+      <p><em>Vigente desde 2025</em></p>
+
+      <h3>1. Responsable del Tratamiento</h3>
+      <p>
+        <strong>Castle Capital</strong>, NIT 1002957808-1, con domicilio en Colombia.<br/>
+        Contacto de privacidad:
+        <a href="mailto:castlecapitalemily@gmail.com">castlecapitalemily@gmail.com</a>
+      </p>
+
+      <h3>2. Datos personales que recopilamos</h3>
+      <p>
+        Nombre completo, correo electrónico, número de celular, capital disponible para invertir,
+        perfil de riesgo (conservador / moderado / agresivo), nivel de experiencia con DeFi/cripto,
+        y si usted es cliente activo de Castle Crypto Income.
+      </p>
+      <p>
+        <strong>Datos que NO almacenamos:</strong> sus ingresos mensuales, gastos mensuales y
+        deudas vigentes se utilizan <em>exclusivamente en su navegador</em> para calcular el plan
+        financiero personalizado. Nunca se envían ni guardan en nuestros servidores. Al recargar
+        la página, desaparecen por completo.
+      </p>
+
+      <h3>3. Finalidades del tratamiento</h3>
+      <ul>
+        <li>Contactarle para orientarle en la mejor decisión de inversión según su perfil.</li>
+        <li>Enviarle correos informativos, invitaciones a clases, insights e ideas de inversión.</li>
+        <li>Ofrecerle productos y servicios de Castle Capital alineados con su capital disponible.</li>
+        <li>Cumplir las obligaciones legales aplicables.</li>
+      </ul>
+
+      <h3>4. Derechos ARCO del titular (Art. 8, Ley 1581 de 2012)</h3>
+      <p>Usted tiene derecho a:</p>
+      <ul>
+        <li><strong>Acceso:</strong> conocer qué datos personales tratamos sobre usted.</li>
+        <li><strong>Rectificación:</strong> corregir datos incompletos, inexactos o desactualizados.</li>
+        <li><strong>Cancelación:</strong> solicitar la supresión de sus datos cuando no sean
+            necesarios o haya retirado la autorización.</li>
+        <li><strong>Oposición:</strong> oponerse al tratamiento de sus datos por motivos legítimos.</li>
+      </ul>
+      <p>
+        Para ejercer estos derechos escríbanos a
+        <a href="mailto:castlecapitalemily@gmail.com">castlecapitalemily@gmail.com</a>
+        indicando su nombre, número de identificación y la solicitud concreta.
+        Responderemos dentro de los <strong>10 días hábiles</strong> siguientes.
+      </p>
+
+      <h3>5. Base legal y autoridad de supervisión</h3>
+      <p>
+        Ley Estatutaria 1581 de 2012, Decreto 1377 de 2013 y Decreto 1074 de 2015.<br/>
+        Autoridad de supervisión:
+        <strong>Superintendencia de Industria y Comercio (SIC)</strong> —
+        <a href="https://www.sic.gov.co" target="_blank" rel="noopener">www.sic.gov.co</a>
+      </p>
+
+      <h3>6. Transferencia internacional</h3>
+      <p>
+        Los datos de contacto y capital pueden almacenarse en servidores de Supabase Inc.
+        (Estados Unidos) con garantías equivalentes de protección. No se venden ni ceden a
+        terceros con fines comerciales.
+      </p>
+
+      <h3>7. Vigencia</h3>
+      <p>
+        Los datos se conservarán mientras sean necesarios para las finalidades descritas o
+        hasta que usted solicite su supresión.
+      </p>
+
+      <button type="button" class="btn" id="aceptar-politica-btn">Entendido — cerrar</button>
+    </div>
+  </dialog>
 </body>
 </html>
