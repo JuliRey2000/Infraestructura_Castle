@@ -2008,7 +2008,7 @@ table tbody tr:hover { background: rgba(201, 168, 76, 0.04); }
 
 @page {
   size: A4 portrait;
-  margin: 14mm 14mm 16mm;
+  margin: 10mm 12mm 10mm 12mm;
 }
 
 @media print {
@@ -3374,6 +3374,22 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   .card:hover, .kpi:hover, .cci-rec-card:hover { transform: none; }
 }
 
+/* === Tablas responsive en móvil: scroll horizontal dentro de la card === */
+@media (max-width: 720px) {
+  .section.card table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  .section.card th,
+  .section.card td {
+    padding: 8px 10px;
+    font-size: 0.82rem;
+  }
+}
+
 /* ═══════════════════════════════════════
    PRIVACY NOTICE BANNER (Ley 1581 — aviso in-step)
 ═══════════════════════════════════════ */
@@ -3484,14 +3500,30 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   display: none !important;
 }
 
-/* === Chart wrap: scroll horizontal en móvil para evitar overflow === */
+/* === Chart wrap: SVG escala a 100% del viewport en móvil === */
 @media (max-width: 540px) {
   .projection-chart-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    padding: 8px;
+    overflow: visible;
   }
   .projection-chart-wrap .projection-chart {
-    min-width: 640px;
+    min-width: 0;
+    width: 100%;
+    height: auto;
+  }
+  .chart-axis-label {
+    font-size: 9px;
+  }
+  .projection-chart-tooltip {
+    position: static;
+    margin-top: 8px;
+    min-width: 0;
+    width: 100%;
+  }
+  .projection-chart-legend {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.78rem;
   }
 }
 
@@ -3582,28 +3614,26 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
     transform: none !important;
   }
 
-  /* Página A4 con más aire visual — permitir 1 a 2 páginas */
-  @page {
-    size: A4;
-    margin: 12mm 14mm 12mm 14mm;
-  }
-
   /* Permitir page breaks naturales para layout elegante */
   #sec-defi, #sec-proyecciones, #sec-ejecucion {
     page-break-before: auto !important;
     break-before: auto !important;
   }
 
-  /* Llenamos la altura del A4 útil (297mm - 12mm top - 12mm bottom = 273mm).
-     Flex column permite empujar el footer al fondo con margin-top:auto y
-     repartir aire entre secciones intermedias vía margin-bottom. */
+  /* Contenido encerrado en altura máxima de 1 página A4 útil.
+     overflow:hidden previene desbordes mínimos hacia una segunda página vacía.
+     page-break-after:avoid + max-height fuerza 1 sola página. */
   .pdf-summary-page {
     padding: 0;
-    page-break-after: auto;
-    break-after: auto;
     display: flex;
     flex-direction: column;
-    min-height: 273mm;
+    height: 100%;
+    max-height: 267mm;
+    overflow: hidden;
+    page-break-after: avoid;
+    break-after: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   /* Header compacto en una sola fila — no se rompe */
@@ -3612,8 +3642,8 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
     align-items: center;
     gap: 12px;
     border-bottom: 1.5px solid var(--cc-gold);
-    padding-bottom: 8px;
-    margin-bottom: 10px;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
     page-break-after: avoid;
     break-after: avoid;
     page-break-inside: avoid;
@@ -3650,11 +3680,11 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
 
   .pdf-section-label {
     font-family: var(--font-display);
-    font-size: 12.5pt;
+    font-size: 11.5pt;
     color: var(--cc-imperial) !important;
     border-left: 2.5px solid var(--cc-gold);
-    padding: 3px 0 3px 10px;
-    margin: 12px 0 8px;
+    padding: 2px 0 2px 8px;
+    margin: 8px 0 5px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 700;
@@ -3678,8 +3708,8 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   .pdf-kpi-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 14px;
+    gap: 6px;
+    margin-bottom: 10px;
     page-break-inside: avoid;
     break-inside: avoid;
   }
@@ -3687,7 +3717,7 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
     background: var(--cc-arctic) !important;
     border: 1px solid var(--cc-border) !important;
     border-left: 2.5px solid var(--cc-gold);
-    padding: 8px 10px;
+    padding: 6px 8px;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -3702,7 +3732,7 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   .pdf-kpi .val {
     display: block;
     font-family: var(--font-data);
-    font-size: 11pt;
+    font-size: 10pt;
     font-weight: 600;
     color: var(--cc-imperial) !important;
     line-height: 1.2;
@@ -3729,16 +3759,16 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   .pdf-arca-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
     page-break-inside: avoid;
     break-inside: avoid;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
   .pdf-arca-cell {
     background: var(--cc-arctic) !important;
     border: 1px solid var(--cc-border) !important;
     border-top: 2.5px solid var(--cc-gold);
-    padding: 6px 8px;
+    padding: 5px 7px;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
@@ -3751,7 +3781,7 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   }
   .pdf-arca-cell__pct {
     font-family: var(--font-display);
-    font-size: 16pt;
+    font-size: 14pt;
     font-weight: 700;
     color: var(--cc-gold) !important;
     line-height: 1;
@@ -3783,8 +3813,8 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   .pdf-two-col {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
   .pdf-col { min-width: 0; }
   .pdf-col .pdf-section-label { margin-top: 6px; }
@@ -3792,8 +3822,8 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   .pdf-compact-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 4px 0 8px;
-    font-size: 9.5pt;
+    margin: 3px 0 6px;
+    font-size: 9pt;
     font-family: 'Barlow', Arial, Helvetica, sans-serif;
   }
   /* Forzar color y text-fill en TODO el contenido de la tabla para evitar
@@ -3805,11 +3835,11 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   }
   .pdf-compact-table th,
   .pdf-compact-table td {
-    padding: 5px 9px;
+    padding: 4px 7px;
     border-bottom: 1px solid #C5C9D1 !important;
     text-align: left;
     color: #1B3A6B !important;
-    line-height: 1.35;
+    line-height: 1.3;
     font-family: 'Barlow', Arial, Helvetica, sans-serif;
     background: #FFFFFF !important;
   }
@@ -3885,7 +3915,7 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
     /* margin-top:auto empuja el footer al fondo del flex column, llenando
        cualquier espacio vacío entre la última sección y el final del A4. */
     margin-top: auto;
-    padding-top: 12px;
+    padding-top: 8px;
     page-break-inside: avoid;
     break-inside: avoid;
   }
