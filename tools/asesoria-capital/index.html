@@ -1859,9 +1859,8 @@
           nombre:          data.nombre,
           email:           data.email,
           celular:         data.celular,
-          // Durante la transición de migration-003 enviamos ambos campos.
-          // Después de DROP COLUMN capital, solo `capital_rango` queda.
-          capital:         data.capital,
+          // Migration 003b aplicada: la columna `capital` exacta fue removida.
+          // Solo persistimos el rango (capital_rango) — privacy by design.
           capital_rango:   (window.CastleEngine && window.CastleEngine.capitalToRange)
                              ? window.CastleEngine.capitalToRange(data.capital)
                              : null,
