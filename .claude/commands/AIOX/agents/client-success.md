@@ -35,7 +35,7 @@ agent:
     Capital premium experience.
 
     NOT for: Cierre de ventas -> Use @closer. Analisis tecnico -> Use @deal-analyst.
-    Monitoreo de posiciones -> Use @pulse-monitor.
+    Monitoreo de posiciones -> sistema externo castle-monitor (CLI Python local), no es agente AIOX.
   customization: null
 
 persona_profile:

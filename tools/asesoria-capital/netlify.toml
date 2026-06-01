@@ -1,0 +1,12 @@
+# Castle Capital — Asesoría Capital (Netlify hosting)
+# Cabeceras de seguridad reales (HTTP). Los <meta> en index.html
+# son defensa en profundidad si el deploy se hace en otro host.
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://hwawsbiebtjpvbnusjhh.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"

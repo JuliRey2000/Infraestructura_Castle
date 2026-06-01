@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Arquitectura Financiera Castle Capital</title>
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://hwawsbiebtjpvbnusjhh.supabase.co; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <link rel="stylesheet" href="styles.css" />
   <script src="engine.js"></script>
   <script src="config.js" onerror="console.info('[Castle] config.js no encontrado — Supabase deshabilitado.')"></script>
@@ -149,6 +153,13 @@
                 invitaciones a clases, insights e ideas de inversión. *
               </span>
             </label>
+          </div>
+
+          <!-- Honeypot anti-bot: invisible para humanos, atractivo para bots -->
+          <div class="visually-hidden-bot-trap" aria-hidden="true">
+            <label for="hp-company">No completes este campo</label>
+            <input type="text" name="company_website" id="hp-company"
+                   tabindex="-1" autocomplete="off" value="" />
           </div>
         </div>
       </div>
@@ -344,7 +355,6 @@
           <li>Perfil del Cliente</li>
           <li>Diagnóstico de Deudas y Bola de Nieve</li>
           <li>Capital adicional a invertir mes a mes</li>
-          <li>Arquitectura CCI</li>
           <li>Renta Fija con PEI</li>
           <li>ETFs Recomendados (con DCA)</li>
           <li>Estrategia DeFi</li>
@@ -363,7 +373,6 @@
         <div class="section card" id="sec-deudas"></div>
         <div class="section card hidden" id="sec-flujo-negativo"></div>
         <div class="section card" id="sec-gap"></div>
-        <div class="section card" id="sec-arca"></div>
         <div class="section card" id="sec-rentafija"></div>
         <div class="section card" id="sec-etfs"></div>
         <div class="section card" id="sec-defi"></div>
@@ -372,6 +381,9 @@
         <div class="section card" id="sec-ejecucion"></div>
         <div class="section card" id="sec-proximos"></div>
       </div>
+
+      <!-- Vista compacta para impresión (2-3 páginas) - reemplaza #pdf-content en @media print -->
+      <div id="pdf-summary" aria-hidden="true"></div>
 
       <div class="action-row no-print">
         <button type="button" class="btn" id="download-pdf-btn">Descargar PDF</button>
@@ -656,7 +668,9 @@
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/`/g, '&#96;');
     }
 
     function tagForProfile(p) {
@@ -703,11 +717,57 @@
       const usarTodo = client.usarFlujoLibre;
       const aporteEfectivo = usarTodo ? Math.max(flujoLibreMensual, aporteIngresado) : aporteIngresado;
       const capitalCliente = client.capital || 0;
-      const capDispTotal = capitalCliente + aporteEfectivo;
+      const capDispTotal = capitalCliente;
 
-      const pctEmergencia = 0.25;
-      const pctAtaqueDeudas = 0.50;
-      const pctInversionInicial = 0.25;
+      // Tabla dinámica según fondo + deudas:
+      // | Fondo | Deudas | Fondo emergencia | Ataque deudas | Inversión inicial |
+      // | No    | Sí     | 25%              | 50%           | 25%               |
+      // | Sí    | Sí     | 0%               | 50%           | 50%               |
+      // | No    | No     | 25%              | 0%            | 75%               |
+      // | Sí    | No     | 0%               | 0%            | 100%              |
+      const hasFondo = !!client.fondoEmergencia;
+      const hasDeudas = !!(allocation && allocation.hasDebts);
+      const pctEmergencia = hasFondo ? 0 : 0.25;
+      const pctAtaqueDeudas = hasDeudas ? 0.50 : 0;
+      const pctInversionInicial = 1 - pctEmergencia - pctAtaqueDeudas;
+
+      const filasDestino = [];
+      if (pctEmergencia > 0) {
+        filasDestino.push(`
+          <tr>
+            <td><strong>${E.formatPct(pctEmergencia, 0)}</strong></td>
+            <td>Fondo de emergencia</td>
+            <td>${E.formatCOP(capDispTotal * pctEmergencia)}</td>
+            <td>Cuenta de alta rentabilidad líquida (Rappipay, Nu, Pibank)</td>
+          </tr>`);
+      }
+      if (pctAtaqueDeudas > 0) {
+        filasDestino.push(`
+          <tr>
+            <td><strong>${E.formatPct(pctAtaqueDeudas, 0)}</strong></td>
+            <td>Ataque a deudas</td>
+            <td>${E.formatCOP(capDispTotal * pctAtaqueDeudas)}</td>
+            <td>Choque inicial a las primeras deudas siguiendo la Bola de Nieve</td>
+          </tr>`);
+      }
+      filasDestino.push(`
+        <tr>
+          <td><strong>${E.formatPct(pctInversionInicial, 0)}</strong></td>
+          <td>Inversión inicial</td>
+          <td>${E.formatCOP(capDispTotal * pctInversionInicial)}</td>
+          <td>Despliegue en la Arquitectura CCI (renta fija, acciones, alternativos)</td>
+        </tr>`);
+
+      let leadInversion;
+      if (hasFondo && !hasDeudas) {
+        leadInversion = `Tu capital disponible (${E.formatCOP(capDispTotal)}) ya pasa <strong>completo</strong> al motor de inversión: tienes fondo de emergencia constituido y no hay deudas que atacar primero.`;
+      } else if (hasFondo && hasDeudas) {
+        leadInversion = `Tu capital disponible (${E.formatCOP(capDispTotal)}) se reparte en dos misiones: la mitad ataca tus deudas vía Bola de Nieve y la otra mitad arranca el motor de inversión. El fondo de emergencia ya está cubierto, eso libera el 25% que normalmente iría ahí.`;
+      } else if (!hasFondo && !hasDeudas) {
+        leadInversion = `Tu capital disponible (${E.formatCOP(capDispTotal)}) tiene dos misiones: construir el fondo de emergencia (cimiento operativo) y arrancar el motor de inversión. Al no tener deudas, liberas el 50% que normalmente iría al ataque y se suma al despliegue de inversión.`;
+      } else {
+        leadInversion = `Tu capital disponible (${E.formatCOP(capDispTotal)}) tiene tres misiones en este orden de prioridad: construir el fondo de emergencia, atacar las deudas vía Bola de Nieve, y arrancar el motor de inversión.`;
+      }
 
       const decisionFlujoLibre = usarTodo
         ? `<p class="muted">Decidiste invertir <strong>todo el flujo libre mensual</strong>. Eso significa que cada mes ${E.formatCOP(aporteEfectivo)} entran al motor de inversión.</p>`
@@ -733,31 +793,12 @@
         </div>
         ${decisionFlujoLibre}
         <h3>Cómo vamos a usar tu capital disponible</h3>
-        <p>Tu capital disponible total (${E.formatCOP(capDispTotal)}) tiene tres misiones, en este orden:</p>
+        <p>${leadInversion}</p>
         <table>
           <thead><tr><th>%</th><th>Destino</th><th>Monto</th><th>Función</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><strong>25%</strong></td>
-              <td>Fondo de emergencia</td>
-              <td>${E.formatCOP(capDispTotal * pctEmergencia)}</td>
-              <td>Cuenta de alta rentabilidad líquida (Rappipay, Nu, Pibank)</td>
-            </tr>
-            <tr>
-              <td><strong>50%</strong></td>
-              <td>Ataque a deudas</td>
-              <td>${E.formatCOP(capDispTotal * pctAtaqueDeudas)}</td>
-              <td>Abonos a las primeras deudas siguiendo la Bola de Nieve</td>
-            </tr>
-            <tr>
-              <td><strong>25%</strong></td>
-              <td>Inversión inicial</td>
-              <td>${E.formatCOP(capDispTotal * pctInversionInicial)}</td>
-              <td>Despliegue en la Arquitectura CCI (renta fija, acciones, alternativos)</td>
-            </tr>
-          </tbody>
+          <tbody>${filasDestino.join('')}</tbody>
         </table>
-        <p class="muted">Si no tienes deudas, el 50% destinado al ataque pasa directo a inversión. Si ya cubres tu fondo de emergencia, ese 25% también se libera para invertir.</p>
+        <p class="muted">Esta repartición se calculó automáticamente según lo que indicaste en el formulario. Si más adelante cambian tus condiciones (constituyes el fondo, saldas las deudas), la distribución se reacomoda y libera más capital al motor de inversión.</p>
       `;
     }
 
@@ -784,7 +825,9 @@
           <li><strong>Nu Cuenta</strong>: 13.0% E.A. en el primer monto, sin amarre.</li>
           <li><strong>Pibank</strong>: 8.50% E.A., alternativa estable.</li>
         </ul>
-        <p>El fondo de emergencia no se toca para inversión, no se toca para gustos, no se toca para "una oportunidad". Solo se usa cuando la vida te golpea con algo no previsto. Si lo tocas por otra razón, deja de cumplir su función.</p>
+        <div class="emergency-callout">
+          <p>El fondo de emergencia no se toca para inversión, no se toca para <span class="emergency-fund-warn">gustos</span>, no se toca para <span class="emergency-fund-warn">"una oportunidad"</span>. Solo se usa cuando la vida te golpea con algo no previsto. Si lo tocas por otra razón, deja de cumplir su función.</p>
+        </div>
       `;
     }
 
@@ -813,74 +856,102 @@
     }
 
     function renderDeudas(debtPlan, client, allocation) {
-      const capDispTotal = (allocation && allocation.capitalDisponibleTotal) || (client.capital || 0);
-      const ataqueInicial = capDispTotal * 0.50;
-
       if (!debtPlan.hayDeudas) {
         $('sec-deudas').innerHTML = `
-          <h2>4. Diagnóstico de Deudas y Bola de Nieve</h2>
-          <p>${debtPlan.mensajeEstrategia}</p>
-          <p>Estás libre de deuda. Esa es la posición desde la que se construye patrimonio sólido. El 50% destinado al ataque pasa directo al motor de inversión.</p>
-          <span class="tag tag-success">Libre de deuda</span>
+          <div class="section-debt-highlighted">
+            <div class="section-debt-title-box"><h2>4. Diagnóstico de Deudas y Bola de Nieve</h2></div>
+            <p>${debtPlan.mensajeEstrategia}</p>
+            <p>Estás libre de deuda. Esa es la posición desde la que se construye patrimonio sólido. El capital no destinado a deudas pasa directo al motor de inversión.</p>
+            <span class="tag tag-success">Libre de deuda</span>
+          </div>
         `;
         return;
       }
+
+      const choqueInicial = debtPlan.choqueInicial || 0;
+      const ataqueExtra = debtPlan.ataqueExtraMensual || debtPlan.flujoLibreParaAtaque || 0;
+
+      // Detalle del choque inicial: qué deudas se saldaron o redujeron y con cuánto
+      const detalleChoque = (debtPlan.deudasPostChoque || [])
+        .filter((d) => d.pagoInicial > 0)
+        .map((d) => {
+          const estado = d.saldada
+            ? `<strong>saldada</strong>`
+            : `saldo reducido a ${E.formatCOP(d.saldoPostChoque)}`;
+          return `<li><strong>${escape(d.nombre)}</strong> → ${E.formatCOP(d.pagoInicial)} (${estado})</li>`;
+        }).join('');
+
       const filas = debtPlan.ordenadas.map((d, i) => `
         <tr>
           <td>${i + 1}</td>
           <td><strong>${escape(d.nombre)}</strong></td>
           <td>${E.formatCOP(d.monto)}</td>
-          <td>${d.tasa.toFixed(1)}%</td>
-          <td>${E.formatCOP(d.cuotaMinima)}</td>
-          <td>${d.mesesPago} meses</td>
-          <td>Mes ${d.mesPagoFinal}</td>
+          <td>${E.formatCOP(d.pagoInicial || 0)}</td>
+          <td>${E.formatCOP(d.saldoPostChoque || 0)}</td>
+          <td>${d.saldada ? '<span class="tag tag-success">Saldada</span>' : E.formatCOP(d.cuotaConSnowball || 0)}</td>
+          <td>${d.saldada ? 'Mes 0' : 'Mes ' + d.mesPagoFinal}</td>
         </tr>`).join('');
+
       $('sec-deudas').innerHTML = `
-        <h2>4. Diagnóstico de Deudas y Bola de Nieve</h2>
+        <div class="section-debt-highlighted">
+          <div class="section-debt-title-box"><h2>4. Diagnóstico de Deudas y Bola de Nieve</h2></div>
 
-        <h3>Por qué usamos la Bola de Nieve</h3>
-        <p>Esta estrategia, popularizada por Dave Ramsey y respaldada por estudios de comportamiento financiero de la Universidad de Northwestern y Harvard Business Review, no es la más eficiente en pura aritmética cuando hay tasas altas. Su ventaja está en otra dimensión: la psicológica. Abonarle primero a la deuda más pequeña genera una victoria temprana, real y tangible. Esa victoria construye convicción, y la convicción es la materia prima que sostiene la disciplina financiera durante meses.</p>
-        <p>Ramsey lo dice así: "Las finanzas personales son 20% conocimiento y 80% comportamiento". Por eso recomendamos este método: porque el cliente que ve cómo una deuda se reduce, aunque sea pequeña, descubre que es capaz. Y desde esa convicción, ataca la siguiente. La bola se hace más grande, el músculo financiero también.</p>
+          <h3>Por qué usamos la Bola de Nieve</h3>
+          <p>Esta estrategia, popularizada por Dave Ramsey y respaldada por estudios de comportamiento financiero de la Universidad de Northwestern y Harvard Business Review, no es la más eficiente en pura aritmética cuando hay tasas altas. Su ventaja está en otra dimensión: la psicológica. Abonarle primero a la deuda más pequeña genera una victoria temprana, real y tangible. Esa victoria construye convicción, y la convicción es la materia prima que sostiene la disciplina financiera durante meses.</p>
+          <p>Ramsey lo dice así: "Las finanzas personales son 20% conocimiento y 80% comportamiento". Por eso recomendamos este método: porque el cliente que ve cómo una deuda se reduce, aunque sea pequeña, descubre que es capaz. Y desde esa convicción, ataca la siguiente. La bola se hace más grande, el músculo financiero también.</p>
 
-        <p>${debtPlan.mensajeEstrategia}</p>
+          <p>${debtPlan.mensajeEstrategia}</p>
 
-        <div class="kpi-grid">
-          <div class="kpi"><div class="label">Deuda total</div><div class="value">${E.formatCOP(debtPlan.saldoTotal)}</div></div>
-          <div class="kpi"><div class="label">Cuotas mínimas</div><div class="value">${E.formatCOP(debtPlan.cuotaMinimaTotal)}</div></div>
-          <div class="kpi kpi--orange"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(debtPlan.flujoLibreParaAtaque)}</div></div>
-          <div class="kpi"><div class="label">Libertad de deuda</div><div class="value">${debtPlan.mesesParaLibertad} meses</div></div>
+          <div class="kpi-grid">
+            <div class="kpi"><div class="label">Deuda total</div><div class="value">${E.formatCOP(debtPlan.saldoTotal)}</div></div>
+            <div class="kpi"><div class="label">Cuotas mínimas</div><div class="value">${E.formatCOP(debtPlan.cuotaMinimaTotal)}</div></div>
+            <div class="kpi kpi--orange"><div class="label">Ataque mensual extra</div><div class="value">${E.formatCOP(ataqueExtra)}</div></div>
+            <div class="kpi"><div class="label">Libertad de deuda</div><div class="value">${debtPlan.mesesParaLibertad} meses</div></div>
+          </div>
+
+          <h3>El Ataque con la Bola de Nieve</h3>
+
+          <h4>Paso 1: El Choque de Capital (uso de la liquidez)</h4>
+          <p>Aquí entra en juego tu capital disponible total, el que sale después de hacer el presupuesto. Tomamos el <strong>50% de ese capital</strong> y lo abonamos a las primeras deudas de la lista ordenadas por cuota mínima de menor a mayor. Si el capital alcanza para una deuda completa, la saldamos; si no, le abonamos lo que haya y la dejamos en una posición más manejable.</p>
+          <div class="debt-choque-detail">
+            <p><strong>Tu choque inicial: ${E.formatCOP(choqueInicial)}</strong></p>
+            ${detalleChoque ? `<ul>${detalleChoque}</ul>` : '<p class="muted">Sin aplicación de choque (capital disponible insuficiente).</p>'}
+          </div>
+
+          <h4>Paso 2: Rodar la Bola (ataque rotativo)</h4>
+          <p>Una vez aplicado el choque inicial, atacamos las deudas restantes una a la vez, en el mismo orden (cuota mínima de menor a mayor). La cuota efectiva con la que atacamos cada deuda activa se compone de tres elementos:</p>
+          <p style="font-family: var(--font-display); color: var(--cc-gold); font-size: 1.05rem; margin: 8px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.08); border-left: 3px solid var(--cc-gold); border-radius: 6px;">Cuota efectiva = Cuota mínima propia + Cuotas mínimas liberadas + 50% del aporte mensual</p>
+          <p>Cuando saldamos una deuda, su cuota mínima se libera y se suma íntegra al ataque de la siguiente. Esa es la bola rodando: cada victoria suma munición a la próxima batalla.</p>
+
+          <p class="muted">Cronograma ordenado por <strong>cuota mensual</strong> de menor a mayor. La columna "Cuota efectiva" muestra el pago real que aplicas cada mes a la deuda activa, ya sumando todas las cuotas liberadas y el 50% del aporte.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Deuda</th>
+                <th>Saldo inicial</th>
+                <th>Pago inicial (choque)</th>
+                <th>Saldo post-choque</th>
+                <th>Cuota efectiva</th>
+                <th>Mes pagada</th>
+              </tr>
+            </thead>
+            <tbody>${filas}</tbody>
+          </table>
+
+          <h3>Aceleradores del Asesor Financiero</h3>
+          <p>Mientras aplicas la bola de nieve, dos palancas avanzadas multiplican la velocidad del proceso:</p>
+          <div class="card-nested">
+            <h4>Negociación de Tasas (Compra de Cartera)</h4>
+            <p>Llama a otros bancos. Pregunta si te compran la deuda de las tarjetas de crédito a una tasa menor. Esto no reduce el capital adeudado, pero hace que más dinero de tu pago mensual vaya al capital y no a los intereses del banco. Es plata recuperada del vacío.</p>
+          </div>
+          <div class="card-nested">
+            <h4>El Principio de Parkinson</h4>
+            <p>La Ley de Parkinson dice que "los gastos se expanden hasta llenar los ingresos disponibles". Para evitar esto, automatiza los pagos de tu Bola de Nieve al día siguiente de recibir tus ingresos. No dejes que el dinero "nade" en tu cuenta. Lo que no ves, no se gasta.</p>
+          </div>
+
+          <p><strong>Empieza a invertir desde ya.</strong> ${escape(debtPlan.mensajeHabito || 'Aunque sea un monto simbólico, mientras pagas la bola de nieve, abre tu primera posición de inversión. La prioridad ahora no es el retorno, es el hábito de mover capital al sistema cada mes.')}</p>
         </div>
-
-        <p class="muted">Cronograma ordenado por <strong>cuota mensual</strong> de menor a mayor. La idea: abonarle primero a la deuda con la cuota más pequeña para liberar flujo y construir momentum.</p>
-        <table>
-          <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Tasa</th><th>Cuota mín.</th><th>Pago en</th><th>Saldada</th></tr></thead>
-          <tbody>${filas}</tbody>
-        </table>
-
-        <h3>El Ataque con la Bola de Nieve</h3>
-
-        <h4>Paso 1: El Choque de Capital (uso de la liquidez)</h4>
-        <p>Aquí entra en juego tu capital disponible total, el que sale después de hacer el presupuesto. Toma el <strong>50% de ese capital</strong> (después de separar el 25% para el fondo de emergencia en una cuenta de alta rentabilidad) y abónalo a las primeras deudas de la lista. Si tu capital alcanza para una deuda completa, la saldas; si no, le abonas lo que tengas y la dejas en una posición más manejable.</p>
-        <p><strong>Tu choque inicial:</strong> ${E.formatCOP(ataqueInicial)} para abonar de un solo golpe a las primeras deudas ordenadas por cuota mínima.</p>
-
-        <h4>Paso 2: Rodar la Bola</h4>
-        <p>Si el capital disponible se acaba y aún quedan deudas más grandes, aquí empieza la magia matemática. Toma el pago mínimo que estabas destinando a las deudas que ya liberaste en el paso anterior, y súmalo al pago de la siguiente deuda en la lista.</p>
-        <p><strong>Fórmula del asesor:</strong></p>
-        <p style="font-family: var(--font-display); color: var(--cc-gold); font-size: 1.05rem; margin: 8px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.08); border-left: 3px solid var(--cc-gold); border-radius: 6px;">Pago Nuevo = Pago Mínimo + Flujo Liberado + Ingreso Extra</p>
-        <p>Continúa pagando el mínimo en las deudas grandes, pero ataca la siguiente deuda más pequeña con toda la fuerza de este nuevo pago consolidado. Esa es la bola rodando.</p>
-
-        <h3>Aceleradores del Asesor Financiero</h3>
-        <p>Mientras aplicas la bola de nieve, dos palancas avanzadas multiplican la velocidad del proceso:</p>
-        <div class="card-nested">
-          <h4>Negociación de Tasas (Compra de Cartera)</h4>
-          <p>Llama a otros bancos. Pregunta si te compran la deuda de las tarjetas de crédito a una tasa menor. Esto no reduce el capital adeudado, pero hace que más dinero de tu pago mensual vaya al capital y no a los intereses del banco. Es plata recuperada del vacío.</p>
-        </div>
-        <div class="card-nested">
-          <h4>El Principio de Parkinson</h4>
-          <p>La Ley de Parkinson dice que "los gastos se expanden hasta llenar los ingresos disponibles". Para evitar esto, automatiza los pagos de tu Bola de Nieve al día siguiente de recibir tus ingresos. No dejes que el dinero "nade" en tu cuenta. Lo que no ves, no se gasta.</p>
-        </div>
-
-        <p><strong>Empieza a invertir desde ya.</strong> ${escape(debtPlan.mensajeHabito || 'Aunque sea un monto simbólico, mientras pagas la bola de nieve, abre tu primera posición de inversión. La prioridad ahora no es el retorno, es el hábito de mover capital al sistema cada mes.')}</p>
       `;
     }
 
@@ -939,7 +1010,7 @@
           </div>
         </div>
 
-        <p class="muted">Estas son tres rutas probadas. Si quieres más profundidad o ideas adicionales, vale la pena consultar guías como <a href="https://www.shopify.com/es/blog/como-ganar-dinero-online-en-colombia" target="_blank" rel="noopener">Shopify Colombia: 25 ideas para 2026</a> o <a href="https://www.shopify.com/es/blog/como-ganar-dinero-desde-casa-en-colombia" target="_blank" rel="noopener">20 formas de ganar dinero desde casa</a>.</p>
+        <p class="muted">Estas son tres rutas probadas. Si quieres más profundidad o ideas adicionales, vale la pena consultar guías como <a href="https://www.shopify.com/es/blog/como-ganar-dinero-online-en-colombia" target="_blank" rel="noopener noreferrer">Shopify Colombia: 25 ideas para 2026</a> o <a href="https://www.shopify.com/es/blog/como-ganar-dinero-desde-casa-en-colombia" target="_blank" rel="noopener noreferrer">20 formas de ganar dinero desde casa</a>.</p>
 
         <div class="cta-banner cta-banner--mentoria">
           <span class="cta-banner__pill">Mentoría 1:1 con Julián</span>
@@ -952,7 +1023,7 @@
             <li>Comunidad privada para mantener el ritmo y la disciplina</li>
           </ul>
           <div class="cta-banner-actions">
-            <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20me%20interesa%20la%20mentor%C3%ADa%201%3A1%20en%20trading%20para%20generar%20ingresos%20extra." target="_blank" rel="noopener">Quiero mi mentoría con Julián</a>
+            <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20me%20interesa%20la%20mentor%C3%ADa%201%3A1%20en%20trading%20para%20generar%20ingresos%20extra." target="_blank" rel="noopener noreferrer">Quiero mi mentoría con Julián</a>
             <a class="btn-link-soft" href="mailto:castlecapitalemily@gmail.com">Escribir por correo</a>
           </div>
           <p class="cta-banner__legal">Los retornos pasados no garantizan retornos futuros. Trading implica riesgo de pérdida. La mentoría te da el sistema y la disciplina, no rendimientos garantizados.</p>
@@ -981,6 +1052,7 @@
           <td><strong>${labelCat(d.cat)}</strong></td>
           <td>${E.formatPct(d.pct)}</td>
           <td class="highlight">${E.formatCOP(d.monto)}</td>
+          <td>${descCat(d.cat)}</td>
         </tr>`).join('');
 
       $('sec-gap').innerHTML = `
@@ -995,28 +1067,10 @@
         <h3>Cómo distribuir cada aporte mensual</h3>
         <p>Cada mes el capital nuevo se reparte siguiendo la misma proporción de Arquitectura CCI del perfil <strong>${profile}</strong>:</p>
         <table>
-          <thead><tr><th>Bucket</th><th>%</th><th>Monto mensual</th></tr></thead>
+          <thead><tr><th>Categoría</th><th>%</th><th>Monto mensual</th><th>Función</th></tr></thead>
           <tbody>${filasDistrib}</tbody>
         </table>
         <p class="muted">El truco no está en acertar el momento exacto del mercado, sino en estar comprando todos los meses sin falta. El precio promedio se acomoda solo, y la disciplina hace el resto.</p>
-      `;
-    }
-
-    function renderArca(allocation) {
-      const filas = ['acciones', 'rentaFija', 'caja', 'alternativos'].map((cat) => `
-        <tr>
-          <td><strong>${labelCat(cat)}</strong></td>
-          <td>${E.formatPct(allocation.porcentajes[cat])}</td>
-          <td class="highlight">${E.formatCOP(allocation.montos[cat])}</td>
-          <td>${descCat(cat)}</td>
-        </tr>`).join('');
-      $('sec-arca').innerHTML = `
-        <h2>6. Arquitectura CCI</h2>
-        <p class="muted">Distribución del capital invertible (${E.formatCOP(allocation.capitalInvertible)}) en las 4 categorías Castle.</p>
-        <table>
-          <thead><tr><th>Categoría</th><th>%</th><th>Monto COP</th><th>Función</th></tr></thead>
-          <tbody>${filas}</tbody>
-        </table>
       `;
     }
 
@@ -1034,10 +1088,12 @@
 
     function renderRentaFija(etfs, allocation) {
       const pei = etfs.rentaFija.find((r) => r.es_principal) || etfs.rentaFija[0];
-      const montoRF = allocation.montos.rentaFija;
+      const aporteMensualReal = (allocation && allocation.aporteMensualReal) || 0;
+      const pctRF = (allocation && allocation.porcentajes && allocation.porcentajes.rentaFija) || 0;
+      const montoMensualRF = aporteMensualReal * pctRF;
 
       $('sec-rentafija').innerHTML = `
-        <h2>7. Renta Fija con PEI</h2>
+        <h2>6. Renta Fija con PEI</h2>
         <p>En Castle Capital tomamos una decisión clara: la renta fija de los portafolios se canaliza en un solo vehículo, PEI. Los ETFs de bonos del gobierno (TES, BIL, AGG) ofrecen rentabilidades reales muy bajas y agregan complejidad sin retorno proporcional. La diversificación dentro de la renta fija no se justifica en el contexto colombiano actual.</p>
 
         <div class="highlight-pei">
@@ -1045,14 +1101,15 @@
           <div class="kpi-grid" style="margin-top: 8px;">
             <div class="kpi"><div class="label">Ticker</div><div class="value">${escape(pei.ticker)}</div></div>
             <div class="kpi"><div class="label">Retorno referencia</div><div class="value">${escape(pei.retorno_ref)}</div></div>
-            <div class="kpi"><div class="label">Asignación sugerida</div><div class="value">${E.formatCOP(montoRF)}</div></div>
+            <div class="kpi"><div class="label">Asignación mensual sugerida<sup>*</sup></div><div class="value">${E.formatCOP(montoMensualRF)}</div></div>
             <div class="kpi"><div class="label">Vehículo</div><div class="value" style="font-size: 0.95rem;">${escape(pei.vehiculo || 'Titularización Inmobiliaria (BVC)')}</div></div>
           </div>
           <p style="margin-top: 12px;">${escape(pei.nota)}</p>
           <p class="muted"><strong>Cómo comprar:</strong> ${escape(pei.broker_sugerido || 'Trii o Tyba')}, operación PSE inmediata desde tu cuenta bancaria.</p>
+          <p class="muted footnote" style="font-size: 0.82rem; font-style: italic;">*Esto varía naturalmente con el capital que inviertes cada mes. Si tu capital mensual incrementa, ese aporte también lo hará.</p>
         </div>
 
-        <p><strong>Lógica Castle:</strong> el 100% del bucket de renta fija (${E.formatCOP(montoRF)}) va a PEI. Doble revalorización en un solo vehículo: distribución trimestral más apreciación del activo inmobiliario subyacente.</p>
+        <p><strong>Lógica Castle:</strong> el 100% del bucket de renta fija va a PEI. Doble revalorización en un solo vehículo: distribución trimestral más apreciación del activo inmobiliario subyacente.</p>
       `;
     }
 
@@ -1092,19 +1149,26 @@
         </table>` : '';
 
       $('sec-etfs').innerHTML = `
-        <h2>8. ETFs Recomendados (con DCA)</h2>
+        <h2>7. ETFs Recomendados (con DCA)</h2>
         <p class="muted">Selección para perfil <strong>${profile}</strong>. Retornos históricos no son garantía de rendimiento futuro.</p>
 
         <h3>El método: Dollar Cost Average (DCA)</h3>
         <p>Una de las trampas más comunes del inversionista nuevo es invertir todo el capital de golpe el día que llega al broker. Si el mercado cae al día siguiente, esa entrada se vuelve un golpe emocional difícil de manejar y muchos terminan vendiendo en pérdida.</p>
         <p>El <strong>Dollar Cost Average</strong>, o "promedio del costo en dólares", resuelve esto con una idea simple: en lugar de invertir todo el capital de un solo movimiento, lo divides en partes iguales y compras durante varios meses, sin importar el precio del mercado. Cuando el mercado sube, compras menos unidades; cuando cae, compras más. Al final, tu precio promedio se acomoda solo y dejas de depender de "acertar el momento".</p>
-        <p>Para nuestro plan, el 35% del capital invertible se asigna a acciones y se ejecuta vía DCA. Si recomendamos varios ETFs, repartes el monto total proporcionalmente entre todos ellos cada mes que ejecutes el aporte.</p>
+
+        <h4>Dos flujos distintos, dos lógicas distintas</h4>
+        <p>En tu plan hay dos capitales que entran al motor de acciones, y conviene no mezclarlos:</p>
+        <ul>
+          <li><strong>Capital inicial a acciones (${E.formatCOP(montoAcciones)}):</strong> es la porción del capital invertible que la Arquitectura asigna hoy a acciones. Aquí aplicamos DCA explícito: lo dividimos en 6 a 12 meses para entrar al mercado por tramos.</li>
+          <li><strong>Aporte mensual recurrente:</strong> cada mes ingresa capital fresco según la Sección 5. Ese flujo <em>ya es DCA por naturaleza</em>, porque entra cada mes al precio que esté el mercado. No hay que dividirlo adicionalmente.</li>
+        </ul>
 
         <div class="card-nested">
           <h4>Ejemplo aplicado a tu plan</h4>
-          <p>Tu asignación a acciones es <strong>${E.formatCOP(montoAcciones)}</strong>, repartida en ${cantidadETFs} ETFs. Si ejecutas el DCA en 6 meses, cada mes inviertes:</p>
+          <p>Tu <strong>capital inicial a acciones</strong> es <strong>${E.formatCOP(montoAcciones)}</strong>, repartido en ${cantidadETFs} ETFs. Si ejecutas el DCA en 6 meses, cada mes inviertes:</p>
           <p><strong>${E.formatCOP(montoAcciones / 6)} mensuales totales</strong>, divididos en <strong>${E.formatCOP(montoAcciones / 6 / cantidadETFs)} por cada ETF</strong>.</p>
           <p class="muted">Si prefieres ejecutar en 12 meses, divides entre 12. La regla: la misma cantidad, en la misma fecha, sin mirar el precio.</p>
+          <p class="muted"><strong>Nota:</strong> tu aporte mensual recurrente (Sección 5) ya constituye DCA por naturaleza. Cada mes entra al mercado al precio que esté, distribuido según la Arquitectura del perfil. No hay que dividirlo adicionalmente.</p>
         </div>
 
         ${tablaAcciones}
@@ -1112,8 +1176,11 @@
       `;
     }
 
-    function renderDefi(defi, montoAlt, client) {
+    function renderDefi(defi, montoAlt, client, allocation) {
       if (!defi) { $('sec-defi').innerHTML = ''; return; }
+      const aporteMensualReal = (allocation && allocation.aporteMensualReal) || 0;
+      const pctAlt = (allocation && allocation.porcentajes && allocation.porcentajes.alternativos) || 0;
+      const aporteMensualAlt = aporteMensualReal * pctAlt;
       const tierColor = defi.tier === 0 ? 'tier-card--zero'
         : defi.tier === 1 ? 'tier-card--one'
         : defi.tier === 2 ? 'tier-card--two'
@@ -1267,11 +1334,14 @@
         </div>
       `;
 
-      const proy = E.projectDefiReturns(montoAlt, defi.tier, 1);
+      const proy = E.projectDefiReturns(montoAlt, defi.tier, 1, aporteMensualAlt);
+      const aporteNote = aporteMensualAlt > 0
+        ? ` · aporte mensual a alternativos ${E.formatCOP(aporteMensualAlt)}`
+        : '';
       const proyBlock = proy ? `
-        <h3>Proyección DeFi (1 año sobre ${E.formatCOP(montoAlt)})</h3>
+        <h3>Proyección DeFi (1 año sobre ${E.formatCOP(montoAlt)}${aporteNote})</h3>
         <table>
-          <thead><tr><th>Escenario</th><th>APY</th><th>Valor final</th><th>Ganancia</th></tr></thead>
+          <thead><tr><th>Escenario</th><th>APY</th><th>Valor final</th><th>Ganancia neta</th></tr></thead>
           <tbody>${proy.map((p) => `<tr><td>${escape(p.escenario)}</td><td>${E.formatPct(p.apy)}</td><td class="highlight">${E.formatCOP(p.valorFinal)}</td><td>${E.formatCOP(p.gananciaAnual)}</td></tr>`).join('')}</tbody>
         </table>
         <p class="muted">Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos.</p>` : '';
@@ -1296,7 +1366,7 @@
       `;
 
       $('sec-defi').innerHTML = `
-        <h2>9. Estrategia DeFi</h2>
+        <h2>8. Estrategia DeFi</h2>
 
         ${tierHero}
         ${tierClassificationDetails}
@@ -1320,12 +1390,12 @@
 
       const plazo = (client && client.plazo) || 5;
       const aporteMensual = (allocation && allocation.aporteMensualReal) || 0;
-      const capitalInicial = allocation.capitalInvertible - aporteMensual;
+      const capitalInicial = allocation.capitalInvertible;
       const monthlyData = E.projectPortfolioMonthly(Math.max(0, capitalInicial), profile, plazo, aporteMensual);
       const chartSVG = buildProjectionChart(monthlyData, plazo);
 
       $('sec-proyecciones').innerHTML = `
-        <h2>10. Proyecciones</h2>
+        <h2>9. Proyecciones</h2>
         <p class="muted">Sobre capital invertible: ${E.formatCOP(allocation.capitalInvertible)} · Aporte mensual ${E.formatCOP(aporteMensual)} · Plazo ${plazo} ${plazo > 1 ? 'años' : 'año'}</p>
 
         <div class="projection-chart-wrap">
@@ -1607,7 +1677,7 @@
           <p class="muted">${escape(b.nota || '')}</p>
         </div>` : '';
       $('sec-brokers').innerHTML = `
-        <h2>11. ¿Dónde Ejecutar?</h2>
+        <h2>10. ¿Dónde Ejecutar?</h2>
         <p class="muted">Recomendación de brokers para tu capital (${E.formatCOP(capital)}) y perfil.</p>
         ${card(brokerRec.principal, 'Broker principal para ETFs internacionales')}
         ${card(brokerRec.complementoLocal, 'Broker local para PEI y renta fija COP')}
@@ -1646,7 +1716,7 @@
       }
 
       $('sec-ejecucion').innerHTML = `
-        <h2>12. Plan de Ejecución Paso a Paso</h2>
+        <h2>11. Plan de Ejecución Paso a Paso</h2>
         <ol>${pasos.map((p) => `<li style="margin-bottom: 10px;">${p}</li>`).join('')}</ol>
         <h3>Cadencia recomendada</h3>
         <ul>
@@ -1662,10 +1732,10 @@
         ? `<p>Tu perfil califica para CCI. Agenda <strong>sesión gratuita y sin compromiso</strong> con Julián para activar la estrategia.</p>`
         : `<p><strong>Agenda una sesión gratuita con Julián</strong> para evaluar si tu perfil clasifica para la implementación de <strong>CCI Básico</strong> (25 a 40% de retorno anual estimado) o <strong>CCI Premium</strong> (35 a 80% de retorno anual estimado). La sesión es totalmente gratuita y sin compromiso.</p>
             <p class="muted" style="font-size: 0.85rem;">*Retornos pasados no garantizan retornos futuros. Los retornos son ilustrativos.</p>
-            <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20quiero%20agendar%20una%20sesi%C3%B3n%20gratuita%20para%20clasificar%20para%20CCI%20B%C3%A1sico%20o%20Premium." target="_blank" rel="noopener" style="margin-top: 8px;">Agendar sesión gratuita</a>`;
+            <a class="btn-orange" href="https://wa.me/573209454181?text=Hola%20Juli%C3%A1n%2C%20quiero%20agendar%20una%20sesi%C3%B3n%20gratuita%20para%20clasificar%20para%20CCI%20B%C3%A1sico%20o%20Premium." target="_blank" rel="noopener noreferrer" style="margin-top: 8px;">Agendar sesión gratuita</a>`;
 
       $('sec-proximos').innerHTML = `
-        <h2>13. Próximos Pasos</h2>
+        <h2>12. Próximos Pasos</h2>
         <div class="card-nested">
           <h3>1. Implementa este plan en 30 días</h3>
           <p>Ejecuta los pasos del Plan de Ejecución en orden. Documenta cada movimiento. Si tienes dudas en cualquier paso, agenda una sesión.</p>
@@ -1770,6 +1840,13 @@
     function saveProspectAsync(data) {
       var cfg = window.CASTLE_CONFIG;
       if (!cfg || !cfg.supabaseUrl || !cfg.supabaseAnonKey) return;
+      // Honeypot: si un bot rellenó el campo oculto, salir silenciosamente.
+      // No mostrar error: un bot que recibe error reintenta.
+      var honeypot = document.getElementById('hp-company');
+      if (honeypot && honeypot.value) {
+        console.log('[Castle] Prospect skipped (honeypot triggered).');
+        return;
+      }
       fetch(cfg.supabaseUrl + '/rest/v1/prospects', {
         method: 'POST',
         headers: {
@@ -1782,7 +1859,12 @@
           nombre:          data.nombre,
           email:           data.email,
           celular:         data.celular,
+          // Durante la transición de migration-003 enviamos ambos campos.
+          // Después de DROP COLUMN capital, solo `capital_rango` queda.
           capital:         data.capital,
+          capital_rango:   (window.CastleEngine && window.CastleEngine.capitalToRange)
+                             ? window.CastleEngine.capitalToRange(data.capital)
+                             : null,
           riesgo:          data.riesgo,
           experiencia:     data.experiencia,
           es_cci:          data.esCCI,
@@ -1794,6 +1876,196 @@
       }).catch(function() {
         console.warn('[Castle] Prospect save skipped — Supabase unavailable.');
       });
+    }
+
+    // ═══════════════════════════════════════
+    // PDF SUMMARY — vista compacta para impresión (2-3 páginas)
+    // ═══════════════════════════════════════
+    function renderPDFSummary(data) {
+      const { client, allocation, profile, debtPlan, proyecciones, etfs, defi, brokerRec } = data;
+      const node = document.getElementById('pdf-summary');
+      if (!node) return;
+
+      const ingresos = client.ingresos || 0;
+      const gastos = client.gastos || 0;
+      const flujoLibre = ingresos - gastos;
+      const flujoNegativo = flujoLibre < 0;
+      const aporteEfectivo = (allocation && allocation.aporteMensualReal) || client.objetivo || 0;
+      const perfilTag = tagForProfile(profile);
+
+      // === Página única A4: todo el resumen en una sola hoja ===
+      const accionesTickers = (etfs.acciones || []).map((e) => e.ticker).filter(Boolean).join(' · ') || '—';
+      const pei = (etfs.rentaFija || []).find((r) => r.es_principal) || (etfs.rentaFija || [])[0];
+      const intl = (brokerRec && brokerRec.principal && brokerRec.principal.nombre) || 'XTB';
+      const local = (brokerRec && brokerRec.complementoLocal && brokerRec.complementoLocal.nombre) || 'Trii';
+
+      node.innerHTML = `
+        <section class="pdf-summary-page">
+          <header class="pdf-summary-header">
+            <img src="logo-castle.png" alt="Castle Capital" class="pdf-summary-logo" />
+            <div class="pdf-summary-heading">
+              <h1>Arquitectura Financiera <em>Castle Capital</em></h1>
+              <p class="pdf-summary-meta">Plan de <strong>${escape(client.nombre || 'Cliente')}</strong> · ${E.formatDate()} · Horizonte ${client.plazo} ${client.plazo === 1 ? 'año' : 'años'} · Broker sugerido: ${escape(intl)}${local && local !== intl ? ' + ' + escape(local) : ''}</p>
+            </div>
+          </header>
+
+          <div class="pdf-kpi-grid">
+            <div class="pdf-kpi pdf-kpi--accent">
+              <span class="lbl">Perfil</span>
+              <span class="val"><span class="tag ${perfilTag}">${profile.toUpperCase()}</span></span>
+            </div>
+            <div class="pdf-kpi"><span class="lbl">Capital</span><span class="val">${E.formatCOP(client.capital)}</span></div>
+            <div class="pdf-kpi"><span class="lbl">Aporte/mes</span><span class="val">${E.formatCOP(aporteEfectivo)}</span></div>
+            <div class="pdf-kpi"><span class="lbl">Ingresos</span><span class="val">${E.formatCOP(ingresos)}</span></div>
+            <div class="pdf-kpi"><span class="lbl">Gastos</span><span class="val">${E.formatCOP(gastos)}</span></div>
+            <div class="pdf-kpi ${flujoNegativo ? 'pdf-kpi--alert' : ''}">
+              <span class="lbl">Flujo libre</span>
+              <span class="val">${E.formatCOP(flujoLibre)}</span>
+            </div>
+          </div>
+
+          ${flujoNegativo ? renderPDFFlujoNegativo(ingresos, gastos) : renderPDFArca(allocation, profile, etfs, defi, pei)}
+
+          <div class="pdf-two-col">
+            <div class="pdf-col">
+              <div class="pdf-section-label">Proyecciones</div>
+              ${renderPDFProyecciones(proyecciones, allocation)}
+            </div>
+            ${debtPlan.hayDeudas
+              ? `<div class="pdf-col"><div class="pdf-section-label">Deudas: <span class="pdf-label-accent">estrategia Bola de Nieve</span></div>${renderPDFDeudas(debtPlan)}</div>`
+              : `<div class="pdf-col"><div class="pdf-section-label">Próximos pasos</div>${renderPDFProximos(brokerRec, defi, allocation, flujoNegativo)}</div>`
+            }
+          </div>
+
+          ${debtPlan.hayDeudas
+            ? `<div class="pdf-section-label">Próximos pasos</div>${renderPDFProximos(brokerRec, defi, allocation, flujoNegativo)}`
+            : ''
+          }
+
+          <footer class="pdf-summary-footer">
+            <div class="pdf-contact-bar">
+              <span><strong>WhatsApp</strong> +57 320 945 4181</span>
+              <span><strong>Email</strong> castlecapitalemily@gmail.com</span>
+              <span class="pdf-footer-brand">Castle Capital · Diseño · Estructura · Legado</span>
+            </div>
+            <p class="pdf-disclaimer">Este documento es una recomendación basada en la información compartida. No constituye asesoría en valores ni promesa de rentabilidad. Retornos pasados no garantizan retornos futuros.</p>
+          </footer>
+        </section>
+      `;
+    }
+
+    function renderPDFArca(allocation, profile, etfs, defi, pei) {
+      const tickers = (etfs && etfs.acciones || []).map((e) => e.ticker).filter(Boolean).join(' · ') || 'VOO · SCHD · QQQ';
+      const peiName = pei ? `${escape(pei.ticker)} (PEI)` : 'PEI';
+      const cajaItems = (etfs && etfs.caja || []).slice(0, 2).map((c) => c.nombre).join(' · ') || 'Rappipay · Nu';
+      const defiLabel = defi
+        ? (defi.tier === 0 ? 'Oro + BTC/ETH/XRP en Binance'
+          : defi.tier === 1 ? 'Educación DeFi (Tier 1)'
+          : defi.tier === 2 ? 'CCI Básico — Uniswap V3'
+          : 'CCI Full — gestión activa')
+        : 'Oro + cripto directo';
+
+      const cats = [
+        { key: 'acciones',     nombre: 'Acciones',     instrumentos: tickers },
+        { key: 'rentaFija',    nombre: 'Renta Fija',   instrumentos: peiName },
+        { key: 'caja',         nombre: 'Caja',         instrumentos: cajaItems },
+        { key: 'alternativos', nombre: 'Alternativos', instrumentos: defiLabel }
+      ];
+      const cards = cats.map((c) => `
+        <div class="pdf-arca-cell">
+          <div class="pdf-arca-cell__top">
+            <span class="pdf-arca-cell__pct">${E.formatPct(allocation.porcentajes[c.key])}</span>
+            <span class="pdf-arca-cell__name">${c.nombre}</span>
+          </div>
+          <div class="pdf-arca-cell__amount">${E.formatCOP(allocation.montos[c.key])}</div>
+          <div class="pdf-arca-cell__desc">${escape(c.instrumentos)}</div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="pdf-section-label">Arquitectura CCI: <span class="pdf-label-accent">perfil ${profile}</span> · <span class="pdf-label-accent">capital invertible ${E.formatCOP(allocation.capitalInvertible)}</span></div>
+        <div class="pdf-arca-grid">${cards}</div>
+      `;
+    }
+
+    function renderPDFFlujoNegativo(ingresos, gastos) {
+      const deficit = gastos - ingresos;
+      return `
+        <div class="pdf-section-label pdf-section-label--alert">Atención: flujo libre negativo</div>
+        <div class="pdf-alert">
+          <p><strong>Tus gastos superan tus ingresos en ${E.formatCOP(deficit)} al mes.</strong> Antes de desplegar la arquitectura de inversión, hay que cerrar esa brecha. La inversión sin base sólida amplifica el desorden, no lo resuelve.</p>
+          <p><strong>Plan inmediato:</strong> 1) Auditar gastos no esenciales y recortarlos. 2) Buscar fuentes adicionales de ingreso. 3) Asegurar fondo de emergencia mínimo. Una vez tu flujo libre sea positivo, la arquitectura CCI se activa según tu perfil.</p>
+        </div>
+      `;
+    }
+
+    function renderPDFProyecciones(proyecciones, allocation) {
+      const horizontes = [1, 3, 5];
+      const filas = proyecciones.map((esc) => `
+        <tr>
+          <td><strong>${escape(esc.escenario)}</strong></td>
+          <td>${E.formatPct(esc.tasaAnual)}</td>
+          ${esc.proyecciones.map((p) => `<td>${E.formatCOP(p.valorFinal)}</td>`).join('')}
+        </tr>
+      `).join('');
+      return `
+        <table class="pdf-compact-table">
+          <thead>
+            <tr>
+              <th>Escenario</th>
+              <th>Tasa</th>
+              ${horizontes.map((h) => `<th>${h} ${h === 1 ? 'año' : 'años'}</th>`).join('')}
+            </tr>
+          </thead>
+          <tbody>${filas}</tbody>
+        </table>
+      `;
+    }
+
+    function renderPDFDeudas(debtPlan) {
+      const filas = debtPlan.ordenadas.slice(0, 4).map((d, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td><strong>${escape(d.nombre)}</strong></td>
+          <td>${E.formatCOP(d.monto)}</td>
+          <td>${d.saldada ? 'Saldada' : 'Mes ' + d.mesPagoFinal}</td>
+        </tr>
+      `).join('');
+      const mas = debtPlan.ordenadas.length > 4
+        ? `<tr><td colspan="4" class="pdf-note">+${debtPlan.ordenadas.length - 4} deudas más en el plan completo</td></tr>`
+        : '';
+      return `
+        <p class="pdf-debt-summary">
+          <strong>Total ${E.formatCOP(debtPlan.saldoTotal)}</strong> · Cuotas ${E.formatCOP(debtPlan.cuotaMinimaTotal)}/mes · Libertad en ${debtPlan.mesesParaLibertad} meses
+        </p>
+        <table class="pdf-compact-table">
+          <thead><tr><th>#</th><th>Deuda</th><th>Saldo</th><th>Saldada</th></tr></thead>
+          <tbody>${filas}${mas}</tbody>
+        </table>
+      `;
+    }
+
+    function renderPDFProximos(brokerRec, defi, allocation, flujoNegativo) {
+      const intl = (brokerRec && brokerRec.principal && brokerRec.principal.nombre) || 'XTB';
+      const local = (brokerRec && brokerRec.complementoLocal && brokerRec.complementoLocal.nombre) || 'Trii';
+      const cripto = (brokerRec && brokerRec.cripto && brokerRec.cripto.nombre) || 'Binance';
+
+      const pasos = flujoNegativo
+        ? [
+            'Auditar gastos no esenciales hasta lograr flujo libre positivo.',
+            'Construir fondo de emergencia (6 meses de gastos).',
+            'Una vez con flujo positivo, activar Arquitectura CCI.',
+            'Agendar sesión gratuita con Julián para plan de saneamiento.'
+          ]
+        : [
+            `Abrir cuenta en <strong>${escape(intl)}</strong> (ETFs) y <strong>${escape(local)}</strong> (PEI).`,
+            `Asegurar fondo de emergencia antes de invertir.`,
+            `Ejecutar DCA mensual (6-12 meses) según la arquitectura.`,
+            `${defi && defi.tier >= 2 ? 'Activar CCI Tier ' + defi.tier + ' con Julián.' : 'Alternativos: oro vía ' + escape(intl) + ' y cripto en ' + escape(cripto) + '.'}`,
+            'Agendar sesión gratuita con Julián para validar.'
+          ];
+
+      return `<ol class="pdf-steps">${pasos.map((p) => `<li>${p}</li>`).join('')}</ol>`;
     }
 
     // === Main flow ===
@@ -1824,6 +2096,8 @@
       }
 
       const profile = E.determineProfile(client.q1, client.q2);
+      const debts = readDebts();
+      const hasDebt = getRadio('hasDebt') === 'si' && debts.length > 0;
       const allocation = E.calculatePortfolioAllocation(
         client.capital,
         profile,
@@ -1831,14 +2105,14 @@
         client.gastos,
         client.ingresos,
         client.objetivo,
-        client.usarFlujoLibre
+        client.usarFlujoLibre,
+        hasDebt
       );
-      const debts = readDebts();
-      const debtPlan = E.debtStrategy(debts, client.ingresos, client.gastos, client.objetivo);
+      const debtPlan = E.debtStrategy(debts, client.ingresos, client.gastos, client.objetivo, allocation.capitalDisponibleTotal);
       const gap = E.gapAnalysis(allocation, profile, client.objetivo);
       const etfs = E.selectETFs(profile, ETF_BANK);
       const defi = E.calcDefiStrategy(client.experiencia, client.esCCI, allocation.montos.alternativos, ETF_BANK);
-      const proyecciones = E.projectPortfolio(allocation, profile, [1, 3, 5]);
+      const proyecciones = E.projectPortfolio(allocation, profile, [1, 3, 5], allocation.aporteMensualReal);
       const brokerRec = E.recommendBroker(client.capital, profile, BROKERS_BANK);
 
       renderPortada(client);
@@ -1848,14 +2122,16 @@
       renderDeudas(debtPlan, client, allocation);
       const flujoNegativo = renderFlujoNegativo(client);
       renderCapitalAdicional(client, allocation, profile);
-      renderArca(allocation);
       renderRentaFija(etfs, allocation);
       renderETFs(etfs, profile, allocation);
-      renderDefi(defi, allocation.montos.alternativos, client);
+      renderDefi(defi, allocation.montos.alternativos, client, allocation);
       renderProyecciones(proyecciones, allocation, profile, client);
       renderBrokers(brokerRec, client.capital);
       renderEjecucion(allocation, etfs, brokerRec, defi);
       renderProximos(defi);
+
+      // Vista compacta para impresión (PDF de 2-3 páginas)
+      renderPDFSummary({ client, allocation, profile, debtPlan, proyecciones, etfs, defi, brokerRec });
 
       // Si el flujo libre es negativo, plegamos las secciones de inversión para
       // mantener el foco del cliente en cerrar la brecha primero.
@@ -1883,7 +2159,7 @@
     // <details> colapsado preservando los nodos originales (y sus event listeners,
     // incluida la interactividad de la gráfica).
     function collapseInvestSectionsIfNeeded(flujoNegativo) {
-      const investIds = ['sec-gap', 'sec-arca', 'sec-rentafija', 'sec-etfs', 'sec-defi', 'sec-proyecciones', 'sec-brokers', 'sec-ejecucion'];
+      const investIds = ['sec-gap', 'sec-rentafija', 'sec-etfs', 'sec-defi', 'sec-proyecciones', 'sec-brokers', 'sec-ejecucion'];
       investIds.forEach((id) => {
         const sec = $(id);
         if (!sec) return;
@@ -1921,13 +2197,29 @@
     }
 
     function downloadPDF() {
+      const btn = $('download-pdf-btn');
+      if (btn && btn.disabled) return; // evita doble clic
       const nombre = ($('nombre').value || 'cliente').trim();
       const slug = nombre.replace(/[^a-zA-Z0-9]+/g, '_');
       const fecha = new Date().toISOString().slice(0, 10);
       const originalTitle = document.title;
+      const originalBtnLabel = btn ? btn.textContent : '';
       document.title = `Arquitectura_Financiera_${slug}_${fecha}`;
-      window.print();
-      setTimeout(() => { document.title = originalTitle; }, 1000);
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Preparando PDF…';
+      }
+      // Permitir que el repaint pinte el nuevo label antes del print blocking
+      window.requestAnimationFrame(() => {
+        window.print();
+        setTimeout(() => {
+          document.title = originalTitle;
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = originalBtnLabel;
+          }
+        }, 1000);
+      });
     }
 
     function backToForm() {
@@ -2152,11 +2444,22 @@
       };
     }
 
+    /**
+     * Renderiza una burbuja de chat.
+     * @param {string} role - 'user' o 'bot'.
+     * @param {string} html - MUST come from CHAT_KB (estático y controlado por nosotros)
+     *                       o haber pasado por escape() antes. Cualquier otro input
+     *                       sin sanitizar resulta en XSS. El innerHTML se aísla a la
+     *                       burbuja, no al contenedor.
+     */
     function chatAddMessage(role, html) {
       const body = $('chat-body');
       const msg = document.createElement('div');
       msg.className = 'chat-msg chat-msg--' + role;
-      msg.innerHTML = '<div class="chat-bubble">' + html + '</div>';
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble';
+      bubble.innerHTML = html;
+      msg.appendChild(bubble);
       body.appendChild(msg);
       body.scrollTop = body.scrollHeight;
     }
@@ -2403,7 +2706,7 @@
         Ley Estatutaria 1581 de 2012, Decreto 1377 de 2013 y Decreto 1074 de 2015.<br/>
         Autoridad de supervisión:
         <strong>Superintendencia de Industria y Comercio (SIC)</strong> —
-        <a href="https://www.sic.gov.co" target="_blank" rel="noopener">www.sic.gov.co</a>
+        <a href="https://www.sic.gov.co" target="_blank" rel="noopener noreferrer">www.sic.gov.co</a>
       </p>
 
       <h3>6. Transferencia internacional</h3>

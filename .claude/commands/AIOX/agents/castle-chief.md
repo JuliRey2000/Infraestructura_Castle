@@ -120,7 +120,8 @@ triage:
 
     monitoreo:
       keywords: [posicion, rebalanceo, alerta, monitoreo, pulse, rendimiento posicion]
-      route_to: pulse-monitor
+      route_to: external  # castle-monitor (CLI Python local), no es agente AIOX
+      note: "Reportes diario/semanal/mensual los genera castle-monitor por email. Para análisis del reporte usar @deal-analyst."
       confidence: 0.9
 
     cliente:

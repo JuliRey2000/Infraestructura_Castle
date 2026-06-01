@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Command Center — Castle Capital</title>
+<style>
+  :root {
+    --bg: #08080f;
+    --surface: #0f0f1a;
+    --card: #13131f;
+    --card-hover: #1a1a2a;
+    --border: #1e1e32;
+    --border-hover: #2a2a45;
+
+    --gold: #f59e0b;
+    --gold-dim: #92600a;
+    --gold-glow: rgba(245, 158, 11, 0.12);
+    --gold-bg: rgba(245, 158, 11, 0.06);
+
+    --blue: #3b82f6;
+    --blue-dim: #1d4ed8;
+    --blue-glow: rgba(59, 130, 246, 0.12);
+    --blue-bg: rgba(59, 130, 246, 0.06);
+
+    --purple: #8b5cf6;
+    --purple-dim: #6d28d9;
+    --purple-glow: rgba(139, 92, 246, 0.12);
+    --purple-bg: rgba(139, 92, 246, 0.06);
+
+    --green: #10b981;
+    --green-bg: rgba(16, 185, 129, 0.06);
+
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-muted: #475569;
+
+    --font: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--gold), #d97706);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 20px var(--gold-glow);
+  }
+  .header-title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .header-sub { font-size: 12px; color: var(--text-muted); }
+  .header-stats { display: flex; gap: 24px; }
+  .stat { text-align: right; }
+  .stat-num { font-size: 20px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ── SEARCH + TABS ── */
+  .controls {
+    padding: 20px 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+  .tab {
+    padding: 7px 16px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .tab .count { font-size: 10px; background: var(--border); padding: 2px 5px; border-radius: 4px; }
+  .tab.active.gold { background: var(--gold-bg); color: var(--gold); border: 1px solid var(--gold-dim); }
+  .tab.active.gold .count { background: var(--gold-dim); color: var(--bg); }
+  .tab.active.blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-dim); }
+  .tab.active.blue .count { background: var(--blue-dim); color: white; }
+  .tab.active.purple { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-dim); }
+  .tab.active.purple .count { background: var(--purple-dim); color: white; }
+  .tab.active.all { background: var(--card-hover); color: var(--text); }
+  .tab:not(.active):hover { background: var(--card); color: var(--text); }
+
+  .search-wrap { position: relative; }
+  .search {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 36px;
+    color: var(--text);
+    font-size: 13px;
+    width: 240px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search:focus { border-color: var(--blue); }
+  .search::placeholder { color: var(--text-muted); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+
+  /* ── GRID ── */
+  .main { padding: 20px 32px 48px; }
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin: 28px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+  .card.gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
+  .card.blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+  .card.purple::before { background: linear-gradient(90deg, var(--purple), transparent); }
+
+  .card:hover { background: var(--card-hover); border-color: var(--border-hover); transform: translateY(-2px); }
+  .card:hover::before { opacity: 1; }
+  .card.gold:hover { box-shadow: 0 4px 24px var(--gold-glow); }
+  .card.blue:hover { box-shadow: 0 4px 24px var(--blue-glow); }
+  .card.purple:hover { box-shadow: 0 4px 24px var(--purple-glow); }
+
+  .card.expanded { background: var(--card-hover); border-color: var(--border-hover); }
+  .card.expanded::before { opacity: 1; }
+  .card.gold.expanded { box-shadow: 0 4px 32px var(--gold-glow); }
+  .card.blue.expanded { box-shadow: 0 4px 32px var(--blue-glow); }
+  .card.purple.expanded { box-shadow: 0 4px 32px var(--purple-glow); }
+
+  .card-header { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 12px; }
+  .avatar {
+    width: 44px; height: 44px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .card.gold .avatar { background: var(--gold-bg); border: 1px solid rgba(245,158,11,0.2); }
+  .card.blue .avatar { background: var(--blue-bg); border: 1px solid rgba(59,130,246,0.2); }
+  .card.purple .avatar { background: var(--purple-bg); border: 1px solid rgba(139,92,246,0.2); }
+
+  .card-meta { flex: 1; }
+  .card-name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .card-persona { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .card-persona span { font-weight: 500; }
+  .card.gold .card-persona span { color: var(--gold); }
+  .card.blue .card-persona span { color: var(--blue); }
+  .card.purple .card-persona span { color: var(--purple); }
+
+  .activation-badge {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    flex-shrink: 0;
+  }
+  .card.gold .activation-badge { background: var(--gold-bg); color: var(--gold); border: 1px solid rgba(245,158,11,0.25); }
+  .card.blue .activation-badge { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(59,130,246,0.25); }
+  .card.purple .activation-badge { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
+
+  .card-role { font-size: 12px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tag {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--surface);
+  }
+
+  /* Expanded section */
+  .card-expanded { display: none; border-top: 1px solid var(--border); margin-top: 14px; padding-top: 14px; }
+  .card.expanded .card-expanded { display: block; }
+
+  .exp-section { margin-bottom: 14px; }
+  .exp-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .commands-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .cmd {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.12s;
+    position: relative;
+  }
+  .card.gold .cmd { background: var(--gold-bg); color: var(--gold); border: 1px solid rgba(245,158,11,0.2); }
+  .card.blue .cmd { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(59,130,246,0.2); }
+  .card.purple .cmd { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(139,92,246,0.2); }
+  .cmd:hover { opacity: 0.7; transform: scale(0.97); }
+
+  .use-when { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+  .use-when li { margin-bottom: 4px; padding-left: 4px; }
+
+  .workflow-flow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .wf-agent {
+    padding: 3px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text-dim);
+  }
+  .wf-arrow { color: var(--text-muted); font-size: 10px; }
+
+  /* ── DELEGATION GUIDE ── */
+  .guide-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+  .guide-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .guide-icon { font-size: 16px; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  td { padding: 11px 20px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--card); }
+  .td-scenario { color: var(--text); font-weight: 500; }
+  .td-agent { display: flex; flex-wrap: wrap; gap: 5px; }
+  .agent-pill {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .ap-gold { background: var(--gold-bg); color: var(--gold); border: 1px solid rgba(245,158,11,0.25); }
+  .ap-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid rgba(59,130,246,0.25); }
+  .ap-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(139,92,246,0.25); }
+  .td-cmd { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11px; color: var(--text-dim); }
+  .td-note { font-size: 11px; color: var(--text-muted); }
+
+  /* ── COPY TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: var(--text);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.2s;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Hidden */
+  .hidden { display: none !important; }
+
+  /* Exclusive badge */
+  .exclusive {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(239,68,68,0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239,68,68,0.2);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── PRIMARY VIEW NAV ── */
+  .primary-nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 79px;
+    z-index: 95;
+    backdrop-filter: blur(12px);
+  }
+  .primary-tab {
+    padding: 14px 22px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font);
+  }
+  .primary-tab:hover { color: var(--text); }
+  .primary-tab.active { color: var(--text); border-bottom-color: var(--gold); }
+  .primary-tab .pt-icon { font-size: 15px; }
+
+  /* ── VIEW SWITCHING ── */
+  body.view-hierarchy #view-flow,
+  body.view-hierarchy .controls,
+  body.view-hierarchy main.main { display: none; }
+  body.view-flow #view-hierarchy,
+  body.view-flow .controls,
+  body.view-flow main.main { display: none; }
+  body.view-all #view-hierarchy,
+  body.view-all #view-flow { display: none; }
+
+  /* ── HIERARCHY VIEW ── */
+  .hierarchy-view { padding: 28px 32px 48px; }
+  .hierarchy-header { text-align: center; margin-bottom: 28px; }
+  .hierarchy-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .hierarchy-sub { font-size: 13px; color: var(--text-dim); max-width: 600px; margin: 0 auto; }
+
+  .org-chart { position: relative; padding: 16px 0 24px; }
+  .org-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: visible;
+  }
+
+  .org-top {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 64px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .org-pillars {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr;
+    gap: 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .org-pillar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 36px;
+  }
+  .pillar-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: -16px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .pillar-children {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pillar-children--grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    width: 100%;
+    max-width: 420px;
+  }
+  .pillar-chain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* ── ORG NODE ── */
+  .org-node {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 11px 14px;
+    min-width: 160px;
+    max-width: 200px;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s, border-color 0.18s;
+    text-align: center;
+    position: relative;
+  }
+  .org-node:hover { transform: translateY(-3px); background: var(--card-hover); }
+  .org-node--aiox { border-color: rgba(59,130,246,0.35); }
+  .org-node--aiox:hover { box-shadow: 0 4px 24px var(--blue-glow); border-color: var(--blue); }
+  .org-node--castle { border-color: rgba(245,158,11,0.35); }
+  .org-node--castle:hover { box-shadow: 0 4px 24px var(--gold-glow); border-color: var(--gold); }
+  .org-node--chief { border-color: rgba(139,92,246,0.35); }
+  .org-node--chief:hover { box-shadow: 0 4px 24px var(--purple-glow); border-color: var(--purple); }
+
+  .org-node--master {
+    background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(59,130,246,0.08));
+    border: 1px solid var(--gold);
+    min-width: 260px;
+    max-width: 320px;
+    padding: 16px 20px;
+  }
+  .org-node--master:hover {
+    box-shadow: 0 4px 32px var(--gold-glow);
+    transform: translateY(-3px);
+  }
+
+  .org-node-avatar { font-size: 22px; margin-bottom: 4px; line-height: 1; }
+  .org-node--master .org-node-avatar { font-size: 28px; margin-bottom: 6px; }
+  .org-node-id { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; }
+  .org-node--aiox .org-node-id { color: var(--blue); }
+  .org-node--castle .org-node-id { color: var(--gold); }
+  .org-node--chief .org-node-id { color: var(--purple); }
+  .org-node--master .org-node-id { color: var(--gold); font-size: 15px; }
+  .org-node-name { font-size: 11px; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+  .org-node-role { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+  .org-node--master .org-node-role { font-size: 12px; margin-top: 8px; }
+  .org-node-badge {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(239,68,68,0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239,68,68,0.25);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* highlight states */
+  .org-node.dimmed { opacity: 0.25; }
+  .org-node.highlighted { transform: translateY(-3px) scale(1.03); }
+  .org-node--aiox.highlighted { box-shadow: 0 4px 28px var(--blue-glow); border-color: var(--blue); }
+  .org-node--castle.highlighted { box-shadow: 0 4px 28px var(--gold-glow); border-color: var(--gold); }
+  .org-node--chief.highlighted { box-shadow: 0 4px 28px var(--purple-glow); border-color: var(--purple); }
+  .org-node--master.highlighted { box-shadow: 0 4px 36px var(--gold-glow); }
+
+  /* SVG lines */
+  .org-line {
+    fill: none;
+    stroke-width: 1.5;
+    opacity: 0.45;
+    transition: opacity 0.2s, stroke-width 0.2s;
+  }
+  .org-line.aiox { stroke: var(--blue); }
+  .org-line.castle { stroke: var(--gold); }
+  .org-line.chief { stroke: var(--purple); }
+  .org-line.highlighted {
+    opacity: 1;
+    stroke-width: 2.5;
+    stroke-dasharray: 5 4;
+    animation: dashFlow 1.4s linear infinite;
+  }
+  .org-line.dimmed { opacity: 0.08; }
+  @keyframes dashFlow { to { stroke-dashoffset: -18; } }
+
+  /* Chiefs row */
+  .chiefs-row {
+    margin-top: 80px;
+    padding-top: 36px;
+    border-top: 1px dashed var(--border);
+    position: relative;
+    z-index: 2;
+  }
+  .chiefs-row-title {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .chiefs-row-sub {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .chiefs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 14px;
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  /* ── SDC FLOW VIEW ── */
+  .flow-view { padding: 28px 32px 48px; }
+  .flow-header { text-align: center; margin-bottom: 32px; }
+  .flow-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 44px 30px 36px;
+    overflow-x: auto;
+  }
+  .flow-chain {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    min-width: 980px;
+    position: relative;
+  }
+  .flow-phase {
+    flex: 1;
+    min-width: 130px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .flow-circle {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 2px solid var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .flow-phase:hover .flow-circle {
+    transform: scale(1.08);
+    box-shadow: 0 0 28px var(--blue-glow);
+  }
+  .flow-phase.exclusive .flow-circle {
+    border-color: #ef4444;
+    background: rgba(239,68,68,0.08);
+  }
+  .flow-phase.exclusive:hover .flow-circle {
+    box-shadow: 0 0 28px rgba(239,68,68,0.35);
+  }
+  .flow-agent {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-bottom: 2px;
+    letter-spacing: -0.01em;
+  }
+  .flow-phase.exclusive .flow-agent { color: #ef4444; }
+  .flow-persona { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .flow-task { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; line-height: 1.4; }
+  .flow-cmd {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    background: var(--blue-bg);
+    color: var(--blue);
+    border: 1px solid rgba(59,130,246,0.25);
+    display: inline-block;
+  }
+  .flow-phase.exclusive .flow-cmd {
+    background: rgba(239,68,68,0.08);
+    color: #ef4444;
+    border-color: rgba(239,68,68,0.3);
+  }
+  .flow-badge {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(239,68,68,0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239,68,68,0.25);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .flow-arrow {
+    position: relative;
+    flex: 0 0 40px;
+    height: 2px;
+    margin-top: 31px;
+    background: var(--blue-dim);
+    z-index: 1;
+  }
+  .flow-arrow::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid var(--blue-dim);
+    border-right: 2px solid var(--blue-dim);
+    transform: rotate(45deg);
+  }
+  .flow-arrow.flow {
+    background: linear-gradient(90deg, var(--blue-dim) 50%, transparent 50%);
+    background-size: 12px 100%;
+    animation: flowMove 1.6s linear infinite;
+  }
+  @keyframes flowMove { to { background-position: -12px 0; } }
+
+  .flow-returns {
+    margin-top: 32px;
+    padding: 18px 24px;
+    background: rgba(239,68,68,0.04);
+    border: 1px dashed rgba(239,68,68,0.3);
+    border-radius: 10px;
+  }
+  .flow-returns-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ef4444;
+    margin-bottom: 10px;
+  }
+  .flow-return-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .flow-return-row:last-child { margin-bottom: 0; }
+  .flow-return-label {
+    font-weight: 700;
+    color: #ef4444;
+    min-width: 88px;
+    font-size: 11px;
+  }
+  .flow-return-arrow { color: #ef4444; font-weight: 700; }
+
+  .flow-legend {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .flow-legend-item { display: flex; align-items: center; gap: 8px; }
+  .flow-legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+  .flow-legend-dot.blue { border-color: var(--blue); }
+  .flow-legend-dot.red { border-color: #ef4444; }
+
+  @media (max-width: 900px) {
+    .org-pillars { grid-template-columns: 1fr; gap: 48px; }
+    .pillar-children--grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    .header { padding: 14px 16px; flex-wrap: wrap; gap: 12px; }
+    .controls { padding: 14px 16px 0; flex-wrap: wrap; }
+    .main { padding: 14px 16px 32px; }
+    .primary-nav { padding: 0 16px; overflow-x: auto; }
+    .primary-tab { padding: 12px 14px; white-space: nowrap; }
+    .tabs { overflow-x: auto; width: 100%; }
+    .search { width: 100%; }
+    .header-stats { display: none; }
+    .hierarchy-view, .flow-view { padding: 18px 14px 32px; }
+    .pillar-children--grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="view-hierarchy">
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo">🏰</div>
+    <div>
+      <div class="header-title">Agent Command Center</div>
+      <div class="header-sub">Castle Capital · Synkra AIOX</div>
+    </div>
+  </div>
+  <div class="header-stats">
+    <div class="stat">
+      <div class="stat-num" style="color:var(--gold)">8</div>
+      <div class="stat-label">Castle Capital</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" style="color:var(--blue)">10</div>
+      <div class="stat-label">AIOX Core</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" style="color:var(--purple)">9</div>
+      <div class="stat-label">Chiefs</div>
+    </div>
+  </div>
+</header>
+
+<!-- PRIMARY VIEW NAV -->
+<nav class="primary-nav">
+  <button class="primary-tab active" data-view="hierarchy" onclick="showView(this,'hierarchy')">
+    <span class="pt-icon">🗺️</span> Jerarquía
+  </button>
+  <button class="primary-tab" data-view="flow" onclick="showView(this,'flow')">
+    <span class="pt-icon">🔄</span> Flujo SDC
+  </button>
+  <button class="primary-tab" data-view="all" onclick="showView(this,'all')">
+    <span class="pt-icon">📚</span> Todos los Agentes
+  </button>
+</nav>
+
+<!-- ════════════════════════════════════════════ VIEW: HIERARCHY ══ -->
+<section class="hierarchy-view" id="view-hierarchy">
+  <div class="hierarchy-header">
+    <div class="hierarchy-title">🗺️ Jerarquía de Mando</div>
+    <div class="hierarchy-sub">Cadena de autoridad del framework AIOX + Castle Capital. Pasa el cursor sobre un nodo para resaltar sus conexiones directas.</div>
+  </div>
+
+  <div class="org-chart" id="org-chart">
+    <svg class="org-svg" id="org-svg"></svg>
+
+    <!-- TOP: Master orchestrator -->
+    <div class="org-top">
+      <div class="org-node org-node--master" id="node-aiox-master"
+           onmouseenter="highlightNode('aiox-master')" onmouseleave="clearHighlight()">
+        <div class="org-node-avatar">🎖️</div>
+        <div class="org-node-id">@aiox-master</div>
+        <div class="org-node-name">Persona: Orion</div>
+        <div class="org-node-role">Framework Orchestrator · Gobernanza total del sistema</div>
+      </div>
+    </div>
+
+    <!-- 3 PILLARS -->
+    <div class="org-pillars">
+
+      <!-- PILLAR 1: PM tree (Strategy chain) -->
+      <div class="org-pillar">
+        <div class="pillar-header" style="color:var(--blue)">AIOX · Estrategia</div>
+        <div class="org-node org-node--aiox" id="node-pm"
+             onmouseenter="highlightNode('pm')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">📋</div>
+          <div class="org-node-id">@pm</div>
+          <div class="org-node-name">Morgan</div>
+          <div class="org-node-role">Product Strategy · PRD</div>
+        </div>
+        <div class="pillar-children">
+          <div class="org-node org-node--aiox" id="node-analyst"
+               onmouseenter="highlightNode('analyst')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🔬</div>
+            <div class="org-node-id">@analyst</div>
+            <div class="org-node-name">Atlas</div>
+            <div class="org-node-role">Research</div>
+          </div>
+          <div class="org-node org-node--aiox" id="node-sm"
+               onmouseenter="highlightNode('sm')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">📝</div>
+            <div class="org-node-id">@sm</div>
+            <div class="org-node-name">River</div>
+            <div class="org-node-role">Story Creation</div>
+          </div>
+        </div>
+        <div class="org-node org-node--aiox" id="node-po"
+             onmouseenter="highlightNode('po')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">📌</div>
+          <div class="org-node-id">@po</div>
+          <div class="org-node-name">Pax</div>
+          <div class="org-node-role">Validación GO/NO-GO</div>
+        </div>
+        <div class="org-node org-node--aiox" id="node-dev"
+             onmouseenter="highlightNode('dev')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">💻</div>
+          <div class="org-node-id">@dev</div>
+          <div class="org-node-name">Dex</div>
+          <div class="org-node-role">Implementación</div>
+        </div>
+        <div class="org-node org-node--aiox" id="node-qa"
+             onmouseenter="highlightNode('qa')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">🧪</div>
+          <div class="org-node-id">@qa</div>
+          <div class="org-node-name">Quinn</div>
+          <div class="org-node-role">QA Gate · PASS/FAIL</div>
+        </div>
+        <div class="org-node org-node--aiox" id="node-devops"
+             onmouseenter="highlightNode('devops')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">🚀</div>
+          <div class="org-node-id">@devops</div>
+          <div class="org-node-name">Gage</div>
+          <div class="org-node-role">git push · PR · Release</div>
+          <span class="org-node-badge">Exclusivo</span>
+        </div>
+      </div>
+
+      <!-- PILLAR 2: Architect tree (Design chain) -->
+      <div class="org-pillar">
+        <div class="pillar-header" style="color:var(--blue)">AIOX · Diseño Técnico</div>
+        <div class="org-node org-node--aiox" id="node-architect"
+             onmouseenter="highlightNode('architect')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">🏗️</div>
+          <div class="org-node-id">@architect</div>
+          <div class="org-node-name">Aria</div>
+          <div class="org-node-role">System Architecture</div>
+        </div>
+        <div class="pillar-children">
+          <div class="org-node org-node--aiox" id="node-data-engineer"
+               onmouseenter="highlightNode('data-engineer')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🗄️</div>
+            <div class="org-node-id">@data-engineer</div>
+            <div class="org-node-name">Dara</div>
+            <div class="org-node-role">Schema · DB · RLS</div>
+          </div>
+          <div class="org-node org-node--aiox" id="node-ux"
+               onmouseenter="highlightNode('ux')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🎨</div>
+            <div class="org-node-id">@ux</div>
+            <div class="org-node-name">Uma</div>
+            <div class="org-node-role">UX/UI · Components</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PILLAR 3: Castle Capital squad -->
+      <div class="org-pillar">
+        <div class="pillar-header" style="color:var(--gold)">Castle Capital · Operaciones</div>
+        <div class="org-node org-node--castle" id="node-castle-chief"
+             onmouseenter="highlightNode('castle-chief')" onmouseleave="clearHighlight()">
+          <div class="org-node-avatar">🏰</div>
+          <div class="org-node-id">@castle-chief</div>
+          <div class="org-node-name">Bastian</div>
+          <div class="org-node-role">CCI Operations Orchestrator</div>
+        </div>
+        <div class="pillar-children pillar-children--grid">
+          <div class="org-node org-node--castle" id="node-prospector"
+               onmouseenter="highlightNode('prospector')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🔍</div>
+            <div class="org-node-id">@prospector</div>
+            <div class="org-node-name">Hunter</div>
+            <div class="org-node-role">Lead Generation</div>
+          </div>
+          <div class="org-node org-node--castle" id="node-closer"
+               onmouseenter="highlightNode('closer')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🎯</div>
+            <div class="org-node-id">@closer</div>
+            <div class="org-node-name">Sentinel</div>
+            <div class="org-node-role">Sales Closing</div>
+          </div>
+          <div class="org-node org-node--castle" id="node-content-engine"
+               onmouseenter="highlightNode('content-engine')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🎬</div>
+            <div class="org-node-id">@content-engine</div>
+            <div class="org-node-name">Forge</div>
+            <div class="org-node-role">Content</div>
+          </div>
+          <div class="org-node org-node--castle" id="node-copy-engine"
+               onmouseenter="highlightNode('copy-engine')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">✍️</div>
+            <div class="org-node-id">@copy-engine</div>
+            <div class="org-node-name">Ink</div>
+            <div class="org-node-role">Copywriting</div>
+          </div>
+          <div class="org-node org-node--castle" id="node-deal-analyst"
+               onmouseenter="highlightNode('deal-analyst')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">📊</div>
+            <div class="org-node-id">@deal-analyst</div>
+            <div class="org-node-name">Quant</div>
+            <div class="org-node-role">DeFi Analysis</div>
+          </div>
+          <div class="org-node org-node--castle" id="node-client-success"
+               onmouseenter="highlightNode('client-success')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🤝</div>
+            <div class="org-node-id">@client-success</div>
+            <div class="org-node-name">Nexus</div>
+            <div class="org-node-role">Clientes</div>
+          </div>
+          <div class="org-node org-node--castle" id="node-pulse-monitor"
+               onmouseenter="highlightNode('pulse-monitor')" onmouseleave="clearHighlight()">
+            <div class="org-node-avatar">🌡️</div>
+            <div class="org-node-id">@pulse-monitor</div>
+            <div class="org-node-name">Vigil</div>
+            <div class="org-node-role">Monitoreo DeFi</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /org-pillars -->
+
+    <!-- CHIEFS ROW (no hierarchy, callable by anyone) -->
+    <div class="chiefs-row">
+      <div class="chiefs-row-title">👑 Chiefs Globales</div>
+      <div class="chiefs-row-sub">Especialistas consultables por cualquier agente · No tienen jerarquía entre sí</div>
+      <div class="chiefs-grid">
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">📣</div>
+          <div class="org-node-id">copy-chief</div>
+          <div class="org-node-role">24 copywriters</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">🛡️</div>
+          <div class="org-node-id">cyber-chief</div>
+          <div class="org-node-role">6 especialistas security</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">🖌️</div>
+          <div class="org-node-id">design-chief</div>
+          <div class="org-node-role">9 especialistas diseño</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">⚖️</div>
+          <div class="org-node-id">legal-chief</div>
+          <div class="org-node-role">SAS · Compliance DeFi</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">📈</div>
+          <div class="org-node-id">data-chief</div>
+          <div class="org-node-role">Data Intelligence</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">📖</div>
+          <div class="org-node-id">story-chief</div>
+          <div class="org-node-role">12 storytellers</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">📡</div>
+          <div class="org-node-id">traffic-masters-chief</div>
+          <div class="org-node-role">7 paid traffic</div>
+        </div>
+        <div class="org-node org-node--chief">
+          <div class="org-node-avatar">🔧</div>
+          <div class="org-node-id">tools-orchestrator</div>
+          <div class="org-node-role">Frameworks meta</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /org-chart -->
+</section>
+
+<!-- ════════════════════════════════════════════ VIEW: SDC FLOW ══ -->
+<section class="flow-view" id="view-flow">
+  <div class="flow-header">
+    <div class="hierarchy-title">🔄 Story Development Cycle</div>
+    <div class="hierarchy-sub">El flujo completo de desarrollo de software en AIOX: desde la creación del epic hasta el push final. Solo @devops puede hacer push.</div>
+  </div>
+
+  <div class="flow-container">
+    <div class="flow-chain">
+
+      <div class="flow-phase">
+        <div class="flow-circle">📋</div>
+        <div class="flow-agent">@pm</div>
+        <div class="flow-persona">Morgan</div>
+        <div class="flow-task">Crear epic + spec</div>
+        <span class="flow-cmd">*create-epic</span>
+      </div>
+      <div class="flow-arrow flow"></div>
+
+      <div class="flow-phase">
+        <div class="flow-circle">📝</div>
+        <div class="flow-agent">@sm</div>
+        <div class="flow-persona">River</div>
+        <div class="flow-task">Crear story draft</div>
+        <span class="flow-cmd">*draft</span>
+      </div>
+      <div class="flow-arrow flow"></div>
+
+      <div class="flow-phase">
+        <div class="flow-circle">📌</div>
+        <div class="flow-agent">@po</div>
+        <div class="flow-persona">Pax</div>
+        <div class="flow-task">Validar GO/NO-GO</div>
+        <span class="flow-cmd">*validate-story-draft</span>
+      </div>
+      <div class="flow-arrow flow"></div>
+
+      <div class="flow-phase">
+        <div class="flow-circle">💻</div>
+        <div class="flow-agent">@dev</div>
+        <div class="flow-persona">Dex</div>
+        <div class="flow-task">Implementar código</div>
+        <span class="flow-cmd">*develop</span>
+      </div>
+      <div class="flow-arrow flow"></div>
+
+      <div class="flow-phase">
+        <div class="flow-circle">🧪</div>
+        <div class="flow-agent">@qa</div>
+        <div class="flow-persona">Quinn</div>
+        <div class="flow-task">QA Gate · PASS/FAIL</div>
+        <span class="flow-cmd">*qa-gate</span>
+      </div>
+      <div class="flow-arrow flow"></div>
+
+      <div class="flow-phase exclusive">
+        <div class="flow-circle">🚀</div>
+        <div class="flow-agent">@devops</div>
+        <div class="flow-persona">Gage</div>
+        <div class="flow-task">Push + crear PR</div>
+        <span class="flow-cmd">git push / gh pr create</span>
+        <div><span class="flow-badge">Autoridad exclusiva</span></div>
+      </div>
+
+    </div><!-- /flow-chain -->
+
+    <div class="flow-returns">
+      <div class="flow-returns-title">⚠ Rutas de retorno (branches de error)</div>
+      <div class="flow-return-row">
+        <span class="flow-return-label">NO-GO</span>
+        <span>@po regresa la story a @sm</span>
+        <span class="flow-return-arrow">↺</span>
+        <span>@sm corrige el draft y vuelve a validación</span>
+      </div>
+      <div class="flow-return-row">
+        <span class="flow-return-label">FAIL</span>
+        <span>@qa devuelve a @dev</span>
+        <span class="flow-return-arrow">↺</span>
+        <span>QA Loop iterativo (máx 5 ciclos antes de escalar)</span>
+      </div>
+      <div class="flow-return-row">
+        <span class="flow-return-label">BLOCKED</span>
+        <span>Escalación a @aiox-master</span>
+        <span class="flow-return-arrow">↑</span>
+        <span>Conflictos constitucionales o de autoridad</span>
+      </div>
+    </div>
+
+    <div class="flow-legend">
+      <div class="flow-legend-item">
+        <span class="flow-legend-dot blue"></span>
+        Fase normal del ciclo
+      </div>
+      <div class="flow-legend-item">
+        <span class="flow-legend-dot red"></span>
+        Autoridad exclusiva — solo @devops puede ejecutar
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="tabs">
+    <button class="tab active all" data-filter="all" onclick="setTab(this,'all')">Todos <span class="count">27</span></button>
+    <button class="tab gold" data-filter="gold" onclick="setTab(this,'gold')">🏰 Castle Capital <span class="count">8</span></button>
+    <button class="tab blue" data-filter="blue" onclick="setTab(this,'blue')">⚙️ AIOX Core <span class="count">10</span></button>
+    <button class="tab purple" data-filter="purple" onclick="setTab(this,'purple')">👑 Chiefs <span class="count">9</span></button>
+  </div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search" type="text" placeholder="Buscar agente o tarea..." oninput="filterSearch(this.value)" />
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ═══════════════════════════════════════════ CASTLE CAPITAL ══ -->
+  <div class="section-title" data-group="gold">🏰 Castle Capital Squad — Negocio y Operaciones</div>
+  <div class="grid" id="grid-gold">
+
+    <!-- castle-chief / Bastian -->
+    <div class="card gold" data-group="gold" data-tags="chief operaciones estrategia coordinacion" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🏰</div>
+        <div class="card-meta">
+          <div class="card-name">Castle Chief</div>
+          <div class="card-persona">Persona: <span>Bastian</span> · Orquestador</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:castle-chief</span>
+      </div>
+      <div class="card-role">Comando central de Castle Capital. Coordina todos los agentes del squad, genera reportes estratégicos y gestiona el pipeline general del negocio.</div>
+      <div class="tags">
+        <span class="tag">Estrategia</span>
+        <span class="tag">Coordinación</span>
+        <span class="tag">KPIs</span>
+        <span class="tag">Pipeline</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*briefing')">*briefing</span>
+            <span class="cmd" onclick="copyCmd(event,'*metricas')">*metricas</span>
+            <span class="cmd" onclick="copyCmd(event,'*pipeline')">*pipeline</span>
+            <span class="cmd" onclick="copyCmd(event,'*plan-semanal')">*plan-semanal</span>
+            <span class="cmd" onclick="copyCmd(event,'*revision-mensual')">*revision-mensual</span>
+            <span class="cmd" onclick="copyCmd(event,'*guia')">*guia</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>📊 Revisar cómo está el negocio de forma global</li>
+            <li>🗓 Planear la semana o el mes</li>
+            <li>🔀 Coordinar varios agentes en una sola sesión</li>
+            <li>📈 Obtener métricas consolidadas del squad</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- closer / Sentinel -->
+    <div class="card gold" data-group="gold" data-tags="ventas cierre objeciones llamadas prospectos" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🎯</div>
+        <div class="card-meta">
+          <div class="card-name">Closer</div>
+          <div class="card-persona">Persona: <span>Sentinel</span> · Sales Closer</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:closer</span>
+      </div>
+      <div class="card-role">Motor de cierre de ventas. Maneja objeciones, prepara llamadas, diseña scripts y trabaja leads calientes para convertirlos en clientes de CCI.</div>
+      <div class="tags">
+        <span class="tag">Ventas</span>
+        <span class="tag">Objeciones</span>
+        <span class="tag">Scripts</span>
+        <span class="tag">CCI</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*call-prep')">*call-prep</span>
+            <span class="cmd" onclick="copyCmd(event,'*objeciones')">*objeciones</span>
+            <span class="cmd" onclick="copyCmd(event,'*script')">*script</span>
+            <span class="cmd" onclick="copyCmd(event,'*cold-call')">*cold-call</span>
+            <span class="cmd" onclick="copyCmd(event,'*warm-leads')">*warm-leads</span>
+            <span class="cmd" onclick="copyCmd(event,'*followup-cierre')">*followup-cierre</span>
+            <span class="cmd" onclick="copyCmd(event,'*oferta')">*oferta</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>📞 Preparar una llamada de cierre con un prospecto</li>
+            <li>💬 Responder objeciones ("es muy caro", "no confío en DeFi")</li>
+            <li>✍️ Diseñar el script de la conversación</li>
+            <li>🔥 Trabajar leads calientes (ya expresaron interés)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- prospector / Hunter -->
+    <div class="card gold" data-group="gold" data-tags="prospeccion leads frios outreach mensajes linkedin email" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🔍</div>
+        <div class="card-meta">
+          <div class="card-name">Prospector</div>
+          <div class="card-persona">Persona: <span>Hunter</span> · Lead Generation</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:prospector</span>
+      </div>
+      <div class="card-role">Motor de prospección y outreach. Genera mensajes de contacto en frío, batchs de emails y secuencias de seguimiento para captar nuevos prospectos.</div>
+      <div class="tags">
+        <span class="tag">Leads Fríos</span>
+        <span class="tag">Outreach</span>
+        <span class="tag">Email</span>
+        <span class="tag">LinkedIn</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*outreach')">*outreach</span>
+            <span class="cmd" onclick="copyCmd(event,'*email-batch')">*email-batch</span>
+            <span class="cmd" onclick="copyCmd(event,'*cold-leads')">*cold-leads</span>
+            <span class="cmd" onclick="copyCmd(event,'*warm-leads')">*warm-leads</span>
+            <span class="cmd" onclick="copyCmd(event,'*linkedin')">*linkedin</span>
+            <span class="cmd" onclick="copyCmd(event,'*calificar')">*calificar</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>📨 Generar mensajes para 100 leads fríos</li>
+            <li>📧 Crear batches de correos de prospección</li>
+            <li>🤝 Secuencias de seguimiento post-contacto</li>
+            <li>✅ Calificar si un lead es viable para CCI</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- content-engine / Forge -->
+    <div class="card gold" data-group="gold" data-tags="contenido guion reel instagram carrusel newsletter video" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🎬</div>
+        <div class="card-meta">
+          <div class="card-name">Content Engine</div>
+          <div class="card-persona">Persona: <span>Forge</span> · Content Creator</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:content-engine</span>
+      </div>
+      <div class="card-role">Fábrica de contenido de autoridad para Castle Capital. Crea guiones de video, carruseles de Instagram, threads, newsletters y batches semanales de publicaciones.</div>
+      <div class="tags">
+        <span class="tag">Reels</span>
+        <span class="tag">Carruseles</span>
+        <span class="tag">Newsletter</span>
+        <span class="tag">Batch</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*guion')">*guion</span>
+            <span class="cmd" onclick="copyCmd(event,'*carrusel')">*carrusel</span>
+            <span class="cmd" onclick="copyCmd(event,'*newsletter')">*newsletter</span>
+            <span class="cmd" onclick="copyCmd(event,'*thread')">*thread</span>
+            <span class="cmd" onclick="copyCmd(event,'*daily-content')">*daily-content</span>
+            <span class="cmd" onclick="copyCmd(event,'*batch-semanal')">*batch-semanal</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>🎥 Guion para un reel o video educativo</li>
+            <li>📲 Carrusel de Instagram sobre DeFi / CCI</li>
+            <li>📬 Newsletter semanal para la comunidad</li>
+            <li>📅 Batch de contenido para toda la semana</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- copy-engine / Ink -->
+    <div class="card gold" data-group="gold" data-tags="copy copywriting conversion hook reel dm ads" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">✍️</div>
+        <div class="card-meta">
+          <div class="card-name">Copy Engine</div>
+          <div class="card-persona">Persona: <span>Ink</span> · Conversion Copy</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:copy-engine</span>
+      </div>
+      <div class="card-role">Especialista en copy de conversión. Crea hooks de reels, copies creativos para ads, DMs de venta, títulos de YouTube y emails de seguimiento de alta conversión.</div>
+      <div class="tags">
+        <span class="tag">Hooks</span>
+        <span class="tag">Ads</span>
+        <span class="tag">DMs</span>
+        <span class="tag">Conversión</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*copy-historia')">*copy-historia</span>
+            <span class="cmd" onclick="copyCmd(event,'*copy-creativo')">*copy-creativo</span>
+            <span class="cmd" onclick="copyCmd(event,'*copy-reel')">*copy-reel</span>
+            <span class="cmd" onclick="copyCmd(event,'*copy-dm')">*copy-dm</span>
+            <span class="cmd" onclick="copyCmd(event,'*copy-youtube')">*copy-youtube</span>
+            <span class="cmd" onclick="copyCmd(event,'*copy-email')">*copy-email</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Diferencia clave con Content Engine</div>
+          <ul class="use-when">
+            <li>✅ <strong>Copy Engine</strong>: el texto que convierte (hooks, CTA, DMs)</li>
+            <li>✅ <strong>Content Engine</strong>: la estructura del contenido (guion, carrusel, newsletter)</li>
+            <li>💡 Úsalos juntos: Content → estructura, Copy → el texto final</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- deal-analyst / Quant -->
+    <div class="card gold" data-group="gold" data-tags="defi uniswap analisis pool riesgo matematica apalancamiento" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📊</div>
+        <div class="card-meta">
+          <div class="card-name">Deal Analyst</div>
+          <div class="card-persona">Persona: <span>Quant</span> · DeFi Analyst</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:deal-analyst</span>
+      </div>
+      <div class="card-role">Cerebro matemático de Castle Capital. Analiza pools de liquidez en Uniswap, evalúa riesgo de estrategias de leverage con Revert, y genera reportes de rendimiento para clientes.</div>
+      <div class="tags">
+        <span class="tag">Uniswap V3</span>
+        <span class="tag">Revert</span>
+        <span class="tag">Riesgo</span>
+        <span class="tag">Escenarios</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*analizar-pool')">*analizar-pool</span>
+            <span class="cmd" onclick="copyCmd(event,'*riesgo')">*riesgo</span>
+            <span class="cmd" onclick="copyCmd(event,'*comparar')">*comparar</span>
+            <span class="cmd" onclick="copyCmd(event,'*escenarios')">*escenarios</span>
+            <span class="cmd" onclick="copyCmd(event,'*apalancamiento')">*apalancamiento</span>
+            <span class="cmd" onclick="copyCmd(event,'*reporte-cliente')">*reporte-cliente</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>🔢 Analizar un pool antes de entrar con capital de cliente</li>
+            <li>⚠️ Evaluar el riesgo de impermanent loss en un rango</li>
+            <li>📄 Generar reporte de rendimiento para enviar al cliente</li>
+            <li>📐 Calcular escenarios de apalancamiento seguro</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- client-success / Nexus -->
+    <div class="card gold" data-group="gold" data-tags="clientes retencion onboarding reportes salud referidos" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🤝</div>
+        <div class="card-meta">
+          <div class="card-name">Client Success</div>
+          <div class="card-persona">Persona: <span>Nexus</span> · Client Manager</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:client-success</span>
+      </div>
+      <div class="card-role">Guardián de relaciones con clientes. Gestiona onboarding, genera reportes periódicos, monitorea health score de clientes activos y activa estrategias de retención y referidos.</div>
+      <div class="tags">
+        <span class="tag">Onboarding</span>
+        <span class="tag">Retención</span>
+        <span class="tag">Reportes</span>
+        <span class="tag">Referidos</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*onboarding')">*onboarding</span>
+            <span class="cmd" onclick="copyCmd(event,'*reporte')">*reporte</span>
+            <span class="cmd" onclick="copyCmd(event,'*health')">*health</span>
+            <span class="cmd" onclick="copyCmd(event,'*retencion')">*retencion</span>
+            <span class="cmd" onclick="copyCmd(event,'*referidos')">*referidos</span>
+            <span class="cmd" onclick="copyCmd(event,'*bienvenida')">*bienvenida</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>🚀 Onboarding de un nuevo cliente CCI</li>
+            <li>📊 Reporte mensual para enviar al cliente</li>
+            <li>❤️ Revisar si un cliente está en riesgo de salida</li>
+            <li>🔗 Activar programa de referidos con clientes satisfechos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- pulse-monitor / Vigil -->
+    <div class="card gold" data-group="gold" data-tags="monitoring posiciones rebalanceo alertas gas defi" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🌡️</div>
+        <div class="card-meta">
+          <div class="card-name">Pulse Monitor</div>
+          <div class="card-persona">Persona: <span>Vigil</span> · Position Sentinel</div>
+        </div>
+        <span class="activation-badge">AIOX:agents:pulse-monitor</span>
+      </div>
+      <div class="card-role">Ojo operativo sobre las posiciones DeFi activas. Monitorea estado de pools, genera alertas de rebalanceo, calcula gas óptimo y produce el reporte diario del Pulse de Liquidez.</div>
+      <div class="tags">
+        <span class="tag">Monitoreo</span>
+        <span class="tag">Alertas</span>
+        <span class="tag">Gas</span>
+        <span class="tag">Pulse Diario</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos principales</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*status')">*status</span>
+            <span class="cmd" onclick="copyCmd(event,'*alertas')">*alertas</span>
+            <span class="cmd" onclick="copyCmd(event,'*rebalanceo')">*rebalanceo</span>
+            <span class="cmd" onclick="copyCmd(event,'*pulse-diario')">*pulse-diario</span>
+            <span class="cmd" onclick="copyCmd(event,'*reporte-periodo')">*reporte-periodo</span>
+            <span class="cmd" onclick="copyCmd(event,'*gas-tracker')">*gas-tracker</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>👁 Ver estado actual de todas las posiciones DeFi</li>
+            <li>🔔 Recibir alertas de pools fuera de rango</li>
+            <li>⚖️ Saber qué posiciones rebalancear hoy</li>
+            <li>⛽ Optimizar momento para transacciones (gas bajo)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid-gold -->
+
+
+  <!-- ═══════════════════════════════════════════ AIOX CORE ══ -->
+  <div class="section-title" data-group="blue">⚙️ AIOX Core — Desarrollo de Software</div>
+  <div class="grid" id="grid-blue">
+
+    <!-- dev / Dex -->
+    <div class="card blue" data-group="blue" data-tags="desarrollo codigo implementacion build story" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">💻</div>
+        <div class="card-meta">
+          <div class="card-name">@dev — Dex</div>
+          <div class="card-persona">Persona: <span>Dex</span> · Senior Engineer</div>
+        </div>
+        <span class="activation-badge">@dev</span>
+      </div>
+      <div class="card-role">Implementa código a partir de stories. Modos YOLO (autónomo), Interactive y Pre-Flight. Ejecuta subtareas, maneja recovery y builds autónomos completos.</div>
+      <div class="tags">
+        <span class="tag">Implementación</span>
+        <span class="tag">YOLO Mode</span>
+        <span class="tag">Build</span>
+        <span class="tag">Recovery</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos clave</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*develop')">*develop</span>
+            <span class="cmd" onclick="copyCmd(event,'*develop-yolo')">*develop-yolo</span>
+            <span class="cmd" onclick="copyCmd(event,'*build')">*build</span>
+            <span class="cmd" onclick="copyCmd(event,'*build-autonomous')">*build-autonomous</span>
+            <span class="cmd" onclick="copyCmd(event,'*rollback')">*rollback</span>
+            <span class="cmd" onclick="copyCmd(event,'*help')">*help</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Flujo Story-Driven</div>
+          <div class="workflow-flow">
+            <span class="wf-agent">@po *validate</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@dev *develop</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@qa *qa-gate</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@devops *push</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- qa / Quinn -->
+    <div class="card blue" data-group="blue" data-tags="calidad tests qa review gate passfail" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🧪</div>
+        <div class="card-meta">
+          <div class="card-name">@qa — Quinn</div>
+          <div class="card-persona">Persona: <span>Quinn</span> · Test Architect</div>
+        </div>
+        <span class="activation-badge">@qa</span>
+      </div>
+      <div class="card-role">Arquitecto de calidad con autoridad de decisión. Ejecuta QA Gate de 7 checkpoints, QA Loop iterativo y emite verdicts: PASS / CONCERNS / FAIL / WAIVED.</div>
+      <div class="tags">
+        <span class="tag">QA Gate</span>
+        <span class="tag">Tests</span>
+        <span class="tag">Code Review</span>
+        <span class="tag">PASS/FAIL</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos clave</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*qa-gate')">*qa-gate</span>
+            <span class="cmd" onclick="copyCmd(event,'*review')">*review</span>
+            <span class="cmd" onclick="copyCmd(event,'*qa-loop')">*qa-loop</span>
+            <span class="cmd" onclick="copyCmd(event,'*security-scan')">*security-scan</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>✅ Validar que una story está lista para merge</li>
+            <li>🔐 Scan de seguridad antes de deploy</li>
+            <li>🔄 Loop iterativo de fixes hasta PASS</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- architect / Aria -->
+    <div class="card blue" data-group="blue" data-tags="arquitectura sistema design tech decisions" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🏗️</div>
+        <div class="card-meta">
+          <div class="card-name">@architect — Aria</div>
+          <div class="card-persona">Persona: <span>Aria</span> · System Architect</div>
+        </div>
+        <span class="activation-badge">@architect</span>
+      </div>
+      <div class="card-role">Autoridad en decisiones de arquitectura. Diseña sistemas, evalúa tecnologías, detecta deuda técnica y produce la parte técnica de los specs. Todo diseño pasa por Aria.</div>
+      <div class="tags">
+        <span class="tag">Arquitectura</span>
+        <span class="tag">Tech Stack</span>
+        <span class="tag">Brownfield</span>
+        <span class="tag">Deuda Técnica</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>🔧 Diseñar la arquitectura de un nuevo sistema</li>
+            <li>📊 Analizar impacto de un cambio grande</li>
+            <li>🗺 Mapear deuda técnica existente (Brownfield)</li>
+            <li>⚖️ Decidir entre tecnologías o enfoques</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- pm / Morgan -->
+    <div class="card blue" data-group="blue" data-tags="producto prd requisitos estrategia features roadmap" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📋</div>
+        <div class="card-meta">
+          <div class="card-name">@pm — Morgan</div>
+          <div class="card-persona">Persona: <span>Morgan</span> · Product Manager</div>
+        </div>
+        <span class="activation-badge">@pm</span>
+      </div>
+      <div class="card-role">Estratega de producto. Escribe PRDs, define requisitos, crea epics, ejecuta el Spec Pipeline y toma decisiones de negocio sobre el roadmap. Punto de entrada para nuevas features.</div>
+      <div class="tags">
+        <span class="tag">PRD</span>
+        <span class="tag">Epics</span>
+        <span class="tag">Roadmap</span>
+        <span class="tag">Spec Pipeline</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos clave</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*create-epic')">*create-epic</span>
+            <span class="cmd" onclick="copyCmd(event,'*execute-epic')">*execute-epic</span>
+            <span class="cmd" onclick="copyCmd(event,'*spec')">*spec</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Flujo Spec Pipeline</div>
+          <div class="workflow-flow">
+            <span class="wf-agent">@pm *spec</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@architect</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@qa critique</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@sm stories</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- po / Pax -->
+    <div class="card blue" data-group="blue" data-tags="product owner backlog stories validacion" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📌</div>
+        <div class="card-meta">
+          <div class="card-name">@po — Pax</div>
+          <div class="card-persona">Persona: <span>Pax</span> · Product Owner</div>
+        </div>
+        <span class="activation-badge">@po</span>
+      </div>
+      <div class="card-role">Valida stories antes de implementación (checklist de 10 puntos). Gestiona el backlog, prioriza epics y garantiza que el contexto del producto sea coherente en todo el desarrollo.</div>
+      <div class="tags">
+        <span class="tag">Validación</span>
+        <span class="tag">Backlog</span>
+        <span class="tag">Stories</span>
+        <span class="tag">GO/NO-GO</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos clave</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*validate-story-draft')">*validate-story-draft</span>
+            <span class="cmd" onclick="copyCmd(event,'*prioritize')">*prioritize</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Autoridad exclusiva</div>
+          <ul class="use-when">
+            <li>✅ Emitir GO / NO-GO sobre una story antes de @dev</li>
+            <li>📊 Gestionar contexto del epic a través del desarrollo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- sm / River -->
+    <div class="card blue" data-group="blue" data-tags="scrum master stories crear drafts" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📝</div>
+        <div class="card-meta">
+          <div class="card-name">@sm — River</div>
+          <div class="card-persona">Persona: <span>River</span> · Scrum Master</div>
+        </div>
+        <span class="activation-badge">@sm</span>
+      </div>
+      <div class="card-role">Especialista en preparación de stories. Transforma epics y PRDs en stories de desarrollo hiper-detalladas con acceptance criteria, tasks y contexto completo para @dev.</div>
+      <div class="tags">
+        <span class="tag">Crear Stories</span>
+        <span class="tag">Templates</span>
+        <span class="tag">ACs</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Comandos clave</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'*draft')">*draft</span>
+            <span class="cmd" onclick="copyCmd(event,'*create-story')">*create-story</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Punto de entrada: nuevas features</div>
+          <div class="workflow-flow">
+            <span class="wf-agent">@pm *epic</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@sm *draft</span>
+            <span class="wf-arrow">→</span>
+            <span class="wf-agent">@po *validate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- analyst / Atlas -->
+    <div class="card blue" data-group="blue" data-tags="analisis investigacion research mercado datos" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🔬</div>
+        <div class="card-meta">
+          <div class="card-name">@analyst — Atlas</div>
+          <div class="card-persona">Persona: <span>Atlas</span> · Strategic Analyst</div>
+        </div>
+        <span class="activation-badge">@analyst</span>
+      </div>
+      <div class="card-role">Investigación y análisis estratégico. Hace research de mercado, análisis competitivo, ROI, facilitación de brainstorming y deep research para alimentar decisiones de producto.</div>
+      <div class="tags">
+        <span class="tag">Research</span>
+        <span class="tag">Competencia</span>
+        <span class="tag">ROI</span>
+        <span class="tag">Análisis</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>📊 Investigar una tecnología o protocolo antes de implementar</li>
+            <li>🏆 Análisis competitivo del mercado DeFi</li>
+            <li>💡 Brainstorming de nuevas funcionalidades</li>
+            <li>📈 Calcular ROI de una inversión de desarrollo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- devops / Gage -->
+    <div class="card blue" data-group="blue" data-tags="git push pr release deploy cicd" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🚀</div>
+        <div class="card-meta">
+          <div class="card-name">@devops — Gage</div>
+          <div class="card-persona">Persona: <span>Gage</span> · Repository Guardian</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-direction:column;align-items:flex-end">
+          <span class="activation-badge">@devops</span>
+          <span class="exclusive">Exclusivo</span>
+        </div>
+      </div>
+      <div class="card-role">Único agente con autoridad para git push, crear PRs y hacer releases. Gestiona CI/CD, pipelines, infraestructura MCP y versiones. Ningún otro agente puede hacer push.</div>
+      <div class="tags">
+        <span class="tag">git push</span>
+        <span class="tag">PR creation</span>
+        <span class="tag">Release</span>
+        <span class="tag">CI/CD</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Autoridades EXCLUSIVAS (Constitution Art. II)</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'git push')">git push</span>
+            <span class="cmd" onclick="copyCmd(event,'gh pr create')">gh pr create</span>
+            <span class="cmd" onclick="copyCmd(event,'*release')">*release</span>
+            <span class="cmd" onclick="copyCmd(event,'*pre-push')">*pre-push</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Regla de delegación</div>
+          <ul class="use-when">
+            <li>⚡ Cualquier agente → debe delegar push a @devops</li>
+            <li>🔒 Intentar push desde otro agente está bloqueado</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ux / Uma -->
+    <div class="card blue" data-group="blue" data-tags="ux ui design interface frontend componentes" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🎨</div>
+        <div class="card-meta">
+          <div class="card-name">@ux — Uma</div>
+          <div class="card-persona">Persona: <span>Uma</span> · UX/UI Designer</div>
+        </div>
+        <span class="activation-badge">@ux</span>
+      </div>
+      <div class="card-role">Diseñadora UX/UI y arquitecta de design systems. Crea wireframes, componentes, define tokens de diseño y garantiza accesibilidad y experiencia de usuario consistente.</div>
+      <div class="tags">
+        <span class="tag">Wireframes</span>
+        <span class="tag">Design System</span>
+        <span class="tag">Componentes</span>
+        <span class="tag">A11y</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>🖼 Diseñar la interfaz del Pulse de Liquidez</li>
+            <li>🎨 Definir el design system de la herramienta de asesoría</li>
+            <li>♿ Revisar accesibilidad de un componente existente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- data-engineer / Dara -->
+    <div class="card blue" data-group="blue" data-tags="base de datos schema sql migrations rls" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🗄️</div>
+        <div class="card-meta">
+          <div class="card-name">@data-engineer — Dara</div>
+          <div class="card-persona">Persona: <span>Dara</span> · DB Architect</div>
+        </div>
+        <span class="activation-badge">@data-engineer</span>
+      </div>
+      <div class="card-role">Arquitecto de bases de datos. Diseña schemas, ejecuta migrations, define políticas RLS, optimiza queries e implementa estrategias de índices. Trabaja bajo dirección de @architect.</div>
+      <div class="tags">
+        <span class="tag">Schema</span>
+        <span class="tag">Migrations</span>
+        <span class="tag">RLS</span>
+        <span class="tag">Optimización</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>📦 Diseñar el schema para almacenar posiciones DeFi</li>
+            <li>🔒 Implementar RLS para datos de clientes</li>
+            <li>⚡ Optimizar queries lentas en el dashboard</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid-blue -->
+
+
+  <!-- ═══════════════════════════════════════════ CHIEFS ══ -->
+  <div class="section-title" data-group="purple">👑 Chiefs Globales — Especialistas Orquestadores</div>
+  <div class="grid" id="grid-purple">
+
+    <!-- copy-chief -->
+    <div class="card purple" data-group="purple" data-tags="copy copywriting storytelling persuasion hooks ads" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📣</div>
+        <div class="card-meta">
+          <div class="card-name">Copy Chief</div>
+          <div class="card-persona">Orquesta 24 copywriters legendarios</div>
+        </div>
+        <span class="activation-badge">copy-chief</span>
+      </div>
+      <div class="card-role">Orquesta un squad de 24 copywriters de élite usando sistema de Tiers. Diagnóstico → Ejecución con los mejores (Ogilvy, Hopkins, Halbert, Bly) → Auditoría con 30 triggers.</div>
+      <div class="tags">
+        <span class="tag">Ogilvy</span>
+        <span class="tag">Hopkins</span>
+        <span class="tag">30 Triggers</span>
+        <span class="tag">Persuasión</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Cuándo usar vs Copy Engine</div>
+          <ul class="use-when">
+            <li>✅ <strong>copy-chief</strong>: copy de alto impacto con técnicas de los mejores del mundo (sales letter, VSL, ad complejo)</li>
+            <li>✅ <strong>copy-engine</strong>: copy operacional diario de Castle Capital (reel, DM, email)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- cyber-chief -->
+    <div class="card purple" data-group="purple" data-tags="seguridad defi wallets vulnerabilidades auditoria" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🛡️</div>
+        <div class="card-meta">
+          <div class="card-name">Cyber Chief</div>
+          <div class="card-persona">Orquesta 6 especialistas de seguridad</div>
+        </div>
+        <span class="activation-badge">cyber-chief</span>
+      </div>
+      <div class="card-role">Squad de ciberseguridad con 6 especialistas. Triage de amenazas, routing a experto correcto: API auth (Jim Manico), smart contracts (Tim McGrath), compliance (Omar Santos), forensics (Matt Bromiley).</div>
+      <div class="tags">
+        <span class="tag">DeFi Security</span>
+        <span class="tag">Smart Contracts</span>
+        <span class="tag">Compliance</span>
+        <span class="tag">Incident Response</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Escenarios Castle Capital</div>
+          <ul class="use-when">
+            <li>🚨 Cliente reporta wallet drain → cyber-chief *triage severity=CRITICAL</li>
+            <li>🔐 Nueva integración Uniswap → cyber-chief *triage domain=smart-contract</li>
+            <li>📋 Onboarding cliente → @omar-santos para KYC/OFAC</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- design-chief -->
+    <div class="card purple" data-group="purple" data-tags="design sistema tokens componentes atomic ux ui" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🖌️</div>
+        <div class="card-meta">
+          <div class="card-name">Design Chief</div>
+          <div class="card-persona">Orquesta 9 especialistas de diseño</div>
+        </div>
+        <span class="activation-badge">design-chief</span>
+      </div>
+      <div class="card-role">Orquestador de 9 especialistas de diseño. Routing inteligente: Brad Frost (Atomic Design), Dan Mall (design system adoption), Dave Malouf (DesignOps), Nano Banana (AI image generation).</div>
+      <div class="tags">
+        <span class="tag">Atomic Design</span>
+        <span class="tag">Design System</span>
+        <span class="tag">DesignOps</span>
+        <span class="tag">AI Images</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>🎨 Construir un design system desde cero para Castle Capital</li>
+            <li>🖼 Generar imágenes AI para campaña (Nano Banana)</li>
+            <li>📐 Auditar y consolidar patrones de UI existentes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- legal-chief -->
+    <div class="card purple" data-group="purple" data-tags="legal juridico sas compliance defi colombia regulacion" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">⚖️</div>
+        <div class="card-meta">
+          <div class="card-name">Legal Chief</div>
+          <div class="card-persona">Orquesta especialistas jurídicos</div>
+        </div>
+        <span class="activation-badge">legal-chief</span>
+      </div>
+      <div class="card-role">Orquestador de especialistas legales. Diagnóstico → Frameworks globales (FATF, OFAC) → Especialistas BR/CO → Validación. Clave para estructura SAS de Castle Capital.</div>
+      <div class="tags">
+        <span class="tag">SAS Colombia</span>
+        <span class="tag">FATF/OFAC</span>
+        <span class="tag">Contratos</span>
+        <span class="tag">Compliance DeFi</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Usa cuando necesites</div>
+          <ul class="use-when">
+            <li>📄 Revisar estructura legal de la SAS Castle Capital</li>
+            <li>🌐 Compliance regulatorio para operar DeFi en Colombia</li>
+            <li>📑 Contratos de mandato para gestión de capital</li>
+            <li>🔍 Revisar OFAC/FATF para nuevos clientes</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- data-chief -->
+    <div class="card purple" data-group="purple" data-tags="datos inteligencia analytics reportes business intelligence" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📈</div>
+        <div class="card-meta">
+          <div class="card-name">Data Chief</div>
+          <div class="card-persona">Orquesta especialistas en Data Intelligence</div>
+        </div>
+        <span class="activation-badge">data-chief</span>
+      </div>
+      <div class="card-role">Data Intelligence usando sistema de Tiers: Fundamentación → Operacionalización → Comunicación. Para análisis avanzado de datos DeFi, dashboards analíticos y reportes ejecutivos.</div>
+      <div class="tags">
+        <span class="tag">Analytics</span>
+        <span class="tag">BI</span>
+        <span class="tag">Visualización</span>
+        <span class="tag">Reportes</span>
+      </div>
+    </div>
+
+    <!-- story-chief -->
+    <div class="card purple" data-group="purple" data-tags="storytelling narrativa marca historia marca personal" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📖</div>
+        <div class="card-meta">
+          <div class="card-name">Story Chief</div>
+          <div class="card-persona">Orquesta 12 storytellers legendarios</div>
+        </div>
+        <span class="activation-badge">story-chief</span>
+      </div>
+      <div class="card-role">Orquesta 12 storytellers de élite (Campbell, McKee, Pressfield). Para narrativa de marca Castle Capital, historia personal de Julián, storytelling en contenido y ventas.</div>
+      <div class="tags">
+        <span class="tag">Narrativa</span>
+        <span class="tag">Marca Personal</span>
+        <span class="tag">Hero's Journey</span>
+        <span class="tag">Brand Story</span>
+      </div>
+    </div>
+
+    <!-- traffic-masters-chief -->
+    <div class="card purple" data-group="purple" data-tags="paid traffic ads facebook meta google tiktok media buy" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">📡</div>
+        <div class="card-meta">
+          <div class="card-name">Traffic Masters Chief</div>
+          <div class="card-persona">Orquesta 7 especialistas en paid traffic</div>
+        </div>
+        <span class="activation-badge">traffic-masters-chief</span>
+      </div>
+      <div class="card-role">Estrategia de paid traffic con 7 especialistas. Estrategia → Platform Masters (Meta, Google, TikTok) → Scaling. Para cuando quieras escalar leads de Castle Capital con publicidad pagada.</div>
+      <div class="tags">
+        <span class="tag">Meta Ads</span>
+        <span class="tag">Google Ads</span>
+        <span class="tag">TikTok Ads</span>
+        <span class="tag">Scaling</span>
+      </div>
+    </div>
+
+    <!-- tools-orchestrator -->
+    <div class="card purple" data-group="purple" data-tags="tools framework orchestrator review extraction" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">🔧</div>
+        <div class="card-meta">
+          <div class="card-name">Tools Orchestrator</div>
+          <div class="card-persona">Framework Orchestrator</div>
+        </div>
+        <span class="activation-badge">tools-orchestrator</span>
+      </div>
+      <div class="card-role">Coordina revisión, creación y extracción de frameworks. Routing inteligente por Operation Type + Domain → Specialist. Para gestión del propio framework AIOX.</div>
+      <div class="tags">
+        <span class="tag">Frameworks</span>
+        <span class="tag">Extracción</span>
+        <span class="tag">Meta-herramientas</span>
+      </div>
+    </div>
+
+    <!-- ui-ux-pro-max skill -->
+    <div class="card purple" data-group="purple" data-tags="ui ux frontend react tailwind design html css" onclick="toggleCard(this)">
+      <div class="card-header">
+        <div class="avatar">⚡</div>
+        <div class="card-meta">
+          <div class="card-name">UI/UX Pro Max</div>
+          <div class="card-persona">Skill invocable · 67 estilos</div>
+        </div>
+        <span class="activation-badge">/ui-ux-pro-max</span>
+      </div>
+      <div class="card-role">Skill (no agente) con 67 estilos visuales, 96 paletas, 57 font pairings, soporte para React, Next.js, Tailwind, shadcn/ui. Para construir o mejorar cualquier UI de Castle Capital.</div>
+      <div class="tags">
+        <span class="tag">Skill</span>
+        <span class="tag">Glassmorphism</span>
+        <span class="tag">Dark Mode</span>
+        <span class="tag">shadcn/ui</span>
+      </div>
+      <div class="card-expanded">
+        <div class="exp-section">
+          <div class="exp-label">Activación</div>
+          <div class="commands-grid">
+            <span class="cmd" onclick="copyCmd(event,'/ui-ux-pro-max')">/ui-ux-pro-max</span>
+          </div>
+        </div>
+        <div class="exp-section">
+          <div class="exp-label">Usa para</div>
+          <ul class="use-when">
+            <li>🎨 Mejorar la herramienta de asesoría de capital</li>
+            <li>📱 Diseñar el Pulse de Liquidez</li>
+            <li>🖥 Construir landing page de Castle Capital</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid-purple -->
+
+
+  <!-- ═══════════════════════════════════════ DELEGATION GUIDE ══ -->
+  <div id="section-guide">
+    <div class="section-title">⚡ Guía de Delegación Rápida — ¿Qué necesito hacer?</div>
+    <div class="guide-section">
+      <div class="guide-header">
+        <span class="guide-icon">🗂</span>
+        Situación → Agente → Comando de entrada
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Situación</th>
+            <th>Agente(s)</th>
+            <th>Comando de entrada</th>
+            <th>Nota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-scenario">Necesito contactar 100 leads fríos</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Hunter (Prospector)</span></div></td>
+            <td class="td-cmd">*outreach o *email-batch</td>
+            <td class="td-note">Usa lenguaje sin jerga DeFi</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Tengo una llamada de cierre mañana</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Sentinel (Closer)</span></div></td>
+            <td class="td-cmd">*call-prep</td>
+            <td class="td-note">Pasar nombre del prospecto y contexto</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Quiero publicar contenido esta semana</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Forge (Content)</span><span class="agent-pill ap-gold">Ink (Copy)</span></div></td>
+            <td class="td-cmd">*batch-semanal → *copy-reel</td>
+            <td class="td-note">Content da estructura, Copy el texto</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Analizar un pool antes de invertir capital</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Quant (Deal Analyst)</span></div></td>
+            <td class="td-cmd">*analizar-pool</td>
+            <td class="td-note">Llevar dirección del pool y rango</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Ver estado de las posiciones DeFi activas</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Vigil (Pulse)</span></div></td>
+            <td class="td-cmd">*status o *pulse-diario</td>
+            <td class="td-note">Monitoreo diario recomendado</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Onboarding de un cliente nuevo en CCI</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Nexus (Client Success)</span></div></td>
+            <td class="td-cmd">*onboarding</td>
+            <td class="td-note">Pasar datos del cliente</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Generar reporte para enviar a cliente</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Quant (Deal Analyst)</span><span class="agent-pill ap-gold">Nexus (Client Success)</span></div></td>
+            <td class="td-cmd">*reporte-cliente → *reporte</td>
+            <td class="td-note">Quant genera datos, Nexus el informe</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Revisar situación global del negocio</td>
+            <td><div class="td-agent"><span class="agent-pill ap-gold">Bastian (Castle Chief)</span></div></td>
+            <td class="td-cmd">*briefing o *metricas</td>
+            <td class="td-note">Vista de 30,000 pies</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Desarrollar una nueva feature de software</td>
+            <td><div class="td-agent"><span class="agent-pill ap-blue">@sm</span><span class="agent-pill ap-blue">@dev</span><span class="agent-pill ap-blue">@qa</span></div></td>
+            <td class="td-cmd">@sm *draft-story</td>
+            <td class="td-note">Flujo completo SDC</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Hacer push / crear PR en GitHub</td>
+            <td><div class="td-agent"><span class="agent-pill ap-blue">@devops</span></div></td>
+            <td class="td-cmd">@devops git push</td>
+            <td class="td-note">EXCLUSIVO — nadie más puede hacer push</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Crear copy de alto impacto para campaña</td>
+            <td><div class="td-agent"><span class="agent-pill ap-purple">copy-chief</span></div></td>
+            <td class="td-cmd">Activar copy-chief</td>
+            <td class="td-note">Para sales letters, VSL, piezas épicas</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Problema de seguridad en wallets / DeFi</td>
+            <td><div class="td-agent"><span class="agent-pill ap-purple">cyber-chief</span></div></td>
+            <td class="td-cmd">cyber-chief *triage</td>
+            <td class="td-note">Severity: CRITICAL → respuesta inmediata</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Narrativa de marca / historia de Julián</td>
+            <td><div class="td-agent"><span class="agent-pill ap-purple">story-chief</span></div></td>
+            <td class="td-cmd">Activar story-chief</td>
+            <td class="td-note">Hero's Journey para contenido y ventas</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Escalar con publicidad pagada</td>
+            <td><div class="td-agent"><span class="agent-pill ap-purple">traffic-masters-chief</span></div></td>
+            <td class="td-cmd">Activar traffic-masters-chief</td>
+            <td class="td-note">Meta, Google, TikTok Ads</td>
+          </tr>
+          <tr>
+            <td class="td-scenario">Mejorar herramienta web / UI</td>
+            <td><div class="td-agent"><span class="agent-pill ap-purple">/ui-ux-pro-max</span></div></td>
+            <td class="td-cmd">/ui-ux-pro-max</td>
+            <td class="td-note">Skill para diseño y frontend</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Copiado al portapapeles</div>
+
+<script>
+  // ── VIEW SWITCHING ──────────────────────────────────────────
+  function showView(btn, viewName) {
+    document.body.classList.remove('view-hierarchy', 'view-flow', 'view-all');
+    document.body.classList.add('view-' + viewName);
+    document.querySelectorAll('.primary-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    if (viewName === 'hierarchy') {
+      requestAnimationFrame(() => requestAnimationFrame(initHierarchyLines));
+    }
+  }
+
+  // ── HIERARCHY: SVG CONNECTIONS ──────────────────────────────
+  const HIERARCHY_CONNECTIONS = [
+    // root → department heads
+    ['aiox-master', 'pm', 'aiox'],
+    ['aiox-master', 'architect', 'aiox'],
+    ['aiox-master', 'castle-chief', 'castle'],
+
+    // @pm chain
+    ['pm', 'analyst', 'aiox'],
+    ['pm', 'sm', 'aiox'],
+    ['sm', 'po', 'aiox'],
+    ['po', 'dev', 'aiox'],
+    ['dev', 'qa', 'aiox'],
+    ['qa', 'devops', 'aiox'],
+
+    // @architect branch
+    ['architect', 'data-engineer', 'aiox'],
+    ['architect', 'ux', 'aiox'],
+
+    // @castle-chief squad
+    ['castle-chief', 'prospector', 'castle'],
+    ['castle-chief', 'closer', 'castle'],
+    ['castle-chief', 'content-engine', 'castle'],
+    ['castle-chief', 'copy-engine', 'castle'],
+    ['castle-chief', 'deal-analyst', 'castle'],
+    ['castle-chief', 'client-success', 'castle'],
+    ['castle-chief', 'pulse-monitor', 'castle'],
+  ];
+
+  function initHierarchyLines() {
+    const svg = document.getElementById('org-svg');
+    if (!svg) return;
+    const container = document.getElementById('org-chart');
+    const rect = container.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+    svg.setAttribute('width', rect.width);
+    svg.setAttribute('height', rect.height);
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    HIERARCHY_CONNECTIONS.forEach(([from, to, color]) => {
+      const fromEl = document.getElementById('node-' + from);
+      const toEl = document.getElementById('node-' + to);
+      if (!fromEl || !toEl) return;
+      const fr = fromEl.getBoundingClientRect();
+      const tr = toEl.getBoundingClientRect();
+      const fx = fr.left + fr.width / 2 - rect.left;
+      const fy = fr.bottom - rect.top;
+      const tx = tr.left + tr.width / 2 - rect.left;
+      const ty = tr.top - rect.top;
+      const dy = ty - fy;
+      const ctrl = Math.max(20, Math.abs(dy) / 2);
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const d = `M ${fx} ${fy} C ${fx} ${fy + ctrl}, ${tx} ${ty - ctrl}, ${tx} ${ty}`;
+      path.setAttribute('d', d);
+      path.setAttribute('class', 'org-line ' + color);
+      path.dataset.from = from;
+      path.dataset.to = to;
+      svg.appendChild(path);
+    });
+  }
+
+  function highlightNode(id) {
+    document.querySelectorAll('.org-node').forEach(n => {
+      n.classList.add('dimmed');
+      n.classList.remove('highlighted');
+    });
+    document.querySelectorAll('.org-line').forEach(l => {
+      l.classList.add('dimmed');
+      l.classList.remove('highlighted');
+    });
+
+    const node = document.getElementById('node-' + id);
+    if (node) {
+      node.classList.remove('dimmed');
+      node.classList.add('highlighted');
+    }
+
+    HIERARCHY_CONNECTIONS.forEach(([from, to]) => {
+      if (from === id || to === id) {
+        const fromEl = document.getElementById('node-' + from);
+        const toEl = document.getElementById('node-' + to);
+        if (fromEl) fromEl.classList.remove('dimmed');
+        if (toEl) toEl.classList.remove('dimmed');
+        document.querySelectorAll(`.org-line[data-from="${from}"][data-to="${to}"]`).forEach(l => {
+          l.classList.remove('dimmed');
+          l.classList.add('highlighted');
+        });
+      }
+    });
+  }
+
+  function clearHighlight() {
+    document.querySelectorAll('.org-node').forEach(n => {
+      n.classList.remove('dimmed');
+      n.classList.remove('highlighted');
+    });
+    document.querySelectorAll('.org-line').forEach(l => {
+      l.classList.remove('dimmed');
+      l.classList.remove('highlighted');
+    });
+  }
+
+  // recalc lines on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    if (!document.body.classList.contains('view-hierarchy')) return;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(initHierarchyLines, 80);
+  });
+
+  // initial draw after layout settles
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => requestAnimationFrame(initHierarchyLines));
+  });
+
+  // ── FILTER TABS (within "Todos los Agentes" view) ───────────
+  let activeFilter = 'all';
+
+  function setTab(btn, filter) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = filter;
+    applyFilters(document.querySelector('.search').value);
+
+    // show/hide guide
+    const guide = document.getElementById('section-guide');
+    guide.style.display = filter === 'all' ? '' : 'none';
+  }
+
+  function applyFilters(searchVal) {
+    const q = searchVal.toLowerCase();
+    document.querySelectorAll('.card').forEach(card => {
+      const group = card.dataset.group;
+      const tags = (card.dataset.tags || '') + ' ' + card.textContent.toLowerCase();
+      const matchFilter = activeFilter === 'all' || group === activeFilter;
+      const matchSearch = !q || tags.includes(q);
+      card.classList.toggle('hidden', !(matchFilter && matchSearch));
+    });
+
+    // Hide/show section titles based on filter
+    document.querySelectorAll('.section-title').forEach(st => {
+      const g = st.dataset.group;
+      if (!g) return;
+      st.style.display = (activeFilter === 'all' || activeFilter === g) ? '' : 'none';
+    });
+  }
+
+  function filterSearch(val) {
+    applyFilters(val);
+  }
+
+  function toggleCard(card) {
+    card.classList.toggle('expanded');
+  }
+
+  function copyCmd(evt, cmd) {
+    evt.stopPropagation();
+    navigator.clipboard.writeText(cmd).then(() => {
+      const toast = document.getElementById('toast');
+      toast.textContent = `"${cmd}" copiado`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    });
+  }
+</script>
+</body>
+</html>

@@ -3371,8 +3371,10 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
   font-size: .875rem;
   line-height: 1.5;
   margin-bottom: 1.25rem;
-  color: var(--text-primary);
+  color: var(--ox-text);
 }
+.privacy-notice strong { color: var(--ox-text); }
+.privacy-notice a { color: var(--ox-text); text-decoration: underline; }
 .privacy-notice svg {
   width: 18px;
   height: 18px;
@@ -3454,4 +3456,465 @@ td strong, td.highlight { color: var(--cc-orange-dark); }
 }
 .dialog-close:hover { color: var(--cc-orange); }
 #aceptar-politica-btn { margin-top: 1.5rem; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PDF SUMMARY (compact print view, 2-3 pages)
+   Oculto en pantalla, visible solo en @media print donde reemplaza
+   a #pdf-content para entregar un resumen ejecutivo limpio.
+═══════════════════════════════════════════════════════════════════ */
+
+#pdf-summary {
+  display: none !important;
+}
+
+/* === Chart wrap: scroll horizontal en móvil para evitar overflow === */
+@media (max-width: 540px) {
+  .projection-chart-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .projection-chart-wrap .projection-chart {
+    min-width: 640px;
+  }
+}
+
+/* ═══════════════════════════════════════
+   EMERGENCY FUND CALLOUT (Sección 2)
+═══════════════════════════════════════ */
+.emergency-callout {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.10), rgba(232, 149, 79, 0.06));
+  border-left: 4px solid var(--cc-gold);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  margin: var(--space-md) 0;
+}
+.emergency-callout p { margin: 0; color: var(--ox-text); }
+.emergency-fund-warn {
+  color: var(--cc-orange-dark);
+  font-weight: 700;
+  background: rgba(232, 149, 79, 0.14);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════
+   DEUDAS — Sección destacada con énfasis naranja
+═══════════════════════════════════════ */
+.section-debt-highlighted {
+  background: linear-gradient(135deg, rgba(232, 149, 79, 0.08), rgba(255, 255, 255, 1));
+  border-left: 5px solid var(--cc-orange);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: 0 8px 24px -8px rgba(232, 149, 79, 0.25);
+  margin-bottom: var(--space-lg);
+}
+.section-debt-title-box {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--cc-orange), var(--cc-orange-dark));
+  color: #FFFFFF;
+  padding: 8px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+}
+.section-debt-title-box h2 {
+  color: #FFFFFF !important;
+  margin: 0;
+  border: none;
+  padding: 0;
+  font-size: 1.4rem;
+}
+.section-debt-highlighted .kpi--orange .value { color: var(--cc-orange-dark); }
+.debt-choque-detail {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(232, 149, 79, 0.30);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  margin: var(--space-md) 0;
+}
+.debt-choque-detail ul {
+  margin: 6px 0 0;
+  padding-left: 22px;
+}
+.debt-choque-detail li {
+  margin-bottom: 4px;
+  color: var(--ox-text);
+}
+
+/* === Estilos visibles solo durante impresión === */
+@media print {
+  /* Reemplazo del documento completo por el resumen */
+  #pdf-content { display: none !important; }
+  /* El brand-header del documento original es redundante con .pdf-summary-header */
+  #result-section > .brand-header { display: none !important; }
+  #pdf-summary {
+    display: block !important;
+    color: var(--cc-oxford-dark);
+    font-size: 10pt;
+    line-height: 1.35;
+  }
+
+  /* Las filas de tablas dentro de #result-section heredan la animación
+     row-rise (styles.css ~L1657) que arranca con opacity:0. Al imprimir,
+     el navegador no ejecuta animaciones y las filas quedan congeladas
+     invisibles. Neutralizamos animación/opacity/transform en impresión. */
+  #result-section table tbody tr,
+  #pdf-summary table tbody tr,
+  .pdf-compact-table tbody tr {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Página A4 con más aire visual — permitir 1 a 2 páginas */
+  @page {
+    size: A4;
+    margin: 12mm 14mm 12mm 14mm;
+  }
+
+  /* Permitir page breaks naturales para layout elegante */
+  #sec-defi, #sec-proyecciones, #sec-ejecucion {
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  /* Llenamos la altura del A4 útil (297mm - 12mm top - 12mm bottom = 273mm).
+     Flex column permite empujar el footer al fondo con margin-top:auto y
+     repartir aire entre secciones intermedias vía margin-bottom. */
+  .pdf-summary-page {
+    padding: 0;
+    page-break-after: auto;
+    break-after: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 273mm;
+  }
+
+  /* Header compacto en una sola fila — no se rompe */
+  .pdf-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1.5px solid var(--cc-gold);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    page-break-after: avoid;
+    break-after: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .pdf-summary-logo {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    flex: 0 0 auto;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pdf-summary-heading { flex: 1; min-width: 0; }
+  .pdf-summary-heading h1 {
+    font-family: var(--font-display);
+    font-size: 16pt;
+    color: var(--cc-midnight) !important;
+    margin: 0;
+    line-height: 1.1;
+    border: none;
+    padding: 0;
+  }
+  .pdf-summary-heading h1 em {
+    color: var(--cc-gold) !important;
+    font-style: italic;
+  }
+  .pdf-summary-meta {
+    color: var(--cc-oxford) !important;
+    font-size: 9pt;
+    margin: 2px 0 0;
+    line-height: 1.3;
+  }
+
+  .pdf-section-label {
+    font-family: var(--font-display);
+    font-size: 12.5pt;
+    color: var(--cc-imperial) !important;
+    border-left: 2.5px solid var(--cc-gold);
+    padding: 3px 0 3px 10px;
+    margin: 12px 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .pdf-section-label--alert {
+    color: var(--cc-negative) !important;
+    border-left-color: var(--cc-negative) !important;
+  }
+  /* Acento naranja corporativo (mismo color del CTA .btn-orange) para la
+     segunda parte de los títulos de sección y para el monto destacado de
+     "capital invertible" dentro del título Arquitectura CCI. */
+  .pdf-section-label .pdf-label-accent {
+    color: var(--cc-orange-dark) !important;
+    -webkit-text-fill-color: var(--cc-orange-dark) !important;
+    font-weight: 700;
+  }
+
+  /* KPIs: grid 3 columnas (2 filas) para más espacio por KPI */
+  .pdf-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .pdf-kpi {
+    background: var(--cc-arctic) !important;
+    border: 1px solid var(--cc-border) !important;
+    border-left: 2.5px solid var(--cc-gold);
+    padding: 8px 10px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pdf-kpi .lbl {
+    display: block;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--cc-oxford) !important;
+    margin-bottom: 2px;
+  }
+  .pdf-kpi .val {
+    display: block;
+    font-family: var(--font-data);
+    font-size: 11pt;
+    font-weight: 600;
+    color: var(--cc-imperial) !important;
+    line-height: 1.2;
+  }
+  .pdf-kpi--accent {
+    background: #FAF5E6 !important;
+    border-left-color: var(--cc-gold);
+  }
+  .pdf-kpi--alert {
+    background: #FDEDEC !important;
+    border-left-color: var(--cc-negative);
+  }
+  .pdf-kpi--alert .val { color: var(--cc-negative) !important; }
+  .pdf-kpi .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    font-size: 8pt;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    line-height: 1.3;
+  }
+
+  /* Arquitectura CCI: 4 celdas en una fila con aire */
+  .pdf-arca-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 14px;
+  }
+  .pdf-arca-cell {
+    background: var(--cc-arctic) !important;
+    border: 1px solid var(--cc-border) !important;
+    border-top: 2.5px solid var(--cc-gold);
+    padding: 6px 8px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pdf-arca-cell__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+  .pdf-arca-cell__pct {
+    font-family: var(--font-display);
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--cc-gold) !important;
+    line-height: 1;
+  }
+  .pdf-arca-cell__name {
+    font-family: var(--font-display);
+    font-size: 10pt;
+    color: var(--cc-imperial) !important;
+    text-align: right;
+  }
+  .pdf-arca-cell__amount {
+    font-family: var(--font-data);
+    font-size: 11pt;
+    color: var(--cc-midnight) !important;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+  .pdf-arca-cell__desc {
+    font-size: 7.5pt;
+    color: var(--cc-oxford) !important;
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  /* Proyecciones y Deudas apiladas a ancho completo, una debajo de otra.
+     Cada bloque es una columna lógica que ocupa el 100% del ancho.
+     margin-bottom genera el aire vertical que distribuye espacio entre
+     secciones y ayuda a llenar la altura del A4. */
+  .pdf-two-col {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .pdf-col { min-width: 0; }
+  .pdf-col .pdf-section-label { margin-top: 6px; }
+
+  .pdf-compact-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 8px;
+    font-size: 9.5pt;
+    font-family: 'Barlow', Arial, Helvetica, sans-serif;
+  }
+  /* Forzar color y text-fill en TODO el contenido de la tabla para evitar
+     que reglas previas (-webkit-text-fill-color: transparent en gradient text,
+     o color: white heredado) hagan las celdas invisibles al imprimir. */
+  .pdf-compact-table,
+  .pdf-compact-table * {
+    -webkit-text-fill-color: currentColor !important;
+  }
+  .pdf-compact-table th,
+  .pdf-compact-table td {
+    padding: 5px 9px;
+    border-bottom: 1px solid #C5C9D1 !important;
+    text-align: left;
+    color: #1B3A6B !important;
+    line-height: 1.35;
+    font-family: 'Barlow', Arial, Helvetica, sans-serif;
+    background: #FFFFFF !important;
+  }
+  .pdf-compact-table td {
+    color: #1B3A6B !important;
+    font-weight: 500;
+  }
+  .pdf-compact-table td strong,
+  .pdf-compact-table td.highlight {
+    color: #14355F !important;
+    font-weight: 700;
+  }
+  .pdf-compact-table th {
+    background: #F2F3F5 !important;
+    color: #14355F !important;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 1.5px solid #2B5497 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .pdf-debt-summary {
+    font-size: 9pt;
+    color: var(--cc-oxford-dark) !important;
+    margin: 0 0 6px;
+    line-height: 1.4;
+  }
+  .pdf-debt-summary strong { color: var(--cc-imperial) !important; }
+  .pdf-note {
+    font-size: 7.5pt;
+    color: var(--cc-oxford) !important;
+    font-style: italic;
+    text-align: center;
+    padding: 3px 6px;
+  }
+
+  .pdf-alert {
+    background: #FFF8EB !important;
+    border-left: 3px solid var(--cc-warning);
+    padding: 8px 10px;
+    margin: 4px 0 10px;
+    font-size: 9.5pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pdf-alert p { margin: 0 0 4px; color: var(--cc-oxford-dark) !important; line-height: 1.4; }
+  .pdf-alert p:last-child { margin-bottom: 0; }
+  .pdf-alert strong { color: var(--cc-imperial) !important; }
+
+  .pdf-steps {
+    margin: 4px 0 6px;
+    padding-left: 22px;
+    font-size: 9pt;
+  }
+  .pdf-steps li {
+    margin-bottom: 4px;
+    color: var(--cc-oxford-dark) !important;
+    line-height: 1.35;
+  }
+  .pdf-steps li strong { color: var(--cc-imperial) !important; }
+  /* Último paso = CTA "Agendar sesión con Julián" (en ambos flujos del JS
+     renderPDFProximos). Lo destacamos como llamado a la acción principal. */
+  .pdf-steps li:last-child {
+    font-weight: 700;
+    color: var(--cc-imperial) !important;
+  }
+
+  .pdf-summary-footer {
+    /* margin-top:auto empuja el footer al fondo del flex column, llenando
+       cualquier espacio vacío entre la última sección y el final del A4. */
+    margin-top: auto;
+    padding-top: 12px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .pdf-contact-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 6px 10px;
+    background: var(--cc-arctic) !important;
+    border-top: 1.5px solid var(--cc-gold);
+    border-bottom: 1px solid var(--cc-border) !important;
+    font-size: 9pt;
+    color: var(--cc-oxford-dark) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pdf-contact-bar strong { color: var(--cc-imperial) !important; }
+  .pdf-footer-brand {
+    font-family: var(--font-display);
+    font-size: 8pt;
+    letter-spacing: 0.8px;
+    color: var(--cc-gold) !important;
+    margin: 0;
+  }
+
+  .pdf-disclaimer {
+    font-size: 7pt;
+    color: var(--cc-oxford) !important;
+    line-height: 1.35;
+    margin: 5px 0 0;
+    font-style: italic;
+    text-align: justify;
+  }
+}
+
+/* Honeypot anti-bot: invisible para humanos, presente en el DOM para bots.
+   No usar display:none — los bots modernos lo detectan y saltan el campo. */
+.visually-hidden-bot-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
 

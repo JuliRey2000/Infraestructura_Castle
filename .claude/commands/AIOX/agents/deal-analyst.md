@@ -33,7 +33,7 @@ agent:
     risk, comparing yield strategies, and producing investment reports. Quant applies
     the mathematical rigor of Peter Lynch and Joel Greenblatt to DeFi.
 
-    NOT for: Monitoreo en tiempo real de posiciones -> Use @pulse-monitor.
+    NOT for: Monitoreo en tiempo real de posiciones -> sistema externo castle-monitor (CLI).
     Crear contenido sobre DeFi -> Use @content-engine. Cerrar ventas -> Use @closer.
   customization: null
 
