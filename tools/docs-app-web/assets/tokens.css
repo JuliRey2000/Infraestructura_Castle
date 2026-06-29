@@ -1,0 +1,332 @@
+/*
+ * Castle Capital — Design System
+ * colors_and_type.css
+ *
+ * Single source of truth for color, type and core foundations.
+ * Mirrors the brand.css that ships in /Users/usuario1/Business/CastleCapital/00_NORTE-VERDADERO/
+ * and synthesises the additions used in the "Arquitectura Financiera" web app
+ * (orange ramp + Oxford White light theme).
+ *
+ * Proportions to follow when composing surfaces:
+ *   Dark mode  →  55% Midnight · 25% Deep Slate · 10% Castle Blue · 10% Gold
+ *   Light mode →  50% Oxford White · 25% White · 15% Imperial Blue · 10% Gold
+ */
+
+/* Self-hosted fonts (latin subset) — no external CDN, works offline. See assets/fonts/fonts.css */
+@import url('fonts/fonts.css');
+
+:root {
+  /* ───────────────────────────────────────
+     BRAND COLOR — RAW TOKENS
+     Never reference these directly in product UI.
+     Reach for the semantic vars below.
+  ─────────────────────────────────────── */
+
+  /* Blues */
+  --cc-midnight:    #14355F; /* primary dark — main dark surface */
+  --cc-imperial:    #1B3A6B; /* secondary dark — section headers (dark) */
+  --cc-castle-blue: #2B5497; /* mid-tone brand blue */
+  --cc-signal:      #4A8FD4; /* interactive accent, links, info badges */
+  --cc-deep-slate:  #1A2D47; /* secondary dark surface */
+
+  /* Golds — the Castle accent */
+  --cc-gold:        #C9A84C; /* main accent — prices, KPIs, APR */
+  --cc-gold-light:  #E8C96A; /* hover & soft accent on dark surfaces */
+  --cc-gold-deep:   #8C7325; /* gold for text on light surfaces (AA) */
+
+  /* Oranges — secondary accent used in CTAs and warmer touchpoints */
+  --cc-orange:      #E8954F;
+  --cc-orange-soft: #F2B17A;
+  --cc-orange-dark: #C97A3A;
+
+  /* Neutrals */
+  --cc-white:        #FFFFFF;
+  --cc-white-smoke:  #F5F5F5;
+  --cc-oxford-white: #F4F4F0; /* hero "Oxford white" page background */
+  --cc-oxford-soft:  #FAFAF7;
+  --cc-oxford-surf:  #F8F8F4;
+  --cc-arctic:       #E8EDF5; /* alternating section background */
+  --cc-border:       #D8D8D8;
+  --cc-border-warm:  #E4E2DA;
+  --cc-border-soft:  #ECEAE2;
+  --cc-slate:        #8AA0BB; /* secondary text on dark */
+  --cc-slate-2:      #B0C2D9; /* lighter slate for dark mode body */
+  --cc-oxford:       #6B6B6B; /* secondary text on light */
+  --cc-oxford-dark:  #3D3D3D; /* primary text on light */
+
+  /* Semantic */
+  --cc-positive:  #4CAF50;
+  --cc-positive-2:#2E7D32; /* AA text on light */
+  --cc-negative:  #EF5350;
+  --cc-negative-2:#C62828;
+  --cc-warning:   #FFA726;
+  --cc-info:      #4A8FD4;
+
+  /* ───────────────────────────────────────
+     SEMANTIC SURFACE TOKENS — DARK (default)
+     Use these in product UI.
+  ─────────────────────────────────────── */
+  --bg-base:       var(--cc-midnight);
+  --bg-secondary:  var(--cc-deep-slate);
+  --bg-highlight:  var(--cc-castle-blue);
+  --bg-surface:    #21384C; /* card on dark, slightly lifted */
+
+  --fg-1:          var(--cc-white);   /* primary text */
+  --fg-2:          var(--cc-slate-2); /* secondary text */
+  --fg-3:          var(--cc-slate);   /* muted / hint text */
+  --fg-on-accent:  var(--cc-midnight);/* text painted on gold */
+
+  --accent:        var(--cc-gold);
+  --accent-soft:   var(--cc-gold-light);
+  --accent-2:      var(--cc-orange);
+
+  --border:        rgba(74, 143, 212, 0.28); /* fine line on dark */
+  --border-strong: rgba(74, 143, 212, 0.55);
+  --divider:       rgba(255, 255, 255, 0.06);
+
+  /* ───────────────────────────────────────
+     TYPOGRAPHY FAMILIES
+  ─────────────────────────────────────── */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-ui:      'DM Sans', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  --font-data:    'Barlow', 'SF Mono', Menlo, monospace;
+
+  /* ───────────────────────────────────────
+     TYPE SCALE — SEMANTIC ROLES
+     Castle Capital uses a mixed-script system:
+       • Cormorant Garamond (serif italic) for editorial headings
+       • DM Sans for UI, paragraphs, controls
+       • Barlow for numerical data and uppercase eyebrow labels
+  ─────────────────────────────────────── */
+
+  /* Display — used for hero titles, portada, large product moments */
+  --type-display-1-size:    clamp(2.4rem, 4vw, 3.2rem);
+  --type-display-1-line:    1.05;
+  --type-display-1-tracking:-0.5px;
+  --type-display-1-weight:  700;
+
+  /* Headings */
+  --type-h1-size: 2.2rem;     --type-h1-line: 1.15;  --type-h1-weight: 700;
+  --type-h2-size: 1.6rem;     --type-h2-line: 1.2;   --type-h2-weight: 600;
+  --type-h3-size: 1.05rem;    --type-h3-line: 1.3;   --type-h3-weight: 600;
+
+  /* Eyebrow / kicker — Barlow uppercase, used above section heads */
+  --type-eyebrow-size:    0.72rem;
+  --type-eyebrow-tracking:0.15em;
+  --type-eyebrow-weight:  600;
+
+  /* Body */
+  --type-body-size: 15px;     --type-body-line: 1.6;   --type-body-weight: 400;
+  --type-body-lg-size: 1.05rem;  --type-body-lg-line: 1.6;
+
+  /* Small text — captions, footnotes, legal */
+  --type-small-size: 0.85rem; --type-small-line: 1.5;
+  --type-micro-size: 0.72rem; --type-micro-line: 1.4;
+
+  /* Data — KPI numerals, tabular figures */
+  --type-data-xl-size: 1.6rem;   --type-data-xl-weight: 600;
+  --type-data-md-size: 1.05rem;  --type-data-md-weight: 600;
+  --type-data-sm-size: 0.82rem;  --type-data-sm-weight: 500;
+  --type-data-features: "tnum" 1, "lnum" 1;
+
+  /* ───────────────────────────────────────
+     SPACING — 4 px base, named scale
+  ─────────────────────────────────────── */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-xxl: 48px;
+  --space-xxxl:64px;
+
+  /* ───────────────────────────────────────
+     RADII — soft, not pillowy
+  ─────────────────────────────────────── */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-pill: 9999px;
+
+  /* ───────────────────────────────────────
+     SHADOWS — calm, never aggressive
+     Two systems: dark (deep navy ambient) and light (Oxford slate).
+  ─────────────────────────────────────── */
+  --shadow-sm-dark:  0 1px 0 rgba(255,255,255,0.04) inset, 0 6px 14px -10px rgba(0,0,0,0.5);
+  --shadow-md-dark:  0 1px 0 rgba(255,255,255,0.04) inset, 0 14px 32px -22px rgba(0,0,0,0.55);
+  --shadow-lg-dark:  0 22px 48px -28px rgba(0,0,0,0.55), 0 1px 0 rgba(201,168,76,0.08) inset;
+  --shadow-gold:     0 12px 28px -10px rgba(201,168,76,0.55);
+
+  --shadow-sm-light: 0 1px 2px rgba(20, 53, 95, 0.05);
+  --shadow-md-light: 0 4px 12px -4px rgba(20, 53, 95, 0.08), 0 1px 3px rgba(20, 53, 95, 0.04);
+  --shadow-lg-light: 0 18px 36px -18px rgba(20, 53, 95, 0.18), 0 2px 8px rgba(20, 53, 95, 0.05);
+
+  /* ───────────────────────────────────────
+     MOTION — easing curves & durations
+     Castle motion language: subtle, editorial, spring-tipped.
+  ─────────────────────────────────────── */
+  --ease-luxe:     cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --dur-fast:  150ms;
+  --dur-med:   250ms;
+  --dur-slow:  450ms;
+  --dur-hero:  700ms;
+}
+
+/* ─────────────────────────────────────────
+   LIGHT THEME — "OXFORD WHITE"
+   The hero light surface; warmer than #FFFFFF, calmer than #F5F5F5.
+   Apply by setting [data-theme="light"] on <html> or any subtree.
+───────────────────────────────────────── */
+[data-theme="light"] {
+  --bg-base:       var(--cc-oxford-white);
+  --bg-secondary:  var(--cc-white);
+  --bg-highlight:  var(--cc-imperial);
+  --bg-surface:    var(--cc-white);
+
+  --fg-1:          var(--cc-midnight);
+  --fg-2:          #3A4F6E;
+  --fg-3:          #6F7B91;
+  --fg-on-accent:  var(--cc-white);
+
+  --border:        var(--cc-border-warm);
+  --border-strong: rgba(20, 53, 95, 0.16);
+  --divider:       var(--cc-border-soft);
+}
+
+/* ─────────────────────────────────────────
+   BASE ELEMENT STYLES
+───────────────────────────────────────── */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-base);
+  color: var(--fg-1);
+  font-family: var(--font-ui);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  font-feature-settings: "ss01" 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--fg-1);
+  margin: 0 0 var(--space-md);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--type-h1-size);
+  line-height: var(--type-h1-line);
+  font-weight: var(--type-h1-weight);
+  letter-spacing: -0.25px;
+}
+
+h2 {
+  font-size: var(--type-h2-size);
+  line-height: var(--type-h2-line);
+  font-weight: var(--type-h2-weight);
+}
+
+/* H3 in Castle is an eyebrow — small, uppercase, gold, Barlow */
+h3 {
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-line);
+  font-weight: var(--type-h3-weight);
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  font-family: var(--font-data);
+  margin: var(--space-md) 0 var(--space-sm);
+}
+
+h4 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--fg-1);
+  margin: var(--space-md) 0 var(--space-sm);
+}
+
+p {
+  font-family: var(--font-ui);
+  color: var(--fg-2);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-line);
+  margin: 0 0 var(--space-sm);
+  text-wrap: pretty;
+}
+
+strong { color: var(--fg-1); font-weight: 600; }
+em     { font-style: italic; }
+
+small, .text-small {
+  font-size: var(--type-small-size);
+  line-height: var(--type-small-line);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-luxe), opacity var(--dur-fast) var(--ease-luxe);
+}
+a:hover { color: var(--accent-soft); }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--space-lg) 0;
+}
+
+/* ─────────────────────────────────────────
+   SEMANTIC TYPE UTILITY CLASSES
+   Use as drop-in replacements when needed.
+───────────────────────────────────────── */
+.t-display { font-family: var(--font-display); font-size: var(--type-display-1-size); line-height: var(--type-display-1-line); letter-spacing: var(--type-display-1-tracking); font-weight: var(--type-display-1-weight); }
+.t-display em { font-style: italic; color: var(--accent); }
+
+.t-eyebrow {
+  font-family: var(--font-data);
+  font-size: var(--type-eyebrow-size);
+  letter-spacing: var(--type-eyebrow-tracking);
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: var(--type-eyebrow-weight);
+}
+
+.t-data, .t-metric {
+  font-family: var(--font-data);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: var(--type-data-features);
+  font-weight: var(--type-data-md-weight);
+  color: var(--accent);
+}
+
+.t-metric-xl {
+  font-family: var(--font-data);
+  font-size: var(--type-data-xl-size);
+  font-weight: var(--type-data-xl-weight);
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.t-muted    { color: var(--fg-3); }
+.t-secondary{ color: var(--fg-2); }
+.t-italic-serif { font-family: var(--font-display); font-style: italic; }
+
+/* Gold gradient text — used on hero accents and key numerals */
+.t-gold-gradient {
+  background: linear-gradient(135deg, var(--cc-gold-light), var(--cc-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-right: 0.12em;
+}

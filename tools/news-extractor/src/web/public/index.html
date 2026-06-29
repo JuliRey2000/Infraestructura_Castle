@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>news-extractor · Castle Capital</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="crest">▲</span>
+      <div>
+        <h1>news-extractor</h1>
+        <p class="tag">Castle Capital · El Resultado es un Eco</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="dashboard" class="active">Dashboard</button>
+      <button data-tab="briefs">Briefs</button>
+      <button data-tab="agents">Agentes</button>
+      <button data-tab="settings">Settings</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="dashboard" class="tab-panel active">
+      <div class="panel-head">
+        <h2>Temas</h2>
+        <span class="hint">"Run now" dispara el mismo pipeline que el CLI.</span>
+      </div>
+      <div id="topics-list" class="cards">Cargando…</div>
+    </section>
+
+    <section id="briefs" class="tab-panel">
+      <div class="panel-head">
+        <h2>Briefs</h2>
+        <div class="controls">
+          <select id="brief-topic"></select>
+          <select id="brief-date"></select>
+        </div>
+      </div>
+      <article id="brief-content" class="brief">Selecciona un tema.</article>
+    </section>
+
+    <section id="agents" class="tab-panel">
+      <div class="panel-head"><h2>Agentes de análisis</h2>
+        <span class="hint">Eslabones intercambiables. Enable/disable sin tocar código.</span></div>
+      <div id="agents-list" class="cards">Cargando…</div>
+    </section>
+
+    <section id="settings" class="tab-panel">
+      <div class="panel-head"><h2>Configuración</h2></div>
+      <div id="settings-content" class="settings">Cargando…</div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

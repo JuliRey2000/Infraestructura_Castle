@@ -1,0 +1,849 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contrato de Mandato — Castle Crypto Income (CCI)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --cc-midnight:#14355F; --cc-imperial:#1B3A6B; --cc-castle-blue:#2B5497;
+  --cc-signal:#4A8FD4; --cc-deep-slate:#1A2D47;
+  --cc-gold:#C9A84C; --cc-gold-light:#E8C96A; --cc-gold-deep:#8C7325;
+  --cc-orange:#E8954F;
+  --cc-white:#FFFFFF; --cc-oxford-white:#F4F4F0; --cc-oxford-soft:#FAFAF7;
+  --cc-oxford-surf:#F8F8F4; --cc-arctic:#E8EDF5;
+  --cc-border-warm:#E4E2DA; --cc-border-soft:#ECEAE2;
+  --cc-oxford:#6B6B6B; --cc-oxford-dark:#3D3D3D;
+  --ink:#23354D; --ink-soft:#46566E;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-ui:'DM Sans',system-ui,sans-serif;
+  --font-data:'Barlow','SF Mono',Menlo,monospace;
+  --radius-md:8px; --radius-lg:12px;
+  --ease-luxe:cubic-bezier(.4,0,.2,1);
+  --ease-out-expo:cubic-bezier(.19,1,.22,1);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(43,84,151,.07), transparent 60%),
+    var(--cc-oxford-white);
+  color:var(--ink);
+  font-family:var(--font-ui);
+  font-size:15px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  display:flex; align-items:flex-start;
+  min-height:100vh;
+}
+
+/* ───────── CONTROL PANEL ───────── */
+.panel{
+  position:sticky; top:0; align-self:flex-start;
+  width:336px; min-width:336px; height:100vh;
+  overflow-y:auto;
+  background:var(--cc-white);
+  border-right:1px solid var(--cc-border-warm);
+  box-shadow:0 0 40px -20px rgba(20,53,95,.25);
+  display:flex; flex-direction:column;
+}
+.panel-head{
+  padding:22px 24px 18px;
+  border-bottom:1px solid var(--cc-border-soft);
+  position:sticky; top:0; background:var(--cc-white); z-index:2;
+}
+.panel-head .eyebrow{
+  font-family:var(--font-data); font-size:10.5px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--cc-gold-deep);
+  margin-bottom:6px;
+}
+.panel-head h1{
+  font-family:var(--font-display); font-weight:600; font-size:22px;
+  color:var(--cc-midnight); margin:0; line-height:1.1; letter-spacing:-.2px;
+}
+.panel-head p{margin:6px 0 0; font-size:12px; color:var(--cc-oxford); line-height:1.45;}
+
+.panel-body{padding:6px 24px 24px; flex:1;}
+.group{margin-top:22px;}
+.group-title{
+  display:flex; align-items:center; gap:9px;
+  font-family:var(--font-data); font-size:10.5px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--cc-castle-blue);
+  margin:0 0 12px;
+}
+.group-title::after{content:""; flex:1; height:1px; background:var(--cc-border-warm);}
+
+.field-row{margin-bottom:13px;}
+.field-row.two{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+label.lab{
+  display:block; font-size:11.5px; font-weight:600; color:var(--ink-soft);
+  margin-bottom:5px; letter-spacing:.01em;
+}
+.inp{
+  width:100%; font-family:var(--font-ui); font-size:13.5px; color:var(--cc-midnight);
+  background:var(--cc-oxford-soft);
+  border:1px solid var(--cc-border-warm); border-radius:var(--radius-md);
+  padding:9px 11px; transition:border-color .15s var(--ease-luxe), box-shadow .15s var(--ease-luxe), background .15s;
+}
+.inp::placeholder{color:#9aa3af;}
+.inp:focus{
+  outline:none; border-color:var(--cc-gold);
+  background:var(--cc-white);
+  box-shadow:0 0 0 3px rgba(201,168,76,.18);
+}
+textarea.inp{resize:vertical; min-height:62px; line-height:1.5;}
+
+.panel-actions{
+  position:sticky; bottom:0; background:var(--cc-white);
+  padding:16px 24px; border-top:1px solid var(--cc-border-soft);
+  display:flex; flex-direction:column; gap:10px;
+}
+.btn{
+  font-family:var(--font-ui); font-size:14px; font-weight:600;
+  border-radius:var(--radius-md); padding:12px 16px; cursor:pointer;
+  border:1px solid transparent; transition:transform .25s var(--ease-out-expo), box-shadow .25s, background .2s;
+  display:flex; align-items:center; justify-content:center; gap:9px;
+}
+.btn svg{width:17px; height:17px;}
+.btn-primary{
+  background:linear-gradient(135deg, var(--cc-gold-light), var(--cc-gold));
+  color:var(--cc-midnight);
+  box-shadow:0 12px 28px -10px rgba(201,168,76,.55);
+}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 16px 32px -10px rgba(201,168,76,.65);}
+.btn-ghost{
+  background:transparent; color:var(--ink-soft); border-color:var(--cc-border-warm);
+}
+.btn-ghost:hover{background:var(--cc-oxford-soft); border-color:var(--cc-gold); color:var(--cc-midnight);}
+.saved-note{
+  display:flex; align-items:center; gap:7px; justify-content:center;
+  font-size:11px; color:var(--cc-oxford); font-family:var(--font-data); letter-spacing:.04em;
+}
+.saved-note .dot{width:6px; height:6px; border-radius:50%; background:var(--cc-gold); box-shadow:0 0 0 3px rgba(201,168,76,.18);}
+
+/* ───────── STAGE / SHEET ───────── */
+.stage{
+  flex:1; min-width:0; display:flex; justify-content:center;
+  padding:40px 40px 80px;
+}
+.sheet{
+  width:820px; max-width:100%;
+  background:var(--cc-white);
+  border:1px solid var(--cc-border-warm);
+  box-shadow:0 30px 70px -40px rgba(20,53,95,.45), 0 4px 12px -6px rgba(20,53,95,.12);
+  border-collapse:collapse;
+}
+.sheet td{padding:0; vertical-align:top;}
+
+/* ───────── WATERMARK (diagonal, subtle, every page) ───────── */
+/* position:fixed → the browser repaints it on every printed page,
+   so the mark appears on all pages of the contract. */
+.watermark{
+  position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.watermark .emblem{
+  position:absolute; top:50%; left:50%;
+  width:340px; height:auto;
+  transform:translate(-50%,-50%) rotate(-32deg);
+  opacity:.030;
+}
+.watermark .word{
+  font-family:var(--font-display); font-style:italic; font-weight:600;
+  font-size:104px; line-height:1; letter-spacing:6px; white-space:nowrap;
+  color:var(--cc-midnight); opacity:.038;
+  transform:rotate(-32deg);
+}
+/* keep the panel opaque so the mark never bleeds onto the editor */
+.panel{z-index:10;}
+
+/* Letterhead — repeats on every printed page */
+.letterhead{
+  display:flex; align-items:center; gap:16px;
+  padding:26px 56px 0; background:var(--cc-white);
+}
+.letterhead .logo{width:46px; height:46px; object-fit:contain; flex-shrink:0;}
+.letterhead .brand{flex:1; min-width:0;}
+.letterhead .brand .name{
+  font-family:var(--font-display); font-weight:700; font-size:20px;
+  color:var(--cc-midnight); letter-spacing:.2px; line-height:1;
+}
+.letterhead .brand .tag{
+  font-family:var(--font-data); font-size:9.5px; font-weight:600;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--cc-gold-deep);
+  margin-top:5px;
+}
+.letterhead .lh-right{
+  text-align:right; font-family:var(--font-data); font-size:9.5px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--cc-oxford);
+  line-height:1.5;
+}
+.letterhead .lh-right b{color:var(--cc-midnight); font-weight:600;}
+.lh-rule{
+  height:2px; margin:14px 56px 0;
+  background:linear-gradient(90deg, var(--cc-gold) 0%, var(--cc-gold) 64px, rgba(201,168,76,.28) 64px, rgba(201,168,76,.12) 100%);
+}
+
+.doc-body{padding:30px 56px 8px;}
+.doc-footer{
+  padding:14px 56px 24px; margin-top:18px;
+  border-top:1px solid var(--cc-border-soft);
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  font-family:var(--font-data); font-size:9.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--cc-oxford);
+}
+.doc-footer .sign{font-style:normal; color:var(--ink-soft);}
+.doc-footer .sign b{color:var(--cc-gold-deep); font-weight:600;}
+.doc-footer .dot{color:var(--cc-gold); margin:0 7px;}
+
+/* Title block */
+.titleblock{text-align:center; margin:6px 0 30px;}
+.titleblock .eyebrow{
+  font-family:var(--font-data); font-size:11px; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--cc-gold-deep);
+}
+.titleblock h2{
+  font-family:var(--font-display); font-weight:700;
+  font-size:30px; line-height:1.12; color:var(--cc-midnight);
+  margin:12px auto 0; max-width:600px; letter-spacing:-.3px; text-wrap:balance;
+}
+.titleblock .meta{
+  display:inline-flex; flex-wrap:wrap; justify-content:center; gap:0;
+  margin-top:18px; padding-top:16px; border-top:1px solid var(--cc-border-soft);
+}
+.titleblock .meta .mi{padding:0 18px; border-right:1px solid var(--cc-border-warm); text-align:center;}
+.titleblock .meta .mi:last-child{border-right:0;}
+.titleblock .meta .ml{
+  font-family:var(--font-data); font-size:9px; font-weight:600; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--cc-oxford);
+}
+.titleblock .meta .mv{
+  font-family:var(--font-data); font-size:13px; font-weight:600; color:var(--cc-midnight);
+  margin-top:3px; font-variant-numeric:tabular-nums;
+}
+
+/* Parties */
+.parties-lead{font-style:italic; font-family:var(--font-display); font-size:18px; color:var(--cc-midnight); margin:0 0 14px;}
+.party{
+  border:1px solid var(--cc-border-warm); border-radius:var(--radius-lg);
+  padding:16px 20px; margin-bottom:12px; background:var(--cc-oxford-soft);
+  border-left:3px solid var(--cc-gold);
+}
+.party .ptag{
+  font-family:var(--font-data); font-size:10px; font-weight:600; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--cc-gold-deep); margin-bottom:7px;
+}
+.party p{margin:0; color:var(--ink); font-size:14px; line-height:1.6;}
+
+/* Considerando */
+.considerando{margin:26px 0 10px;}
+.considerando .lead{font-family:var(--font-data); font-weight:600; letter-spacing:.1em; text-transform:uppercase; font-size:11px; color:var(--cc-castle-blue); margin-bottom:10px;}
+
+/* Acuerdan divider */
+.acuerdan{
+  text-align:center; font-family:var(--font-display); font-style:italic;
+  font-size:18px; color:var(--cc-midnight); margin:26px 0 6px;
+}
+.acuerdan::before,.acuerdan::after{content:"·"; color:var(--cc-gold); margin:0 12px; font-style:normal;}
+
+/* Clauses */
+.clause{margin:24px 0; break-inside:avoid;}
+.clause-head{display:flex; align-items:baseline; gap:14px; margin-bottom:9px;}
+.clause-no{
+  font-family:var(--font-data); font-size:11px; font-weight:700; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--cc-gold-deep); white-space:nowrap;
+}
+.clause-title{
+  font-family:var(--font-display); font-weight:600; font-size:19px; color:var(--cc-midnight);
+  margin:0; line-height:1.15;
+}
+.clause-head .hr{flex:1; height:1px; background:var(--cc-border-soft); align-self:center;}
+.clause p{margin:0 0 9px; color:var(--ink); text-wrap:pretty;}
+.clause p:last-child{margin-bottom:0;}
+
+.points{margin:4px 0 6px;}
+.point{display:flex; gap:11px; margin:6px 0; color:var(--ink); line-height:1.55;}
+.point .mk{
+  font-family:var(--font-data); font-weight:600; color:var(--cc-castle-blue);
+  min-width:38px; flex-shrink:0; font-variant-numeric:tabular-nums;
+}
+.point.opt .box{
+  width:15px; height:15px; border:1.5px solid var(--cc-gold); border-radius:3px;
+  flex-shrink:0; margin-top:3px; background:var(--cc-white);
+}
+.point.opt .olabel{
+  font-family:var(--font-data); font-size:9.5px; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--cc-gold-deep); margin-right:2px;
+}
+
+/* highlight callout (legal emphasis) */
+.callout{
+  border:1px solid var(--cc-border-warm); border-left:3px solid var(--cc-signal);
+  background:rgba(74,143,212,.05); border-radius:var(--radius-md);
+  padding:13px 16px; margin:10px 0;
+}
+.callout.warn{border-left-color:var(--cc-orange); background:rgba(232,149,79,.06);}
+.callout p{margin:0; font-size:13.5px;}
+
+/* option / bracket text */
+.opt-val{
+  font-family:var(--font-data); color:var(--cc-oxford-dark); font-weight:500;
+  background:rgba(20,53,95,.05); padding:0 5px; border-radius:4px; font-size:.94em;
+}
+
+/* Editable fields */
+.f{
+  font-weight:500; color:var(--cc-midnight);
+  border-bottom:1px solid rgba(201,168,76,.55); padding:0 3px; white-space:pre-wrap;
+}
+.f.empty{
+  color:var(--cc-oxford); font-style:italic; font-weight:400;
+  border-bottom:1px dashed rgba(201,168,76,.7); background:rgba(201,168,76,.07);
+}
+.f.block{display:inline; }
+
+/* Anexos */
+.anexos{margin-top:8px;}
+.anexo{display:flex; gap:11px; margin:7px 0; align-items:baseline;}
+.anexo .an{font-family:var(--font-data); font-weight:600; font-size:10.5px; letter-spacing:.1em; color:var(--cc-gold-deep); min-width:74px;}
+.anexo span{color:var(--ink);}
+
+/* Signatures */
+.sign-intro{margin:28px 0 6px; font-style:italic; font-family:var(--font-display); font-size:16px; color:var(--cc-midnight);}
+.signatures{
+  display:grid; grid-template-columns:1fr 1fr; gap:34px; margin-top:42px;
+  break-inside:avoid;
+}
+.sigbox{text-align:center; position:relative;}
+.sig-ink{position:absolute; left:50%; top:46px; transform:translate(-50%,-86px); width:156px; height:auto; opacity:.95; pointer-events:none;}
+.sigline{border-top:1.5px solid var(--cc-midnight); padding-top:9px; margin-top:46px;}
+.sigbox .role{
+  font-family:var(--font-data); font-size:11px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--cc-midnight);
+}
+.sigbox .who{font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.5;}
+.sigbox .who b{color:var(--cc-midnight);}
+
+/* mobile / narrow */
+@media (max-width:920px){
+  body{flex-direction:column;}
+  .panel{position:static; width:100%; min-width:0; height:auto; border-right:0; border-bottom:1px solid var(--cc-border-warm);}
+  .panel-head, .panel-actions{position:static;}
+  .stage{padding:24px 14px 60px;}
+  .letterhead,.lh-rule,.doc-body,.doc-footer{padding-left:28px; padding-right:28px;}
+  .lh-rule{margin-left:28px; margin-right:28px;}
+}
+
+/* ───────── PRINT ───────── */
+@page{ size:A4; margin:15mm 15mm; }
+@media print{
+  html,body{background:var(--cc-white); display:block; margin:0;}
+  .panel{display:none !important;}
+  .stage{padding:0; display:block;}
+
+  /* Table-based letterhead: thead repeats at the top of every printed page.
+     The footer is a position:fixed running element (drawn at the bottom of
+     EVERY page incl. the last); the tfoot reserves matching space so body
+     text never overlaps it. */
+  .sheet{width:100%; max-width:none; border:0; box-shadow:none;}
+  .sheet-head{display:table-header-group;}
+  .sheet-foot{display:table-footer-group;}
+  .sheet-head td{padding-bottom:7mm;}
+  .sheet-foot td{height:14mm; padding:0;}
+
+  .letterhead{padding:0;}
+  .lh-rule{margin:11px 0 0;}
+  .doc-body{padding:13px 0 0;}
+  .doc-footer{
+    position:fixed; left:0; right:0; bottom:0;
+    padding:7px 0 2px; margin:0;
+    border-top:1px solid var(--cc-border-soft);
+    background:var(--cc-white);
+  }
+
+  .clause, .signatures, .party, .titleblock, .callout, .point{break-inside:avoid;}
+  .f{border-bottom:none; background:none; color:#000; font-weight:600;}
+  .f.empty{border-bottom:1px solid #999; background:none; color:#555; font-style:italic; font-weight:400;}
+  .party{background:var(--cc-oxford-soft);}
+  /* watermark repeats on every printed page via position:fixed */
+  .watermark{position:fixed; z-index:0;}
+  .watermark .emblem{opacity:.032;}
+  .watermark .word{opacity:.040;}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════ WATERMARK ════════════════ -->
+<div class="watermark" aria-hidden="true">
+  <img class="emblem" src="assets/logo-line-ink.png" alt="">
+  <div class="word">Castle Capital</div>
+</div>
+
+<!-- ════════════════ CONTROL PANEL ════════════════ -->
+<aside class="panel">
+  <div class="panel-head">
+    <div class="eyebrow">Castle Capital · Editor</div>
+    <h1>Contrato de Mandato</h1>
+    <p>Completa los datos del cliente. El documento se actualiza solo. Imprime o guarda como PDF cuando esté listo.</p>
+  </div>
+
+  <div class="panel-body">
+    <div class="group">
+      <p class="group-title">Identificación</p>
+      <div class="field-row">
+        <label class="lab" for="i_ref">Referencia del contrato</label>
+        <input class="inp" id="i_ref" data-bind="ref" placeholder="CCI-MND-2026-001">
+      </div>
+      <div class="field-row two">
+        <div>
+          <label class="lab" for="i_ciudadfirma">Ciudad de firma</label>
+          <input class="inp" id="i_ciudadfirma" data-bind="ciudad_firma" placeholder="Armenia, Quindío">
+        </div>
+        <div>
+          <label class="lab" for="i_fecha">Fecha de firma</label>
+          <input class="inp" id="i_fecha" type="date" data-bind="fecha">
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <p class="group-title">El Mandante · Cliente</p>
+      <div class="field-row">
+        <label class="lab" for="i_nombre">Nombre completo</label>
+        <input class="inp" id="i_nombre" data-bind="nombre" placeholder="Nombre y apellidos del cliente">
+      </div>
+      <div class="field-row two">
+        <div>
+          <label class="lab" for="i_cc">Cédula (C.C. N.°)</label>
+          <input class="inp" id="i_cc" data-bind="cc" placeholder="1.234.567.890">
+        </div>
+        <div>
+          <label class="lab" for="i_ciudad">Domicilio (ciudad)</label>
+          <input class="inp" id="i_ciudad" data-bind="ciudad" placeholder="Ciudad">
+        </div>
+      </div>
+      <div class="field-row two">
+        <div>
+          <label class="lab" for="i_correo">Correo electrónico</label>
+          <input class="inp" id="i_correo" type="email" data-bind="correo" placeholder="cliente@correo.com">
+        </div>
+        <div>
+          <label class="lab" for="i_tel">Teléfono / Celular</label>
+          <input class="inp" id="i_tel" type="tel" data-bind="tel" placeholder="320 000 0000">
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <p class="group-title">El Mandatario · Gestor</p>
+      <div class="field-row">
+        <label class="lab" for="i_razon">Razón social</label>
+        <input class="inp" id="i_razon" data-bind="razon" placeholder="Castle Capital Investments">
+      </div>
+      <div class="field-row two">
+        <div>
+          <label class="lab" for="i_nit">NIT</label>
+          <input class="inp" id="i_nit" data-bind="nit" placeholder="1.002.957.808-1">
+        </div>
+        <div>
+          <label class="lab" for="i_repcc">C.C. representante</label>
+          <input class="inp" id="i_repcc" data-bind="repcc" placeholder="N.° de cédula">
+        </div>
+      </div>
+      <div class="field-row">
+        <label class="lab" for="i_rep">Representante legal</label>
+        <input class="inp" id="i_rep" data-bind="rep" placeholder="Julián Esteban Castillo Marulanda">
+      </div>
+    </div>
+
+    <div class="group">
+      <p class="group-title">Activos gestionados</p>
+      <div class="field-row">
+        <label class="lab" for="i_activos">Activos iniciales (cripto + montos)</label>
+        <textarea class="inp" id="i_activos" data-bind="activos" placeholder="Ej: 10.000 USDC + 0,5 ETH"></textarea>
+      </div>
+      <div class="field-row">
+        <label class="lab" for="i_red">Red / blockchain</label>
+        <input class="inp" id="i_red" data-bind="red" placeholder="Ethereum / Arbitrum">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-actions">
+    <button class="btn btn-primary" id="btnPrint" data-comment-anchor="9fdb9739ac-button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+      Imprimir / Guardar PDF
+    </button>
+    <button class="btn btn-ghost" id="btnReset">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+      Restablecer campos
+    </button>
+    <div class="saved-note"><span class="dot"></span><span id="savedTxt">Guardado automáticamente</span></div>
+  </div>
+</aside>
+
+<!-- ════════════════ DOCUMENT ════════════════ -->
+<main class="stage">
+  <table class="sheet">
+    <thead class="sheet-head"><tr><td>
+    <header class="letterhead">
+      <img class="logo" src="assets/logo-castle.png" alt="Castle Capital">
+      <div class="brand">
+        <div class="name">Castle Capital</div>
+        <div class="tag">Diseño · Estructura · Legado</div>
+      </div>
+      <div class="lh-right">
+        <b>Contrato de Mandato</b><br>
+        Castle Crypto Income
+      </div>
+    </header>
+    <div class="lh-rule"></div>
+    </td></tr></thead>
+    <tfoot class="sheet-foot"><tr><td>
+    <footer class="doc-footer">
+      <span class="sign"><b>Castle Capital</b> <span class="dot">·</span> Diseño · Estructura · Legado</span>
+      <span>Documento confidencial</span>
+    </footer>
+    </td></tr></tfoot>
+    <tbody><tr><td>
+
+    <div class="doc-body">
+
+      <div class="titleblock">
+        <div class="eyebrow">Contrato de Mandato · Castle Crypto Income (CCI)</div>
+        <h2>Mandato Remunerado para la Gestión Técnica de Liquidez en Protocolos DeFi</h2>
+        <div class="meta">
+          <div class="mi"><div class="ml">Jurisdicción</div><div class="mv">República de Colombia</div></div>
+          <div class="mi"><div class="ml">Referencia</div><div class="mv"><span class="f empty" data-field="ref">CCI-MND-2026-001</span></div></div>
+          <div class="mi"><div class="ml">Fecha</div><div class="mv"><span class="f empty" data-field="fecha">[fecha]</span></div></div>
+        </div>
+      </div>
+
+      <p class="parties-lead">Entre los suscritos:</p>
+
+      <div class="party">
+        <div class="ptag">El Mandante · Cliente</div>
+        <p><span class="f empty" data-field="nombre">[Nombre completo]</span>, mayor de edad, identificado con C.C. No. <span class="f empty" data-field="cc">[___]</span>, con domicilio en <span class="f empty" data-field="ciudad">[ciudad]</span>, correo electrónico <span class="f empty" data-field="correo">[___]</span>, quien en adelante se denominará <strong>EL MANDANTE</strong>.</p>
+      </div>
+
+      <div class="party">
+        <div class="ptag">El Mandatario · Gestor</div>
+        <p><span class="f empty" data-field="razon">Castle Capital Investments</span>, debidamente constituida e identificada con NIT <span class="f empty" data-field="nit">[___]</span>, representada por <span class="f empty" data-field="rep">Julián Esteban Castillo Marulanda</span>, identificado con C.C. No. <span class="f empty" data-field="repcc">[___]</span>, quien en adelante se denominará <strong>EL MANDATARIO</strong>.</p>
+      </div>
+
+      <div class="considerando">
+        <div class="lead">Considerando:</div>
+        <div class="points">
+          <div class="point"><span class="mk">(i)</span><span data-comment-anchor="5e74546961-span">Que EL MANDANTE es propietario de criptoactivos y desea obtener rendimientos tanto a través de su participación en pools de liquidez de protocolos descentralizados (DeFi) como mediante la tenencia (hold) de los activos subyacentes.</span></div>
+          <div class="point"><span class="mk">(ii)</span><span>Que EL MANDATARIO posee conocimiento técnico y experiencia en gestión de liquidez en Uniswap, Revert Finance y protocolos análogos.</span></div>
+          <div class="point"><span class="mk">(iii)</span><span>Que EL MANDANTE ha sido informado exhaustivamente sobre los riesgos del mercado DeFi y manifiesta comprenderlos.</span></div>
+          <div class="point"><span class="mk">(iv)</span><span>Que las partes desean celebrar un contrato de mandato remunerado, conservando EL MANDANTE en todo momento la propiedad y el control sobre sus activos.</span></div>
+        </div>
+      </div>
+
+      <p class="acuerdan">Acuerdan las siguientes cláusulas</p>
+
+      <!-- PRIMERA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Primera</span><h3 class="clause-title">Objeto</h3><span class="hr"></span></div>
+        <p>EL MANDANTE otorga mandato remunerado a EL MANDATARIO para que este, actuando por cuenta y riesgo de EL MANDANTE, le brinde:</p>
+        <div class="points">
+          <div class="point"><span class="mk">(a)</span><span data-comment-anchor="d1b45df012-span">Análisis técnico de oportunidades en protocolos DeFi y en criptomonedas (BTC, ETH, entre otras).</span></div>
+          <div class="point"><span class="mk">(b)</span><span>Recomendaciones específicas de configuración de pools de liquidez (pares, rangos, <em>tick spacing</em>).</span></div>
+          <div class="point"><span class="mk">(c)</span><span><span class="olabel">Opcional ·</span> Ejecución técnica de operaciones en blockchain, bajo instrucción expresa y previa aprobación de EL MANDANTE para cada operación relevante.</span></div>
+          <div class="point"><span class="mk">(d)</span><span>Monitoreo de posiciones y reporte periódico.</span></div>
+        </div>
+      </section>
+
+      <!-- SEGUNDA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Segunda</span><h3 class="clause-title">Propiedad y custodia de los activos</h3><span class="hr"></span></div>
+        <div class="points">
+          <div class="point"><span class="mk">2.1</span><span>Los criptoactivos objeto del mandato son y seguirán siendo en todo momento de propiedad exclusiva de EL MANDANTE.</span></div>
+          <div class="point"><span class="mk">2.2</span><span>EL MANDANTE conservará el control primario de la wallet,  mediante:</span></div>
+        </div>
+        <div class="points" style="margin-left:41px;">
+          <div class="point opt"><span class="box"></span><span>Custodia total de la llave privada por parte de EL MANDANTE.</span></div>
+        </div>
+        <div class="points">
+          <div class="point"><span class="mk">2.3</span><span>EL MANDATARIO NO recibe, custodia ni controla los activos por cuenta propia. Cualquier acceso técnico es exclusivamente operacional para ejecutar instrucciones dentro del alcance pactado.</span></div>
+        </div>
+      </section>
+
+      <!-- TERCERA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Tercera</span><h3 class="clause-title">Activos gestionados</h3><span class="hr"></span></div>
+        <p>Los activos iniciales son: <span class="f empty" data-field="activos">[listar cripto + montos]</span>.</p>
+        <p>Red / blockchain: <span class="f empty" data-field="red">[Ethereum / Arbitrum / etc.]</span>.</p>
+        <p>Protocolos autorizados: <span class="opt-val">Uniswap V3</span>, <span class="opt-val">Revert Finance</span>. Cualquier adición o cambio requiere anexo firmado.</p>
+      </section>
+
+      <!-- CUARTA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Cuarta</span><h3 class="clause-title">Honorarios</h3><span class="hr"></span></div>
+        <p>EL MANDATARIO percibirá las siguientes remuneraciones:</p>
+        <div class="points">
+          <div class="point"><span class="mk">4.1</span><span><strong>Honorario fijo de onboarding:</strong> CINCO MILLONES DE PESOS COLOMBIANOS ($ 5.000.000 COP), pagaderos por anticipado al momento de la firma, por concepto de configuración inicial, análisis de perfil, apertura de wallet y primera asignación de liquidez.</span></div>
+          <div class="point"><span class="mk">4.2</span><span><strong>Participación sobre ganancias (performance fee):</strong> VEINTE POR CIENTO (20 %) sobre las ganancias netas realizadas, calculadas según la Cláusula Quinta.</span></div>
+        </div>
+      </section>
+
+      <!-- QUINTA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Quinta</span><h3 class="clause-title">Cálculo de ganancias</h3><span class="hr"></span></div>
+        <div class="points">
+          <div class="point"><span class="mk">5.1</span><span><em>"Ganancia neta"</em> = Valor total del portafolio al final del periodo de liquidación − Valor inicial aportado − Costos de gas y fees de protocolo − Pérdidas realizadas en el periodo.</span></div>
+          <div class="point"><span class="mk">5.2</span><span>Periodicidad de liquidación: <span class="opt-val">trimestral / semestral / a la terminación</span>.</span></div>
+          <div class="point"><span class="mk">5.3</span><span>Moneda de cálculo: equivalente en USD al momento del cálculo, tomando precio de <span class="opt-val">oráculo Chainlink / promedio últimas 24h CoinGecko</span>.</span></div>
+        </div>
+      </section>
+
+      <!-- SEXTA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Sexta</span><h3 class="clause-title">Obligaciones del mandatario</h3><span class="hr"></span></div>
+        <p>EL MANDATARIO se obliga a:</p>
+        <div class="points">
+          <div class="point"><span class="mk">(a)</span><span>Actuar con la diligencia de un buen hombre de negocios.</span></div>
+          <div class="point"><span class="mk">(b)</span><span>Rendir cuentas mensualmente con reportes detallados.</span></div>
+          <div class="point"><span class="mk">(c)</span><span>Informar oportunamente cambios materiales del mercado que impacten las posiciones.</span></div>
+          <div class="point"><span class="mk">(d)</span><span>Mantener confidencialidad sobre la información de EL MANDANTE.</span></div>
+          <div class="point"><span class="mk">(e)</span><span>No usar los activos del mandato para fines distintos a los pactados.</span></div>
+          <div class="point"><span class="mk">(f)</span><span>Cumplir con las normas de prevención de lavado de activos aplicables.</span></div>
+        </div>
+      </section>
+
+      <!-- SÉPTIMA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Séptima</span><h3 class="clause-title">Obligaciones del mandante</h3><span class="hr"></span></div>
+        <p>EL MANDANTE se obliga a:</p>
+        <div class="points">
+          <div class="point"><span class="mk">(a)</span><span>Pagar oportunamente los honorarios pactados.</span></div>
+          <div class="point"><span class="mk">(b)</span><span>Proveer información veraz para cumplimiento KYC.</span></div>
+          <div class="point"><span class="mk">(c)</span><span>Declarar el origen lícito de los criptoactivos aportados.</span></div>
+          <div class="point"><span class="mk">(d)</span><span>Cumplir con sus obligaciones tributarias personales derivadas de las operaciones.</span></div>
+          <div class="point"><span class="mk">(e)</span><span>Mantener actualizados sus medios de contacto y firma.</span></div>
+        </div>
+      </section>
+
+      <!-- OCTAVA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Octava</span><h3 class="clause-title">Declaraciones y exclusión de garantías</h3><span class="hr"></span></div>
+        <div class="points">
+          <div class="point"><span class="mk">8.1</span><span>EL MANDANTE DECLARA EXPRESAMENTE que comprende y acepta los siguientes riesgos:</span></div>
+        </div>
+        <div class="points" style="margin-left:41px;">
+          <div class="point"><span class="mk">(a)</span><span><strong>Volatilidad extrema</strong> de los criptoactivos — la pérdida puede ser total.</span></div>
+          <div class="point"><span class="mk">(b)</span><span><strong>Impermanent loss</strong> en pools de liquidez.</span></div>
+          <div class="point"><span class="mk">(c)</span><span><strong>Riesgos de smart contract</strong> — hacks, bugs, exploits.</span></div>
+          <div class="point"><span class="mk">(d)</span><span><strong>Riesgos de protocolo</strong> — depegs, rug pulls, liquidaciones.</span></div>
+          <div class="point"><span class="mk">(e)</span><span><strong>Riesgos de borrowing y leverage</strong> — liquidación forzada por movimientos adversos del precio.</span></div>
+          <div class="point"><span class="mk">(f)</span><span><strong>Riesgos regulatorios</strong> — cambios normativos en Colombia o en jurisdicciones de los protocolos.</span></div>
+        </div>
+        <div class="callout warn">
+          <p><strong>8.2. EL MANDATARIO NO GARANTIZA:</strong> (a) rendimiento mínimo, máximo ni rango alguno; (b) preservación del capital; (c) rentabilidad positiva en ningún periodo.</p>
+        </div>
+        <div class="points">
+          <div class="point"><span class="mk">8.3</span><span>EL MANDATARIO NO RESPONDE por: (a) hacks o fallos de protocolos de terceros (Uniswap, Revert, etc.); (b) liquidaciones producto de movimientos de mercado; (c) decisiones de EL MANDANTE de desatender recomendaciones; (d) cambios regulatorios o impositivos sobrevinientes.</span></div>
+        </div>
+      </section>
+
+      <!-- OCTAVA BIS -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Octava bis</span><h3 class="clause-title">Limitación de responsabilidad</h3><span class="hr"></span></div>
+        <p>La responsabilidad máxima total de EL MANDATARIO frente a EL MANDANTE por cualquier reclamo derivado de este contrato se limita al monto de honorarios efectivamente cobrados en los doce (12) meses anteriores al evento que origine la reclamación.</p>
+      </section>
+
+      <!-- NOVENA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Novena</span><h3 class="clause-title">Naturaleza jurídica no-financiera del servicio</h3><span class="hr"></span></div>
+        <div class="points">
+          <div class="point"><span class="mk">9.1</span><span>Las partes reconocen expresamente que este contrato NO constituye:</span></div>
+        </div>
+        <div class="points" style="margin-left:41px;">
+          <div class="point"><span class="mk">(a)</span><span>Un contrato de administración de recursos del público.</span></div>
+          <div class="point"><span class="mk">(b)</span><span>Un contrato de fiducia mercantil.</span></div>
+          <div class="point"><span class="mk">(c)</span><span>Un contrato de asesoría en valores en los términos de la Ley 964 de 2005.</span></div>
+          <div class="point"><span class="mk">(d)</span><span>Un fondo de inversión colectivo.</span></div>
+          <div class="point"><span class="mk">(e)</span><span>Una relación de intermediación de valores.</span></div>
+        </div>
+        <div class="points">
+          <div class="point"><span class="mk">9.2</span><span>Los criptoactivos objeto del mandato NO son valores conforme a la definición de la Ley 964 de 2005 y la doctrina vigente de la Superintendencia Financiera de Colombia.</span></div>
+        </div>
+      </section>
+
+      <!-- DÉCIMA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima</span><h3 class="clause-title">Duración</h3><span class="hr"></span></div>
+        <div class="points">
+          <div class="point"><span class="mk">10.1</span><span>El presente contrato tendrá una duración inicial de doce (12) meses, prorrogables automáticamente por periodos iguales.</span></div>
+          <div class="point"><span class="mk">10.2</span><span>Cualquiera de las partes podrá terminar el contrato con aviso previo de treinta (30) días calendario.</span></div>
+          <div class="point"><span class="mk">10.3</span><span>Terminación sin preaviso: por incumplimiento grave, fraude o incapacidad sobreviniente.</span></div>
+        </div>
+      </section>
+
+      <!-- DÉCIMA PRIMERA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima primera</span><h3 class="clause-title">Terminación y liquidación</h3><span class="hr"></span></div>
+        <p>Al terminar el contrato:</p>
+        <div class="points">
+          <div class="point"><span class="mk">(a)</span><span>EL MANDATARIO liquidará ordenadamente las posiciones abiertas.</span></div>
+          <div class="point"><span class="mk">(b)</span><span>Se calculará el performance fee final (si aplica).</span></div>
+          <div class="point"><span class="mk">(c)</span><span>Los activos permanecen en la wallet de EL MANDANTE.</span></div>
+          <div class="point"><span class="mk">(d)</span><span>EL MANDATARIO entrega reporte final detallado.</span></div>
+        </div>
+      </section>
+
+      <!-- DÉCIMA SEGUNDA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima segunda</span><h3 class="clause-title">Confidencialidad</h3><span class="hr"></span></div>
+        <p>Las partes se obligan a mantener confidencialidad sobre la información intercambiada, incluyendo estrategias, posiciones, saldos y metodología. Obligación vigente por 3 años tras la terminación.</p>
+      </section>
+
+      <!-- DÉCIMA TERCERA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima tercera</span><h3 class="clause-title">Protección de datos</h3><span class="hr"></span></div>
+        <p>EL MANDATARIO tratará los datos personales de EL MANDANTE conforme a la Ley 1581 de 2012 y la política de privacidad de <span class="f empty" data-field="razon">Castle Capital Investments</span>, que EL MANDANTE declara haber leído y aceptado.</p>
+      </section>
+
+      <!-- DÉCIMA CUARTA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima cuarta</span><h3 class="clause-title">Prevención de lavado de activos</h3><span class="hr"></span></div>
+        <p>EL MANDANTE declara bajo gravedad de juramento que:</p>
+        <div class="points">
+          <div class="point"><span class="mk">(a)</span><span>Los recursos aportados provienen de actividades lícitas.</span></div>
+          <div class="point"><span class="mk">(b)</span><span>No figura en listas vinculantes para Colombia (OFAC, ONU, etc.).</span></div>
+          <div class="point"><span class="mk">(c)</span><span>Autoriza a EL MANDATARIO a realizar debida diligencia.</span></div>
+        </div>
+      </section>
+
+      <!-- DÉCIMA QUINTA -->
+      <section class="clause" data-comment-anchor="4dbdf8f40b-section">
+        <div class="clause-head"><span class="clause-no">Décima quinta</span><h3 class="clause-title">Ley aplicable y resolución de conflictos</h3><span class="hr"></span></div>
+        <p>Este contrato se rige por las leyes de la República de Colombia, en especial por los artículos 2142 al 2199 del Código Civil. Cualquier controversia que surja entre las partes será resuelta en primera instancia mediante un arreglo directo, para lo cual dispondrán de quince (15) días calendario; si la controversia no puede resolverse de esta manera, se someterá a la decisión de un Tribunal de Arbitramento designado por el Centro de Arbitraje y Conciliación de la Cámara de Comercio de Bogotá, que se sujetará a sus reglamentos y decidirá en derecho.</p>
+      </section>
+
+      <!-- DÉCIMA SEXTA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima sexta</span><h3 class="clause-title">Modificaciones</h3><span class="hr"></span></div>
+        <p>Cualquier modificación debe constar por escrito y firmada por ambas partes.</p>
+      </section>
+
+      <!-- DÉCIMA SÉPTIMA -->
+      <section class="clause">
+        <div class="clause-head"><span class="clause-no">Décima séptima</span><h3 class="clause-title">Notificaciones</h3><span class="hr"></span></div>
+        <p>Para todos los efectos, las partes recibirán notificaciones en los siguientes medios:</p>
+        <div class="points">
+          <div class="point"><span class="mk">·</span><span data-comment-anchor="aea4d47770-span"><strong>EL MANDANTE:</strong> correo <span class="f empty" data-field="correo">[___]</span>, domicilio en <span class="f empty" data-field="ciudad">[ciudad]</span> · Cel.: <span class="f empty" data-field="tel">[___]</span>.</span></div>
+          <div class="point"><span class="mk">·</span><span data-comment-anchor="07f8661213-span"><strong>EL MANDATARIO:</strong> <span class="f empty" data-field="razon">Castle Capital Investments</span> — Armenia, Quindío, Colombia. Correo: steban_04@outlook.com · Cel.: 320 945 4181.</span></div>
+        </div>
+      </section>
+
+      <p class="sign-intro">Firmado en <span class="f empty" data-field="ciudad_firma">[ciudad]</span>, el <span class="f empty" data-field="fecha">[fecha]</span>, en dos (2) ejemplares de idéntico tenor y valor.</p>
+
+      <div class="signatures">
+        <div class="sigbox">
+          <div class="sigline"></div>
+          <div class="role">El Mandante</div>
+          <div class="who"><b><span class="f empty" data-field="nombre">[Nombre completo]</span></b><br>C.C. <span class="f empty" data-field="cc">[___]</span></div>
+        </div>
+        <div class="sigbox" data-comment-anchor="a894ff9bde-div">
+          <img class="sig-ink" src="assets/firma-ink.png" alt="Firma de Julián Esteban Castillo Marulanda">
+          <div class="sigline"></div>
+          <div class="role">El Mandatario</div>
+          <div class="who" data-comment-anchor="a61be239fd-div"><b><span class="f empty" data-field="razon">Castle Capital Investments</span></b><br>Rep.: <span class="f empty" data-field="rep">Julián Esteban Castillo Marulanda</span><br>C.C. <span class="f empty" data-field="repcc">[___]</span></div>
+        </div>
+      </div>
+
+    </div><!-- /doc-body -->
+    </td></tr></tbody>
+  </table>
+</main>
+
+<script>
+(function(){
+  var KEY = 'cci_contrato_v1';
+  var placeholders = {
+    ref:'CCI-MND-2026-001', ciudad_firma:'[ciudad]', fecha:'[fecha]',
+    nombre:'[Nombre completo]', cc:'[___]', ciudad:'[ciudad]', correo:'[___]',
+    razon:'Castle Capital Investments', nit:'[___]', rep:'Julián Esteban Castillo Marulanda', repcc:'[___]',
+    activos:'[listar cripto + montos]', red:'[Ethereum / Arbitrum / etc.]', tel:'[___]'
+  };
+  // Fields that keep their default text styled as "filled" even when input empty
+  var defaults = { razon:'Castle Capital Investments', nit:'1.002.957.808-1', rep:'Julián Esteban Castillo Marulanda', repcc:'1.002.957.808', ref:'CCI-MND-2026-001', ciudad_firma:'Armenia, Quindío' };
+
+  var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  function fmtDate(v){
+    if(!v) return '';
+    var p = v.split('-'); if(p.length!==3) return v;
+    return parseInt(p[2],10)+' de '+meses[parseInt(p[1],10)-1]+' de '+p[0];
+  }
+
+  function setField(field, rawVal){
+    var spans = document.querySelectorAll('.f[data-field="'+field+'"]');
+    var display = rawVal;
+    if(field === 'fecha') display = fmtDate(rawVal);
+    var isEmpty = !display;
+    spans.forEach(function(s){
+      if(isEmpty){
+        s.textContent = placeholders[field] || '[___]';
+        s.classList.add('empty');
+      } else {
+        s.textContent = display;
+        s.classList.remove('empty');
+      }
+    });
+  }
+
+  var inputs = Array.prototype.slice.call(document.querySelectorAll('[data-bind]'));
+  var state = {};
+
+  // Load
+  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ state = {}; }
+  // Apply defaults if nothing saved yet
+  if(!localStorage.getItem(KEY)){
+    Object.keys(defaults).forEach(function(k){ state[k] = defaults[k]; });
+  }
+
+  inputs.forEach(function(inp){
+    var f = inp.getAttribute('data-bind');
+    if(state[f] != null){ inp.value = state[f]; }
+    setField(f, inp.value);
+    inp.addEventListener('input', function(){
+      state[f] = inp.value;
+      setField(f, inp.value);
+      save();
+    });
+  });
+
+  var savedTxt = document.getElementById('savedTxt');
+  var saveTimer = null;
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+    if(savedTxt){
+      savedTxt.textContent = 'Guardando…';
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(function(){ savedTxt.textContent = 'Guardado automáticamente'; }, 600);
+    }
+  }
+
+  document.getElementById('btnPrint').addEventListener('click', function(){ window.print(); });
+  document.getElementById('btnReset').addEventListener('click', function(){
+    if(!confirm('¿Restablecer todos los campos? Se conservarán los datos del Mandatario por defecto.')) return;
+    state = {};
+    Object.keys(defaults).forEach(function(k){ state[k] = defaults[k]; });
+    inputs.forEach(function(inp){
+      var f = inp.getAttribute('data-bind');
+      inp.value = state[f] != null ? state[f] : '';
+      setField(f, inp.value);
+    });
+    save();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "agent-input.schema.json",
+  "title": "AgentInput",
+  "description": "Contrato de entrada que el core entrega a un agente pluggable (stdin/body/prompt). Sin secretos. Los items vienen SIN el campo raw.",
+  "type": "object",
+  "required": ["schemaVersion", "brief", "runId", "items"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0" },
+    "brief": {
+      "type": "object",
+      "required": ["id", "display_name", "language", "query"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "display_name": { "type": "string" },
+        "language": { "type": "string" },
+        "query": {
+          "type": "object",
+          "properties": {
+            "keywords": { "type": "array", "items": { "type": "string" } },
+            "tickers": { "type": "array", "items": { "type": "string" } },
+            "topics": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "runId": { "type": "string" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "url"],
+        "properties": {
+          "id": { "type": "string" },
+          "source": { "type": "string" },
+          "sourceType": { "type": "string" },
+          "title": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "summary": { "type": "string" },
+          "publishedAt": { "type": ["string", "null"] },
+          "language": { "type": "string" },
+          "tickers": { "type": "array", "items": { "type": "string" } },
+          "topics": { "type": "array", "items": { "type": "string" } },
+          "sentiment": {
+            "type": ["object", "null"],
+            "properties": {
+              "score": { "type": "number" },
+              "label": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "previousBriefDate": { "type": ["string", "null"] },
+        "timezone": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+# news-extractor — configuracion global
+# Los secretos NUNCA van aqui: se leen de .env (ver .env.example).
+
+output:
+  base_dir: docs/news-extractor   # relativo a la raiz del repo
+  markdown: true
+  json: true
+
+http:
+  timeout_ms: 15000
+  retries: 2
+  min_host_interval_ms: 1200      # rate limit: ms minimos entre llamadas al mismo host
+
+notify:
+  telegram:
+    enabled: true                 # se omite si faltan TELEGRAM_BOT_TOKEN/CHAT_ID
+
+schedule:
+  timezone: America/Bogota
+
+ai:
+  default_model: claude-sonnet-4-6

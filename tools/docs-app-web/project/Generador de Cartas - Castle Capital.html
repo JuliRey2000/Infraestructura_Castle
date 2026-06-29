@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Castle Capital · Generador de Cartas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --cc-midnight:#14355F; --cc-imperial:#1B3A6B; --cc-castle-blue:#2B5497;
+  --cc-signal:#4A8FD4; --cc-deep-slate:#1A2D47;
+  --cc-gold:#C9A84C; --cc-gold-light:#E8C96A; --cc-gold-deep:#8C7325;
+  --cc-orange:#E8954F; --cc-orange-dark:#C97A3A;
+  --cc-white:#FFFFFF; --cc-oxford-white:#F4F4F0; --cc-oxford-soft:#FAFAF7;
+  --cc-border-warm:#E4E2DA; --cc-border-soft:#ECEAE2;
+  --cc-oxford:#6B6B6B; --cc-oxford-dark:#3D3D3D;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-ui:'DM Sans',system-ui,sans-serif;
+  --font-data:'Barlow','SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-ui);
+  color:var(--cc-white);
+  background:
+    radial-gradient(1100px 700px at 18% -8%, rgba(201,168,76,0.10), transparent 60%),
+    radial-gradient(1000px 800px at 100% 120%, rgba(74,143,212,0.14), transparent 55%),
+    linear-gradient(160deg,#14355F 0%,#142B47 48%,#101F33 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+}
+
+/* ───────── Toolbar ───────── */
+.toolbar{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; gap:28px;
+  padding:16px 32px;
+  background:rgba(16,30,49,0.82);
+  backdrop-filter:blur(18px) saturate(150%);
+  border-bottom:1px solid rgba(74,143,212,0.28);
+}
+.brand{display:flex; flex-direction:column; gap:3px; flex:none; padding-right:24px; border-right:1px solid rgba(255,255,255,0.10);}
+.brand .wm{font-family:var(--font-display); font-size:20px; font-weight:700; letter-spacing:1px; color:var(--cc-gold); line-height:1; white-space:nowrap;}
+.brand .wm em{font-style:italic; color:var(--cc-gold-light);}
+.brand .sub{font-family:var(--font-data); font-size:9.5px; text-transform:uppercase; letter-spacing:0.18em; color:rgba(255,255,255,0.55);}
+
+.controls{display:flex; align-items:flex-end; gap:22px; flex-wrap:wrap; flex:1;}
+.field{display:flex; flex-direction:column; gap:7px;}
+.field .lbl{font-family:var(--font-data); font-size:10px; text-transform:uppercase; letter-spacing:0.14em; color:rgba(255,255,255,0.62);}
+
+.name-input{
+  font-family:var(--font-ui); font-size:15px; font-weight:500;
+  color:var(--cc-white);
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(74,143,212,0.40);
+  border-radius:8px; padding:11px 14px; width:300px;
+  transition:border-color .15s, box-shadow .15s, background .15s;
+}
+.name-input::placeholder{color:rgba(255,255,255,0.40);}
+.name-input:focus{
+  outline:none; background:rgba(255,255,255,0.08);
+  border-color:var(--cc-gold);
+  box-shadow:0 0 0 3px rgba(201,168,76,0.18);
+}
+
+/* segmented gender toggle */
+.seg{display:inline-flex; background:rgba(255,255,255,0.05); border:1px solid rgba(74,143,212,0.40); border-radius:9999px; padding:3px;}
+.seg button{
+  font-family:var(--font-ui); font-size:13px; font-weight:600;
+  color:rgba(255,255,255,0.70); background:transparent; border:none; cursor:pointer;
+  padding:8px 18px; border-radius:9999px; transition:all .2s var(--ease,cubic-bezier(.4,0,.2,1));
+}
+.seg button.active{
+  color:var(--cc-midnight);
+  background:linear-gradient(135deg,var(--cc-gold-light),var(--cc-gold));
+  box-shadow:0 4px 12px -4px rgba(201,168,76,0.55);
+}
+
+.spacer{flex:1;}
+.btn-dl{
+  display:inline-flex; align-items:center; gap:9px;
+  font-family:var(--font-ui); font-weight:700; font-size:14px; letter-spacing:0.3px;
+  color:var(--cc-white); cursor:pointer;
+  background:linear-gradient(135deg,var(--cc-gold),#B8973A);
+  border:none; border-radius:8px; padding:13px 24px;
+  box-shadow:0 1px 0 rgba(255,255,255,0.18) inset, 0 10px 26px -10px rgba(201,168,76,0.6);
+  transition:transform .25s var(--ease,cubic-bezier(.34,1.56,.64,1)), box-shadow .25s, opacity .2s;
+}
+.btn-dl:hover{transform:translateY(-2px); box-shadow:0 1px 0 rgba(255,255,255,0.18) inset, 0 16px 34px -10px rgba(201,168,76,0.7);}
+.btn-dl:disabled{opacity:0.45; cursor:not-allowed; transform:none; box-shadow:none;}
+.btn-dl svg{width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;}
+.btn-dl.busy{pointer-events:none; opacity:0.7;}
+
+/* ───────── Stage / sheet ───────── */
+.stage{display:flex; justify-content:center; padding:44px 24px 72px;}
+.sheet{
+  width:794px; min-height:1123px; flex:none;
+  background:var(--cc-white);
+  color:var(--cc-oxford-dark);
+  box-shadow:0 40px 80px -30px rgba(0,0,0,0.6), 0 8px 24px -12px rgba(0,0,0,0.4);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+  padding:54px 72px 46px;
+}
+/* hairline gold frame inside the sheet */
+.sheet::after{
+  content:''; position:absolute; inset:18px;
+  border:1px solid rgba(201,168,76,0.32); pointer-events:none;
+}
+
+/* letterhead */
+.lh{display:flex; align-items:center; gap:18px; padding-bottom:20px; border-bottom:1px solid var(--cc-border-warm);}
+.lh img{width:62px; height:62px; object-fit:contain; flex:none;}
+.lh .id{display:flex; flex-direction:column; gap:4px;}
+.lh .name{font-family:var(--font-display); font-size:26px; font-weight:700; letter-spacing:0.5px; color:var(--cc-midnight); line-height:1; white-space:nowrap;}
+.lh .name em{font-style:italic; color:var(--cc-gold-deep);}
+.lh .tag{font-family:var(--font-data); font-size:9.5px; text-transform:uppercase; letter-spacing:0.22em; color:var(--cc-oxford); white-space:nowrap;}
+.lh .meta{margin-left:auto; text-align:right; display:flex; flex-direction:column; gap:3px;}
+.lh .meta .k{font-family:var(--font-data); font-size:8.5px; text-transform:uppercase; letter-spacing:0.16em; color:#9a9a92;}
+.lh .meta .v{font-family:var(--font-display); font-size:14px; font-weight:600; color:var(--cc-oxford-dark);}
+
+.eyebrow{font-family:var(--font-data); font-size:11px; text-transform:uppercase; letter-spacing:0.2em; color:var(--cc-gold-deep); font-weight:600; margin:22px 0 9px;}
+.gold-rule{width:90px; height:2px; background:linear-gradient(90deg,var(--cc-gold),transparent); margin-bottom:24px;}
+
+.salut{font-family:var(--font-display); font-size:30px; font-weight:600; color:var(--cc-midnight); margin:0 0 18px;}
+.salut .nm{font-weight:700;}
+.salut .nm.empty{color:#bdb9ad; font-style:italic;}
+
+.body{flex:1;}
+.body p{
+  font-family:var(--font-ui); font-size:14px; line-height:1.72;
+  color:#46464a; margin:0 0 10px; text-wrap:pretty; text-align:justify;
+}
+.body p em{font-family:var(--font-display); font-style:italic; font-size:1.18em; color:var(--cc-gold-deep); letter-spacing:0.2px;}
+
+.closing{
+  font-family:var(--font-display); font-size:22px; line-height:1.3; font-weight:600;
+  color:var(--cc-midnight); margin:14px 0 4px; text-align:left;
+}
+.closing .welcome{font-style:italic; font-size:1.28em;}
+.closing .welcome b{
+  font-weight:700;
+  background:linear-gradient(135deg,var(--cc-gold-light),var(--cc-gold-deep));
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.sig{margin-top:20px;}
+.sig .nm{font-family:var(--font-display); font-size:21px; font-weight:600; color:var(--cc-midnight); line-height:1.1;}
+.sig .firm{font-family:var(--font-display); font-style:italic; font-size:15px; color:var(--cc-gold-deep);}
+
+.sheet-foot{
+  margin-top:22px; padding-top:14px; border-top:1px solid var(--cc-border-warm);
+  text-align:center; font-family:var(--font-display); font-style:italic; font-size:12.5px;
+  letter-spacing:0.8px; color:var(--cc-oxford);
+}
+.sheet-foot b{font-style:normal; font-weight:600; color:var(--cc-midnight);}
+.sheet-foot .dot{color:var(--cc-gold); margin:0 8px;}
+
+/* tiny note under toolbar */
+.hint{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:5;
+  font-family:var(--font-data); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase;
+  color:rgba(255,255,255,0.45); pointer-events:none;}
+
+@media (max-width:880px){
+  .toolbar{flex-wrap:wrap; gap:16px;}
+  .spacer{display:none;}
+  .sheet{transform:scale(0.62); transform-origin:top center; margin-bottom:-380px;}
+}
+
+/* ───────── Print ───────── */
+@page{ size:A4; margin:0; }
+@media print{
+  html,body{
+    background:#FFFFFF !important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .toolbar, .hint{ display:none !important; }
+  .stage{ padding:0 !important; display:block !important; }
+  .sheet{
+    width:210mm !important; min-height:297mm !important;
+    margin:0 !important; box-shadow:none !important;
+    transform:none !important; page-break-after:avoid;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div class="brand">
+    <div class="wm">Castle <em>Capital</em></div>
+    <div class="sub">Generador de cartas</div>
+  </div>
+  <div class="controls">
+    <div class="field">
+      <span class="lbl">Nombre del cliente</span>
+      <input id="name" class="name-input" type="text" placeholder="Ej. Mateo Restrepo" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="field">
+      <span class="lbl">Redacción</span>
+      <div class="seg" id="seg">
+        <button data-g="m" class="active">Hombre</button>
+        <button data-g="f">Mujer</button>
+      </div>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <button id="print" class="btn-dl">
+    <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    Imprimir / Guardar PDF
+  </button>
+</div>
+
+<div class="stage">
+  <article class="sheet" id="sheet">
+    <header class="lh">
+      <img src="assets/logo-castle.png" alt="Castle Capital">
+      <div class="id">
+        <div class="name">Castle <em>Capital</em></div>
+        <div class="tag">Diseño · Estructura · Legado</div>
+      </div>
+      <div class="meta">
+        <div class="k">Bienvenida</div>
+        <div class="v" id="metaDate">7 junio 2026</div>
+      </div>
+    </header>
+
+    <div class="eyebrow">El nuevo capítulo del dinero</div>
+    <div class="gold-rule"></div>
+
+    <h1 class="salut">Para <span class="nm empty" id="salName">tu cliente</span>,</h1>
+
+    <div class="body" id="body"></div>
+
+    <div class="closing" id="closing"></div>
+
+    <div class="sig">
+      <div class="nm">Julián Castillo</div>
+      <div class="firm">Castle Capital</div>
+    </div>
+
+    <div class="sheet-foot">
+      <b>Castle Capital</b><span class="dot">·</span>Diseño<span class="dot">·</span>Estructura<span class="dot">·</span>Legado
+    </div>
+  </article>
+</div>
+
+<div class="hint">Escribe el nombre · elige la redacción · imprime para previsualizar y guardar como PDF</div>
+
+<script>
+const nameInput = document.getElementById('name');
+const salName   = document.getElementById('salName');
+const bodyEl    = document.getElementById('body');
+const closingEl = document.getElementById('closing');
+const seg       = document.getElementById('seg');
+const printBtn  = document.getElementById('print');
+let gender = 'm';
+
+// gender helper: pick masculine / feminine form
+const g = (m,f) => gender === 'f' ? f : m;
+
+function renderLetter(){
+  bodyEl.innerHTML = `
+    <p>Tú ya veías esto antes de que apareciéramos. Lo de no dejar el dinero quieto creyendo que quieto está seguro. Lo de mirar lo que hace la mayoría y sentir, sin saber explicarlo del todo, que algo ahí no cuadra. No piensas como el banco, ni como el vecino, ni como lo que hicieron en casa. Nunca lo hiciste. Y la gente que ve el mundo así suele llegar tarde a las explicaciones y temprano a las decisiones.</p>
+
+    <p>Déjame ponerle nombre a tu intuición. El dinero es <em>energía guardada</em>. Cada hora que trabajaste, cada cálculo que hiciste bien, cada cosa que dejaste de hacer para producir algo mejor, todo eso quedó adentro de tu dinero. El problema es que el dinero de siempre <em>se derrite</em>. La inflación, la impresora del banco central, la deuda que nadie votó, todo eso erosiona en silencio el fruto de tu trabajo mientras tú duermes ${g('tranquilo','tranquila')} creyendo que está a salvo.</p>
+
+    <p>Lo que hoy pasa con cripto no es una moda ni un activo más que sube y baja. Es un cambio en la historia del dinero tan hondo como cuando pasamos del trueque a la moneda. Por primera vez existe un sistema donde nadie imprime de más, nadie te confisca, nadie devalúa lo que guardaste. La energía de tu trabajo por fin puede almacenarse sin evaporarse.</p>
+
+    <p>Así que lo que hiciste estos días no fue invertir en cripto. Tomaste posición en el sistema financiero que viene, antes de que sea obvio para todos. Esa ventaja de tiempo siempre fue lo único que separó a quien construye la riqueza de quien la mira pasar.</p>
+
+    <p>Jobs no construyó Apple para convencer a nadie de que las computadoras importaban. Lo hizo porque veía el futuro con una claridad que la mayoría simplemente no tenía. Lo tacharon de <em>ingenuo</em>. Luego de <em>obstinado</em>. Después de <em>genio</em>. El orden siempre es ese.</p>
+
+    <p>Hoy el mundo llama especulación a lo que tú ya lees como <em>historia</em>. Esa diferencia siempre fue la que separó a quienes hacen historia de quienes la observan.</p>
+  `;
+  closingEl.innerHTML = `Ya estás en el futuro.<br><span class="welcome"><b>${g('Bienvenido','Bienvenida')}</b>.</span>`;
+}
+
+function renderName(){
+  const v = nameInput.value.trim();
+  if(v){ salName.textContent = v; salName.classList.remove('empty'); }
+  else { salName.textContent = 'tu cliente'; salName.classList.add('empty'); }
+}
+
+nameInput.addEventListener('input', renderName);
+
+seg.addEventListener('click', (e)=>{
+  const b = e.target.closest('button'); if(!b) return;
+  gender = b.dataset.g;
+  seg.querySelectorAll('button').forEach(x=>x.classList.toggle('active', x===b));
+  renderLetter();
+});
+
+// fecha en español
+const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const now = new Date();
+document.getElementById('metaDate').textContent = `${now.getDate()} ${meses[now.getMonth()]} ${now.getFullYear()}`;
+
+function sanitize(s){
+  return (s || 'Cliente').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,' ').trim() || 'Cliente';
+}
+
+printBtn.addEventListener('click', async ()=>{
+  const v = nameInput.value.trim();
+  if(!v){ nameInput.focus(); nameInput.style.borderColor = 'var(--cc-orange)'; setTimeout(()=>nameInput.style.borderColor='', 1400); return; }
+  await document.fonts.ready;
+  // Sugerir un nombre de archivo limpio en el diálogo “Guardar como PDF”.
+  const prevTitle = document.title;
+  document.title = `Carta de Bienvenida — ${sanitize(v)}`;
+  const restore = ()=>{ document.title = prevTitle; window.removeEventListener('afterprint', restore); };
+  window.addEventListener('afterprint', restore);
+  window.print();
+  // respaldo por si afterprint no dispara
+  setTimeout(restore, 1500);
+});
+
+renderLetter();
+renderName();
+</script>
+</body>
+</html>

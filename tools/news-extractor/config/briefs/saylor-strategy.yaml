@@ -1,0 +1,34 @@
+brief:
+  id: saylor-strategy
+  display_name: "Strategy / Michael Saylor (MSTR)"
+  language: es
+  enabled: true
+
+query:
+  keywords: ["Michael Saylor", "Strategy", "Bitcoin treasury", "MicroStrategy"]
+  tickers: ["MSTR"]
+  topics: ["earnings", "financial_markets"]
+  since: "24h"
+  max_items: 30
+
+sources:
+  - type: marketaux       # mejor extraccion de entidad MSTR
+  - type: alphavantage    # NEWS_SENTIMENT, ticker=MSTR
+  - type: finnhub
+
+dedup:
+  strategy: both
+  window: "48h"
+
+agents: ["ai-synthesizer"]
+
+schedule:
+  cron: "0 7 * * *"
+  timezone: America/Bogota
+
+output:
+  markdown: true
+  json: true
+
+notify:
+  telegram: true

@@ -1,0 +1,34 @@
+brief:
+  id: nasdaq100
+  display_name: "Nasdaq 100"
+  language: es
+  enabled: true
+
+query:
+  keywords: ["Nasdaq 100", "tech stocks", "Fed", "earnings"]
+  tickers: ["QQQ", "AAPL", "MSFT", "NVDA"]
+  topics: ["financial_markets", "economy_macro", "earnings"]
+  since: "24h"
+  max_items: 30
+
+sources:
+  - type: alphavantage    # NEWS_SENTIMENT con licencia NASDAQ
+  - type: marketaux
+  - type: finnhub
+
+dedup:
+  strategy: both
+  window: "48h"
+
+agents: ["ai-synthesizer"]
+
+schedule:
+  cron: "30 6 * * 1,2,3,4,5"   # pre-market, lunes a viernes
+  timezone: America/Bogota
+
+output:
+  markdown: true
+  json: true
+
+notify:
+  telegram: true

@@ -1,0 +1,20 @@
+agent:
+  id: ai-synthesizer
+  display_name: "Sintetizador IA"
+  version: "1.0.0"
+  enabled: true
+  language: es
+
+transport:
+  type: cli                                    # cli | http | aiox-squad
+  command: "node"
+  args: ["agents/ai-synthesizer/main.js"]      # args como array, shell:false
+  cwd: "."
+  timeout_ms: 60000
+
+io:
+  input_schema: "agent-input.schema.json@1"
+  output_schema: "agent-output.schema.json@1"
+
+# Opcional: a que briefs aplica. Vacio/ausente = aplica a todos.
+applies_to: ["crypto", "saylor-strategy", "nasdaq100"]

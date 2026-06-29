@@ -1,0 +1,42 @@
+brief:
+  id: crypto
+  display_name: "Cripto"
+  language: es
+  enabled: true
+
+query:
+  keywords: ["bitcoin", "ethereum", "crypto", "defi", "stablecoin"]
+  tickers: []
+  topics: ["blockchain"]
+  since: "24h"
+  max_items: 30
+
+sources:
+  - type: rss
+    options:
+      feeds:
+        - https://www.coindesk.com/arc/outboundfeeds/rss/
+        - https://cointelegraph.com/rss
+        - https://decrypt.co/feed
+  - type: coingecko
+  - type: cmc
+    options:
+      snapshotDir: data/cmc
+      maxAgeHours: 26
+
+dedup:
+  strategy: both
+  window: "48h"
+
+agents: ["ai-synthesizer"]
+
+schedule:
+  cron: "0 7 * * *"
+  timezone: America/Bogota
+
+output:
+  markdown: true
+  json: true
+
+notify:
+  telegram: true

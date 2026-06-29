@@ -12,7 +12,10 @@
       "Bash(mkdir -p /Users/usuario1/Software/aios-core/.claude/skills/castle-capital-security)",
       "Bash(mv /Users/usuario1/Software/aios-core/.claude/skills/castle-capital/SKILL.md /Users/usuario1/Software/aios-core/.claude/skills/castle-capital-security/SKILL.md)",
       "Bash(python3 *)",
-      "Bash(open *)"
+      "Bash(open *)",
+      "Bash(claude --version)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }

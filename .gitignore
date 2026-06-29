@@ -370,3 +370,16 @@ build/
 
 # Asesoria Capital — Supabase credentials
 tools/asesoria-capital/config.js
+
+# ============================================
+# news-extractor (generated output)
+# ============================================
+# Los briefs .md en docs/news-extractor/briefs/ SI se trackean.
+# Solo se ignoran datos crudos, historial de runs e indice de dedup.
+docs/news-extractor/data/
+docs/news-extractor/runs/
+docs/news-extractor/.dedup-index.json
+tools/news-extractor/.env
+# Snapshots CMC (artefactos runtime de /cmc-snapshot; no se commitean)
+tools/news-extractor/data/cmc/*.json
+!tools/news-extractor/data/cmc/.gitkeep

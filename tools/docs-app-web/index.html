@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Castle Capital · Generador de Documentos</title>
+<link rel="icon" href="assets/logo-castle.png">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- ════════ PANEL: roster + formulario maestro ════════ -->
+  <aside class="panel">
+    <div class="panel-head">
+      <div class="wm">Castle <em>Capital</em></div>
+      <div class="sub">Generador de documentos · CCI</div>
+    </div>
+
+    <div class="roster-block">
+      <div class="roster-label">Cliente</div>
+      <select class="roster" id="roster" aria-label="Seleccionar cliente"></select>
+    </div>
+    <div class="roster-actions">
+      <button class="mini" id="btnNew" title="Crear cliente nuevo">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nuevo
+      </button>
+      <button class="mini" id="btnDup" title="Duplicar cliente actual">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        Duplicar
+      </button>
+      <button class="mini danger" id="btnDel" title="Borrar cliente actual">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        Borrar
+      </button>
+    </div>
+
+    <div class="form-mode" role="group" aria-label="Modo del formulario">
+      <button class="seg-btn active" id="modeDoc" title="Mostrar solo los campos del documento activo">Solo este documento</button>
+      <button class="seg-btn" id="modeAll" title="Mostrar todos los campos">Todos los campos</button>
+    </div>
+
+    <div class="form" id="form"><!-- generado por app.js --></div>
+
+    <div class="panel-foot">
+      <div class="backup-row">
+        <button class="mini" id="btnExport" title="Exportar respaldo JSON">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          Respaldo
+        </button>
+        <label class="mini file-label" title="Importar respaldo JSON">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>
+          Importar
+          <input type="file" id="fileImport" accept="application/json,.json">
+        </label>
+      </div>
+      <div class="saved-note"><span class="dot"></span><span id="savedTxt">Guardado automáticamente</span></div>
+    </div>
+  </aside>
+
+  <!-- ════════ STAGE: tabs + preview ════════ -->
+  <main class="stage">
+    <div class="toprow">
+      <nav class="tabs" id="tabs"><!-- generado por app.js --></nav>
+      <button class="btn-print" id="btnPrint">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Imprimir / Guardar PDF
+      </button>
+    </div>
+    <div class="preview">
+      <iframe id="frame" title="Vista previa del documento"></iframe>
+    </div>
+  </main>
+
+  <!-- Scripts clásicos en orden de dependencia (sin ES modules → funciona con doble-clic / file://) -->
+  <script src="lib/state.js"></script>
+  <script src="lib/store.js"></script>
+  <script src="docs/contrato.js"></script>
+  <script src="docs/entrada-fondos.js"></script>
+  <script src="docs/conversion.js"></script>
+  <script src="docs/carta.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

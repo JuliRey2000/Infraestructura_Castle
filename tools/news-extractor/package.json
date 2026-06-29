@@ -1,0 +1,19 @@
+{
+  "name": "@castle/news-extractor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Extractor de noticias diario y generador de briefs accionables para Castle Capital. CLI-first, modular por sector, con agentes de analisis pluggables.",
+  "type": "commonjs",
+  "bin": {
+    "news": "bin/news.js"
+  },
+  "scripts": {
+    "start": "node bin/news.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {},
+  "license": "UNLICENSED"
+}

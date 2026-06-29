@@ -1,0 +1,26 @@
+# PLANTILLA DE MANIFIESTO — inerte.
+# El registry solo carga *.yaml / *.yml, así que este .example NO se ejecuta.
+# Para activar un experto: copia esto a config/agents/manifests/<id>.yaml y edítalo.
+#
+# Requisito previo: crear config/experts/<id>/persona.md
+# (copia la plantilla config/experts/_template/).
+
+agent:
+  id: crypto-expert                 # debe coincidir con la carpeta en config/experts/
+  display_name: "Experto Cripto"
+  version: "1.0.0"
+  enabled: true
+  language: es
+
+transport:
+  type: aiox-squad                  # ← usa Claude Code local (claude -p), sin API key
+  agent: crypto-expert              # carpeta del experto (default = agent.id)
+  model: sonnet                     # opcional: opus | sonnet | fable, o id completo (claude-sonnet-4-6)
+  timeout_ms: 180000                # claude headless tarda; mantener >= 120000
+
+io:
+  output_schema: "agent-output.schema.json@1"
+
+# A qué brief(s) aplica este experto. Vacío/ausente = aplica a todos.
+# Un experto por tema = un id de brief aquí.
+applies_to: ["crypto"]
